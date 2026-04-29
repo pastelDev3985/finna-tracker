@@ -321,6 +321,5 @@ Focus on:
 3. Subtle effects (not loud design)
 4. AI-enhanced UX (this is your edge)
 
-If you want next:
-I can turn this into a full **Figma-level layout system** or generate actual React/Tailwind components for your dashboard.
+
 
