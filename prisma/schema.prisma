@@ -31,20 +31,57 @@ enum RecurrenceFrequency {
 // ─── Models ───────────────────────────────────────────────────────────────────
 
 model User {
-  id        String   @id @default(cuid())
-  name      String
-  email     String   @unique
-  password  String
-  currency  String   @default("GHS")
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  password      String
+  currency      String   @default("GHS")
+  // true for all existing users; new registrations start as false until OTP verified
+  emailVerified Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
 
-  transactions Transaction[]
-  budgets      Budget[]
-  goals        Goal[]
-  categories   Category[]
+  transactions         Transaction[]
+  budgets              Budget[]
+  goals                Goal[]
+  categories           Category[]
+  passwordResetTokens  PasswordResetToken[]
+  emailVerificationOtps EmailVerificationOtp[]
 
   @@index([email])
+}
+
+// ─── Password reset ───────────────────────────────────────────────────────────
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  // SHA-256 hash of the raw token sent in the email link
+  tokenHash String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([tokenHash])
+}
+
+// ─── Email verification OTP ───────────────────────────────────────────────────
+
+model EmailVerificationOtp {
+  id        String   @id @default(cuid())
+  userId    String
+  // SHA-256 hash of the 6-digit OTP
+  otpHash   String
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Category {

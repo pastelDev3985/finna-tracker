@@ -5,11 +5,13 @@ declare module "next-auth" {
     user: {
       id: string
       currency: string
+      isEmailVerified: boolean
     } & DefaultSession["user"]
   }
 
   interface User {
     currency: string
+    isEmailVerified: boolean
   }
 }
 
@@ -17,5 +19,6 @@ declare module "next-auth/jwt" {
   interface JWT {
     id: string
     currency: string
+    isEmailVerified: boolean
   }
 }

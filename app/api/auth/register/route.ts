@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { z } from "zod"
 import bcrypt from "bcryptjs"
 import { prisma } from "@/lib/db"
+import { sendVerificationOtp } from "@/lib/services/email-verification"
 
 const RegisterSchema = z.object({
   name: z.string().min(2, { error: "Name must be at least 2 characters" }).trim(),
@@ -33,11 +34,25 @@ export async function POST(request: Request) {
 
     const hashedPassword = await bcrypt.hash(password, 12)
 
-    await prisma.user.create({
-      data: { name, email, password: hashedPassword },
+    const user = await prisma.user.create({
+      data: {
+        name,
+        email,
+        password: hashedPassword,
+        emailVerified: false, // must complete OTP verification before accessing the app
+      },
+      select: { id: true },
     })
 
-    return NextResponse.json({ success: true }, { status: 201 })
+    // Send OTP — fire-and-forget; do not fail registration if email delivery fails
+    sendVerificationOtp(user.id).catch((err) =>
+      console.error("[register/sendVerificationOtp]", err)
+    )
+
+    return NextResponse.json(
+      { success: true, requiresEmailVerification: true },
+      { status: 201 }
+    )
   } catch (error) {
     console.error("[register]", error)
     return NextResponse.json(

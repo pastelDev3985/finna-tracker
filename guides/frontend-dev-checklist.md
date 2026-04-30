@@ -362,20 +362,44 @@ className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl"
 
 ## Phase 8 — AI Insights Page & Chat UI
 
+> **Backend contract:** `POST /api/insights` — body `{ message: string, history: { role: "user" | "assistant", content: string }[] }`. Response: `text/event-stream`. Each SSE event is `data: <JSON-encoded text chunk>\n\n`. Stream ends with `data: [DONE]\n\n`. Unauthenticated → `401`. Powered by `gemini-2.5-flash` via `@google/genai` (server-side only — key never in client bundle).
+
+### How to consume the stream (client-side pattern)
+```ts
+const res = await fetch("/api/insights", { method: "POST", body: JSON.stringify({ message, history }) })
+const reader = res.body!.getReader()
+const decoder = new TextDecoder()
+let buffer = ""
+while (true) {
+  const { done, value } = await reader.read()
+  if (done) break
+  buffer += decoder.decode(value, { stream: true })
+  const lines = buffer.split("\n\n")
+  buffer = lines.pop() ?? ""
+  for (const line of lines) {
+    if (!line.startsWith("data: ")) continue
+    const payload = line.slice(6)
+    if (payload === "[DONE]") return
+    setAiText(prev => prev + JSON.parse(payload))  // JSON.parse unwraps the string
+  }
+}
+```
+
 ### 8.1 Insights page (`app/(app)/insights/page.tsx`)
 - [ ] Full-height layout — sidebar + chat area fills viewport
 - [ ] Shows `insights-chat.tsx` and `prompt-chips.tsx`
-- [ ] Skeleton shown while context is being built on first load
+- [ ] No server-side data fetch needed — context is built inside the API route on each POST
 
 ### 8.2 Chat interface (`components/insights/insights-chat.tsx`)
+- [ ] Client Component (`"use client"`) — manages message state and stream reading
 - [ ] Scrollable message list — user messages right-aligned, AI messages left-aligned
 - [ ] User message bubble: `bg-primary text-secondary` (yellow on dark)
 - [ ] AI message bubble: glass card styling
-- [ ] Streaming response: renders content token by token as it arrives (consume `ReadableStream`)
+- [ ] Streaming response: reads `text/event-stream`, parses `data: <json>` lines, appends `JSON.parse(payload)` to the current AI message in real time
 - [ ] Animated "thinking" indicator while waiting for first token (pulsing dots)
 - [ ] Input field pinned to bottom with send button (`Send` Lucide icon)
 - [ ] Input clears and send disabled while response is streaming
-- [ ] Error state if stream fails — Sonner toast + retry option
+- [ ] Error state if stream fails (`res.ok === false`) — Sonner toast + retry option
 
 ### 8.3 Prompt chips (`components/insights/prompt-chips.tsx`)
 - [ ] 4 preset chips visible on first load (before any message is sent):
@@ -389,7 +413,7 @@ className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl"
 ### 8.4 Exit criteria
 - [ ] Streaming renders progressively (visible word-by-word)
 - [ ] Preset chips auto-send correctly
-- [ ] API key is not visible in network tab or browser JS bundle
+- [ ] `GEMINI_API_KEY` is not visible in network tab response or browser JS bundle
 - [ ] Error state renders cleanly
 - [ ] `npm run build` passes
 
@@ -570,5 +594,6 @@ className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl"
 - **Stick to the stack.** shadcn/ui components first. Only build custom if shadcn cannot do it.
 - **Glassmorphism is a texture, not a replacement for color.** Every glass element still needs sufficient contrast.
 - **The AI Insights page is isolated.** No inline AI tips or suggestions anywhere else in the app.
+- **AI provider is Gemini 2.5 Flash** (`gemini-2.5-flash` via `@google/genai`). `GEMINI_API_KEY` is server-side only. Never import `@google/genai` in a Client Component or any file under `app/(app)/`.
 - **Never convert stored amounts on currency change.** Currency is display-only.
 - **The design system guide (`guides/finora_design_system_glassmorphism_ai_ui_ux.md`) is the visual bible.** Consult it before making any stylistic decision.
