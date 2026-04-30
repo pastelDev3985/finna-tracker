@@ -1,9 +1,7 @@
 import {
   ArrowRight,
-  BarChart2,
   BrainCircuit,
   Layers,
-  Shield,
   Sparkles,
   Target,
   Wallet,

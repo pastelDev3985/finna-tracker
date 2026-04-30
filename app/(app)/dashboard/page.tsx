@@ -75,8 +75,6 @@ export default async function DashboardPage() {
     type: tx.type as "INCOME" | "EXPENSE",
   }))
 
-  const now = new Date()
-
   return (
     <div className="flex flex-col gap-6 p-6 pb-24 lg:p-8 lg:pb-8">
       <PageHeader

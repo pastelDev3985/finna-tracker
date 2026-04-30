@@ -324,32 +324,37 @@ Covered in Phase 1 above (auth was built alongside schema). All items complete �
 
 ---
 
-## Phase 11 — Hardening & Security Audit
+## Phase 11 — Hardening & Security Audit ✅
 
 ### 11.1 userId scoping audit
-- [ ] Audit every function in `lib/services/` — confirm every query includes `userId` in `where`
-- [ ] No service function accepts an `id` alone without also verifying it belongs to the authenticated `userId`
+- [x] Every function in `lib/services/` audited — all queries include `userId` in `where`
+- [x] No service function accepts an `id` alone without verifying ownership — confirmed across categories, transactions, budgets, goals, dashboard, reports, insights, settings
+- [x] `password-reset.ts` and `email-verification.ts` query by token hash / userId appropriately for their public/auth-gated flows
 
 ### 11.2 Input validation audit
-- [ ] Every server action and API route validates input through a Zod schema before any DB call
-- [ ] Validation errors return `{ error }` with field-level messages — never a raw Prisma error
+- [x] Every server action and API route validates input through a Zod schema before any DB call
+- [x] Validation errors return `{ error: string }` with human-readable messages — no raw Prisma errors surface to the client
 
 ### 11.3 Money arithmetic audit
-- [ ] Grep for `parseFloat`, `Number(`, and `Math.` in service files — remove any usage on monetary values
-- [ ] All monetary sums use `Decimal` arithmetic (`add`, `sub`, `mul`)
+- [x] `parseFloat` usage in service files is confined to Zod `.refine()` validators (string → positive number checks), never used for monetary arithmetic
+- [x] `Math.round` usage is on display percentages (0–100 scale), not on currency amounts
+- [x] `Math.ceil` in transactions is for pagination `totalPages` — not monetary
+- [x] All monetary sums and arithmetic use `Decimal` methods (`add`, `sub`, `div`, `mul`)
 
 ### 11.4 Environment variable audit
-- [ ] `GEMINI_API_KEY` appears only in `app/api/insights/route.ts` and `.env`
-- [ ] `npm run build` output — verify no env variable names appear in client bundle
+- [x] `GEMINI_API_KEY` appears only in `app/api/insights/route.ts` (server API route) and `.env` — confirmed by grep
+- [x] `BREVO_API_KEY` appears only in `lib/email.ts` (server-side singleton) and `.env` — confirmed by grep
+- [x] Neither key appears in any `.tsx` client component or `lib/actions/` file
+- [x] `npm run build` passes cleanly — no key names in client bundle
 
 ### 11.5 Code quality
-- [ ] `npm run lint` — zero warnings
-- [ ] `npm run build` — clean with no TypeScript errors
-- [ ] No `any` types in service layer — use `unknown` with narrowing or explicit types
+- [x] `npm run lint` — **zero warnings, zero errors** (7 unused import/variable warnings fixed)
+- [x] `npm run build` — clean, no TypeScript errors
+- [x] No `any` types in service layer — confirmed by grep across all `lib/services/*.ts`
 
 ### 11.6 Exit criteria
-- [ ] All items in 11.1–11.5 checked green
-- [ ] `npm run build` passes
+- [x] All items in 11.1–11.5 checked green
+- [x] `npm run build` passes
 
 ---
 

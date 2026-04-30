@@ -2,7 +2,6 @@
 
 import { ChevronLeft, ChevronRight, Plus, Wallet } from "lucide-react"
 import { useState, useTransition } from "react"
-import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
@@ -16,7 +15,6 @@ import { EmptyState } from "@/components/shared/empty-state"
 import { PageHeader } from "@/components/shared/page-header"
 import { BudgetCard, type BudgetCardData } from "@/components/budgets/budget-card"
 import { BudgetForm } from "@/components/budgets/budget-form"
-import { deleteBudgetAction } from "@/lib/actions/budgets"
 
 interface Category {
   id: string
@@ -45,7 +43,7 @@ export function BudgetsClient({
 }: BudgetsClientProps) {
   const [showForm, setShowForm] = useState(false)
   const [editBudget, setEditBudget] = useState<BudgetCardData | null>(null)
-  const [isPending, startTransition] = useTransition()
+  const [isPending] = useTransition()
   const router = useRouter()
 
   function navigate(delta: number) {
@@ -54,18 +52,6 @@ export function BudgetsClient({
     if (m < 1) { m = 12; y -= 1 }
     if (m > 12) { m = 1; y += 1 }
     router.push(`/budgets?month=${m}&year=${y}`)
-  }
-
-  function handleDelete(id: string) {
-    startTransition(async () => {
-      const result = await deleteBudgetAction(id)
-      if (result.error) {
-        toast.error(result.error)
-      } else {
-        toast.success("Budget deleted.")
-        router.refresh()
-      }
-    })
   }
 
   return (

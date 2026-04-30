@@ -5,7 +5,6 @@ import { formatCurrency, getCurrencySymbol } from "@/lib/currency"
 import { listCategories } from "@/lib/services/categories"
 import { listTransactions } from "@/lib/services/transactions"
 import { PageHeader } from "@/components/shared/page-header"
-import { Button } from "@/components/ui/button"
 import { TransactionList } from "@/components/transactions/transaction-list"
 
 interface Props {
