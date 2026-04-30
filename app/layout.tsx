@@ -3,7 +3,6 @@ import { DM_Sans, Geist_Mono, Plus_Jakarta_Sans } from "next/font/google";
 import { AppToaster } from "@/components/providers/app-toaster";
 import { SessionProvider } from "@/components/providers/session-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
-import { ThemeToggle } from "@/components/theme-toggle";
 import "./globals.css";
 
 const dmSans = DM_Sans({
@@ -41,9 +40,6 @@ export default function RootLayout({
         <ThemeProvider>
           <SessionProvider>
             <AppToaster />
-            <div className="fixed top-4 right-4 z-50 md:top-6 md:right-6">
-              <ThemeToggle />
-            </div>
             {children}
           </SessionProvider>
         </ThemeProvider>

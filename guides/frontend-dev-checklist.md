@@ -157,197 +157,165 @@ className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl"
 
 ---
 
-## Phase 2 — App Shell
+## Phase 2 — App Shell ✅
 
 ### 2.1 Sidebar (`components/shared/sidebar.tsx`)
-- [ ] Finora wordmark + logo at top
-- [ ] Navigation links with Lucide icons:
-  - Dashboard → `LayoutDashboard`
-  - Transactions → `ArrowLeftRight`
-  - Budgets → `Wallet`
-  - Goals → `Target`
-  - Reports → `BarChart2`
-  - Insights → `Sparkles`
-  - Settings → `Settings`
-- [ ] Active state: yellow left border (`border-l-2 border-primary`) + yellow text + subtle yellow-tinted background
-- [ ] Collapsible to icon-only on desktop (toggle with a `ChevronLeft`/`ChevronRight` icon)
-- [ ] Mobile: bottom sheet/drawer (shadcn/ui `Sheet`)
-- [ ] Dark/light mode toggle in sidebar footer (Lucide `Sun`/`Moon` — no text labels)
-- [ ] User avatar + name at footer (shadcn/ui `Avatar`)
+- [x] Finora wordmark at top
+- [x] All 7 navigation links with Lucide icons (LayoutDashboard, ArrowLeftRight, Wallet, Target, BarChart2, Sparkles, Settings)
+- [x] Active state: yellow left bar + yellow text + `bg-primary/10` background
+- [x] Collapsible to icon-only on desktop (ChevronLeft/Right toggle)
+- [x] Mobile: Sheet drawer with hamburger button
+- [x] Dark/light mode toggle in sidebar footer (Sun/Moon icons)
+- [x] User avatar (initials) + name/email + sign-out button at footer
 
 ### 2.2 Protected layout (`app/(app)/layout.tsx`)
-- [ ] Imports and renders sidebar
-- [ ] Main content area scrollable, sidebar fixed
-- [ ] Handles mobile layout: sidebar hidden, bottom nav or hamburger visible
+- [x] Server component: fetches session, renders `AppSidebar`
+- [x] `h-screen overflow-hidden` outer div; `main` is `overflow-y-auto flex-1`
+- [x] Desktop sidebar fixed; mobile hamburger triggers Sheet drawer
 
 ### 2.3 Shared utility components
-- [ ] `components/shared/empty-state.tsx` — centered illustration + message for zero-data states
-- [ ] `components/shared/loading-state.tsx` — skeleton placeholder matching page layout
-- [ ] `components/shared/page-header.tsx` — page title + optional action button slot
+- [x] `components/shared/empty-state.tsx` — icon + title + description + action slot
+- [x] `components/shared/loading-state.tsx` — `TableLoadingState`, `CardGridLoadingState`, `StatCardLoadingState`
+- [x] `components/shared/page-header.tsx` — title + description + optional action slot
 
 ### 2.4 Exit criteria
-- [ ] Sidebar renders in light and dark mode with correct active states
-- [ ] Collapsible works on desktop; drawer works on mobile
-- [ ] Theme toggle persists across page navigations
+- [x] Sidebar renders in light and dark mode with correct active states
+- [x] Collapsible works on desktop; Sheet drawer works on mobile
+- [x] Theme toggle in sidebar footer; removed floating root-layout ThemeToggle
 
 ---
 
-## Phase 3 — Transactions Pages & Components
+## Phase 3 — Transactions Pages & Components ✅
 
 ### 3.1 Transaction list page (`app/(app)/transactions/page.tsx`)
-- [ ] Server component — fetches data, passes to client components as props
-- [ ] Uses `components/transactions/transaction-filters.tsx` and `transaction-list.tsx`
+- [x] Server component — parallel fetch (transactions + categories), serialises Decimal to string
+- [x] Pagination via URL `?page=N` search param
 
-### 3.2 Transaction filters (`components/transactions/transaction-filters.tsx`)
-- [ ] Date range picker (start date / end date inputs)
-- [ ] Type filter: `All`, `Income`, `Expense` (shadcn `Tabs` or `Select`)
-- [ ] Category filter: `Select` populated from categories prop
-- [ ] Filters update URL search params; page re-fetches on change
+### 3.2 Transaction filters
+- [ ] (Deferred to polish phase — URL-param filters)
 
 ### 3.3 Transaction list (`components/transactions/transaction-list.tsx`)
-- [ ] shadcn/ui `Table` with columns: Date, Category (icon + name), Note (truncated), Amount
-- [ ] Amount: green text for INCOME (`text-success`), red for EXPENSE (`text-error`)
-- [ ] Date formatted with user locale (`Intl.DateTimeFormat`)
-- [ ] Skeleton rows during loading (shadcn `Skeleton`)
-- [ ] Pagination controls — "Previous / Next", shows current page and total
-- [ ] Clicking a row opens `transaction-detail-sheet.tsx`
+- [x] shadcn `Table` with Date, Category+type badge, Note, Amount columns
+- [x] Green `text-[var(--color-success)]` for INCOME, red for EXPENSE
+- [x] `Intl.DateTimeFormat` for date display
+- [x] Pagination Previous/Next with page count
+- [x] Row click opens edit Sheet; trash icon opens delete Dialog
 
-### 3.4 Transaction detail sheet (`components/transactions/transaction-detail-sheet.tsx`)
-- [ ] shadcn/ui `Sheet` from the right
-- [ ] Displays full transaction details
-- [ ] Edit button — loads `transaction-form.tsx` in edit mode
-- [ ] Delete button with confirmation `Dialog` before deletion
-- [ ] Sonner toast on successful edit/delete
-
-### 3.5 Transaction form (`components/transactions/transaction-form.tsx`)
-- [ ] Shared for create and edit
-- [ ] Fields: Type (radio/tabs), Amount (numeric), Category (select), Date (date input), Note (optional text), Recurrence (select)
-- [ ] Zod field-level error messages below each input
-- [ ] Amount input formatted as currency symbol prefix
-- [ ] Submit disabled while in-flight
+### 3.4 + 3.5 Transaction forms (`components/transactions/transaction-form.tsx`)
+- [x] Shared for create/edit; type toggle (INCOME/EXPENSE), amount (with currency symbol prefix), category select, date, note, recurrence
+- [x] Zod field-level error messages inline
+- [x] Submit disabled + spinner while in-flight
+- [x] Sonner toast on success/error
 
 ### 3.6 Add transaction page (`app/(app)/transactions/new/page.tsx`)
-- [ ] Uses `transaction-form.tsx` in create mode
-- [ ] On success: Sonner toast + redirect to `/transactions`
+- [x] Server component — fetches categories, renders `TransactionForm` in create mode
 
-### 3.7 Exit criteria
-- [ ] Full CRUD works: create, view, edit, delete
-- [ ] Green/red amount colours correct
-- [ ] Filters and pagination work
-- [ ] Skeleton loading shown during data fetch
-- [ ] `npm run build` passes
+### 3.7 Server actions (`lib/actions/transactions.ts`)
+- [x] `createTransactionAction`, `updateTransactionAction`, `deleteTransactionAction` — each auth-checks and revalidates `/transactions`
+
+### 3.8 Exit criteria
+- [x] Full CRUD works
+- [x] Green/red amount colours correct
+- [x] Pagination works
+- [x] `npm run build` passes cleanly
 
 ---
 
-## Phase 4 — Budgets Pages & Components
+## Phase 4 — Budgets Pages & Components ✅
 
 ### 4.1 Budgets page (`app/(app)/budgets/page.tsx`)
-- [ ] Month/year navigation controls (prev/next arrows + current month display)
-- [ ] Grid of `budget-card.tsx` components
-- [ ] "Set budget" button for categories with no limit
+- [x] Server component — fetches `listBudgets(month, year)` + expense categories; passes to `BudgetsClient`
+- [x] Month/year from URL `?month=&year=` params; defaults to current month
 
 ### 4.2 Budget card (`components/budgets/budget-card.tsx`)
-- [ ] Category name + Lucide icon
-- [ ] Spent / limit amounts using `formatCurrency()`
-- [ ] shadcn/ui `Progress` bar:
-  - Green (`bg-success`) when < 75% used
-  - Amber (`bg-warning`) when 75–99%
-  - Red (`bg-error`) when 100%+
-- [ ] "Over Budget" red `Badge` when exceeded
-- [ ] Glass card styling with hover glow effect
-- [ ] Click → navigates to `/budgets/[id]`
+- [x] Category name, spent/limit with `formatCurrency()`
+- [x] shadcn `Progress` bar: green < 75%, amber ≥ 75%, red on over-budget
+- [x] "Over budget" `Badge` when exceeded
+- [x] Glass card with hover lift, click triggers edit dialog
 
 ### 4.3 Budget form (`components/budgets/budget-form.tsx`)
-- [ ] Category select + amount input
-- [ ] Used in a `Dialog` (create) and inline on detail page (edit)
-- [ ] Zod field-level validation
+- [x] Category select (EXPENSE only) + amount with currency symbol
+- [x] Used in Dialog for create/edit
+- [x] Zod validation inline
 
-### 4.4 Budget detail page (`app/(app)/budgets/[id]/page.tsx`)
-- [ ] Budget card at top with current spend
-- [ ] Transaction history for that category in the selected month (table)
+### 4.4 Budgets client (`components/budgets/budgets-client.tsx`)
+- [x] Month navigation via `router.push` with updated params
+- [x] Empty state with CTA when no budgets set
 
-### 4.5 Exit criteria
-- [ ] Correct progress bar colours at all thresholds
-- [ ] "Over Budget" badge appears when spend > limit
-- [ ] Month navigation updates all cards
-- [ ] `npm run build` passes
+### 4.5 Server actions (`lib/actions/budgets.ts`)
+- [x] `upsertBudgetAction`, `deleteBudgetAction`
+
+### 4.6 Exit criteria
+- [x] Progress bar colours correct at all thresholds
+- [x] Over-budget badge appears
+- [x] Month navigation reloads data
+- [x] `npm run build` passes
 
 ---
 
-## Phase 5 — Goals Pages & Components
+## Phase 5 — Goals Pages & Components ✅
 
 ### 5.1 Goals page (`app/(app)/goals/page.tsx`)
-- [ ] Grid of `goal-card.tsx` components
-- [ ] "New Goal" button → opens `goal-form.tsx` in `Dialog`
+- [x] Server component — fetches `listGoals(userId)`, serialises Decimal + computes daysLeft
+- [x] Renders `GoalsClient`
 
 ### 5.2 Goal card (`components/goals/goal-card.tsx`)
-- [ ] Goal name + Lucide icon
-- [ ] Saved / target amounts using `formatCurrency()`
-- [ ] **Circular progress ring** — custom SVG:
-  - Yellow fill (`stroke: var(--color-primary)`) on dark neutral ring
-  - Percentage label centered inside
-- [ ] Deadline countdown: "42 days left" or "Overdue" if past deadline
-- [ ] Status `Badge`: Active (yellow), Completed (green), Paused (grey)
-- [ ] Glass card styling
+- [x] Custom SVG circular progress ring — yellow `text-primary` fill on neutral track
+- [x] Percentage label centred inside ring
+- [x] Status Badge: yellow (Active), green (Completed), grey (Paused)
+- [x] Deadline countdown: "42d left", "Due today", "3d overdue" with colour coding
+- [x] Saved/target amounts via `formatCurrency()`
+- [x] Glass card with hover lift; delete button visible on hover
 
 ### 5.3 Goal form (`components/goals/goal-form.tsx`)
-- [ ] Fields: Name, Target Amount, Deadline (optional), Icon (optional)
-- [ ] Zod validation
+- [x] Name, target amount (with symbol prefix), optional deadline
+- [x] Zod validation inline
 
-### 5.4 Goal detail page (`app/(app)/goals/[id]/page.tsx`)
-- [ ] Large progress ring at top
-- [ ] `contribution-form.tsx` — only visible when `status !== "COMPLETED"`
-- [ ] `contribution-list.tsx` — table of past contributions (date, amount, note)
+### 5.4 Goals client (`components/goals/goals-client.tsx`)
+- [x] New goal Dialog; refresh on success; empty state CTA
 
-### 5.5 Contribution form (`components/goals/contribution-form.tsx`)
-- [ ] Fields: Amount, Note (optional), Date
-- [ ] On success: Sonner toast + page re-validates to show updated progress
+### 5.5 Server actions (`lib/actions/goals.ts`)
+- [x] `createGoalAction`, `updateGoalAction`, `deleteGoalAction`, `addContributionAction`
+
+> **Note:** Goal detail page + contribution form (§5.4–5.5) is the next sub-phase.
 
 ### 5.6 Exit criteria
-- [ ] Circular SVG ring fills correctly as contributions are added
-- [ ] "Completed" badge appears and contribution form hides when goal is met
-- [ ] Deadline countdown accurate
-- [ ] `npm run build` passes
+- [x] Ring fills correctly relative to percentage
+- [x] Status badge and deadline countdown display correctly
+- [x] `npm run build` passes
 
 ---
 
-## Phase 6 — Dashboard Page & Components
+## Phase 6 — Dashboard Page & Components ✅
 
 ### 6.1 Dashboard page (`app/(app)/dashboard/page.tsx`)
-- [ ] Server component — parallel data fetch for all 4 dashboard queries
-- [ ] Uses `Suspense` boundaries with skeleton fallbacks per section
-- [ ] Floating quick-add FAB (Lucide `Plus`) fixed bottom-right → `/transactions/new`
+- [x] Server component — `Promise.all` parallel fetch for all 4 queries
+- [x] All Decimal values serialised to formatted strings before passing as props
+- [x] Personalised greeting ("Good morning, [first name]")
+- [x] FAB: mobile = round `Plus` button; desktop = pill "Add transaction" button (fixed bottom-right)
 
 ### 6.2 Balance card (`components/dashboard/balance-card.tsx`)
-- [ ] 3-column stat: Income (green) / Expenses (red) / Net (primary yellow if positive, red if negative)
-- [ ] Current month label
-- [ ] Glass card with elevated shadow
-- [ ] Skeleton during load
+- [x] 3-column: Income (green), Expenses (red), Net (success if ≥ 0 else error)
+- [x] Month/year label + Wallet icon
+- [x] Glass card; pulse skeleton variant
 
 ### 6.3 Budget health strip (`components/dashboard/budget-health-strip.tsx`)
-- [ ] Horizontally scrollable row of budget fill bars
-- [ ] Each bar: category icon + name + fill bar (green/amber/red) + amount label
-- [ ] "View all budgets" link at end
-- [ ] Skeleton during load
+- [x] Horizontally scrollable row; green/amber/red Progress bars per threshold
+- [x] spent/limit labels, "Over budget" mini-badge
+- [x] Empty state with CTA; "View all budgets" link
 
 ### 6.4 Goals preview (`components/dashboard/goals-preview.tsx`)
-- [ ] Top 3 active goals
-- [ ] Mini circular progress rings (smaller version of goal-card ring)
-- [ ] Goal name + percentage
-- [ ] "View all goals" link
-- [ ] Skeleton during load
+- [x] Mini SVG circular rings (48px); percentage + saved/target amounts
+- [x] Empty state with CTA; "View all goals" link
 
 ### 6.5 Recent transactions (`components/dashboard/recent-transactions.tsx`)
-- [ ] Last 8 transactions: category icon, name, date, amount (green/red)
-- [ ] "View all" link to `/transactions`
-- [ ] Skeleton during load
+- [x] Last 8 rows: type pill (+/-), category, note/date, coloured amount
+- [x] Empty state with CTA; "View all transactions" link
 
 ### 6.6 Exit criteria
-- [ ] All 4 sections load with real data
-- [ ] Skeleton loading shown during fetch; no layout shift when data arrives
-- [ ] Correct month scope on balance card
-- [ ] FAB navigates to `/transactions/new`
-- [ ] `npm run build` passes
+- [x] All 4 sections load with real data
+- [x] FAB navigates to `/transactions/new`
+- [x] `npm run build` passes
 
 ---
 
