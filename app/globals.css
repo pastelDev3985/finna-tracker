@@ -142,11 +142,11 @@
   --primary-hover: color-mix(in srgb, var(--primary) 90%, var(--fin-dark-11));
   --primary-active: color-mix(in srgb, var(--primary) 78%, var(--fin-dark-11));
 
-  /* Glass recipe tokens */
-  --glass-bg: rgb(255 255 255 / 0.08);
-  --glass-border: rgb(255 255 255 / 0.15);
-  --glass-shadow: 0 8px 32px rgb(0 0 0 / 0.15);
-  --glass-blur: 16px;
+  /* Glass recipe tokens — light mode: opaque enough to be visible */
+  --glass-bg: rgb(255 255 255 / 0.72);
+  --glass-border: rgb(0 0 0 / 0.07);
+  --glass-shadow: 0 4px 24px rgb(0 0 0 / 0.07);
+  --glass-blur: 14px;
 
   /* shadcn mappings — Finora */
   --background: var(--bg-main);
@@ -291,8 +291,8 @@
 }
 
 .dark .glass-light {
-  border-color: rgb(255 255 255 / 0.12);
-  background: rgb(255 255 255 / 0.06);
+  border-color: rgb(255 255 255 / 0.08);
+  background: rgb(32 32 32 / 0.55);
 }
 
 /* ─── Scrollbar styling ────────────────────────────────────────────────────── */
