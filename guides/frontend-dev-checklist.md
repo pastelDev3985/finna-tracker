@@ -81,79 +81,79 @@ className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl"
 ## Phase 0 — Design Token Setup
 
 ### 0.1 CSS variables
-- [ ] Full CSS variable set defined in `app/globals.css` — all light mode tokens in `:root`, all dark mode overrides in `.dark`
-- [ ] Yellow scale (`--color-yellow-1` through `--color-yellow-11`) defined
-- [ ] Dark scale (`--color-dark-1` through `--color-dark-11`) defined
-- [ ] Semantic aliases (`--bg-main`, `--bg-card`, `--bg-muted`, `--border-light`, `--text-primary`, `--text-secondary`, `--text-muted`) defined for both modes
-- [ ] Success, error, and warning colors defined
-- [ ] Glassmorphism utility classes added to `globals.css`: `.glass`, `.glass-dark`, `.glass-light`
+- [x] Full CSS variable set defined in `app/globals.css` — all light mode tokens in `:root`, all dark mode overrides in `.dark`
+- [x] Yellow scale (`--color-yellow-1` through `--color-yellow-11`) defined
+- [x] Dark scale (`--color-dark-1` through `--color-dark-11`) defined
+- [x] Semantic aliases (`--bg-main`, `--bg-card`, `--bg-muted`, `--border-light`, `--text-primary`, `--text-secondary`, `--text-muted`) defined for both modes
+- [x] Success, error, and warning colors defined
+- [x] Glassmorphism utility classes added to `globals.css`: `.glass`, `.glass-dark`, `.glass-light`
 
 ### 0.2 Tailwind config
-- [ ] `tailwind.config.ts` dark mode strategy set to `class`
-- [ ] Theme extended with color aliases:
+- [x] `tailwind.config.ts` dark mode strategy set to `class`
+- [x] Theme extended with color aliases:
   - `primary.DEFAULT`, `primary.hover`, `primary.active`
   - `bg-main`, `bg-card`, `bg-muted`
   - `text-primary`, `text-secondary`, `text-muted`
   - `border-light`, `border-medium`
-- [ ] `tailwindcss-animate` plugin added (required by shadcn/ui)
-- [ ] Base interactive defaults in `globals.css`:
+- [x] `tailwindcss-animate` plugin added (required by shadcn/ui) — **this repo:** Tailwind v4 + `tw-animate-css` (shadcn v4); no separate `tailwindcss-animate` package
+- [x] Base interactive defaults in `globals.css`:
   ```css
   * { cursor: default; }
   button, a, [role="button"] { cursor: pointer; transition: all 0.2s ease; }
   ```
 
 ### 0.3 shadcn/ui initialised
-- [ ] `npx shadcn@latest init` run
-- [ ] Base components installed:
-  - [ ] `button`
-  - [ ] `card`
-  - [ ] `input`
-  - [ ] `label`
-  - [ ] `badge`
-  - [ ] `dialog`
-  - [ ] `sheet`
-  - [ ] `table`
-  - [ ] `progress`
-  - [ ] `select`
-  - [ ] `dropdown-menu`
-  - [ ] `avatar`
-  - [ ] `separator`
-  - [ ] `skeleton`
-  - [ ] `tabs`
-  - [ ] `tooltip`
-- [ ] `next-themes` installed for theme persistence
+- [x] `npx shadcn@latest init` run
+- [x] Base components installed:
+  - [x] `button`
+  - [x] `card`
+  - [x] `input`
+  - [x] `label`
+  - [x] `badge`
+  - [x] `dialog`
+  - [x] `sheet`
+  - [x] `table`
+  - [x] `progress`
+  - [x] `select`
+  - [x] `dropdown-menu`
+  - [x] `avatar`
+  - [x] `separator`
+  - [x] `skeleton`
+  - [x] `tabs`
+  - [x] `tooltip`
+- [x] `next-themes` installed for theme persistence
 
 ### 0.4 Exit criteria
-- [ ] `npm run build` passes on clean scaffold
-- [ ] Dark mode toggle works (`.dark` class applied on `<html>`)
-- [ ] CSS variables resolve correctly in both modes (verify in browser dev tools)
+- [x] `npm run build` passes on clean scaffold
+- [x] Dark mode toggle works (`.dark` class applied on `<html>`)
+- [x] CSS variables resolve correctly in both modes (verify in browser dev tools)
 
 ---
 
 ## Phase 1 — Auth Pages
 
 ### 1.1 Login page (`app/(auth)/login/page.tsx`)
-- [ ] `components/auth/login-form.tsx` — glass card form:
-  - [ ] Email input with label
-  - [ ] Password input with show/hide toggle (Lucide `Eye`/`EyeOff`)
-  - [ ] Primary yellow submit button
-  - [ ] Link to `/register`
-  - [ ] Zod field-level error messages displayed inline
-  - [ ] Submit button disabled while in-flight
-  - [ ] Sonner toast on success (then redirect) and on error
-- [ ] Centered layout — full viewport height, vertical + horizontal centering
-- [ ] Finora logo/wordmark at top
+- [x] `components/auth/login-form.tsx` — glass card form:
+  - [x] Email input with label
+  - [x] Password input with show/hide toggle (Lucide `Eye`/`EyeOff`)
+  - [x] Primary yellow submit button
+  - [x] Link to `/register`
+  - [x] Zod field-level error messages displayed inline
+  - [x] Submit button disabled while in-flight
+  - [x] Sonner toast on success (then redirect) and on error
+- [x] Centered layout — full viewport height, vertical + horizontal centering
+- [x] Finora logo/wordmark at top
 
 ### 1.2 Register page (`app/(auth)/register/page.tsx`)
-- [ ] Same glass card pattern as login
-- [ ] Fields: `name`, `email`, `password`, `confirmPassword`
-- [ ] Password confirmation validated client-side before submit
-- [ ] Link back to `/login`
+- [x] Same glass card pattern as login
+- [x] Fields: `name`, `email`, `password`, `confirmPassword`
+- [x] Password confirmation validated client-side before submit
+- [x] Link back to `/login`
 
 ### 1.3 Exit criteria
-- [ ] Login and register forms render correctly in light and dark mode
-- [ ] Field errors appear inline (not just a toast)
-- [ ] Submit button shows a loading state while waiting
+- [x] Login and register forms render correctly in light and dark mode
+- [x] Field errors appear inline (not just a toast)
+- [x] Submit button shows a loading state while waiting
 
 ---
 
