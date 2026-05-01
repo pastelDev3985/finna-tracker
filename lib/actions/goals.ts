@@ -9,8 +9,9 @@ export async function createGoalAction(data: unknown) {
   if (!session?.user?.id) return { error: "Not authenticated" }
 
   const result = await createGoal(session.user.id, data)
-  if (!result.error) revalidatePath("/goals")
-  return result
+  if (result.error) return { error: result.error }
+  revalidatePath("/goals")
+  return {}
 }
 
 export async function updateGoalAction(id: string, data: unknown) {
@@ -18,8 +19,9 @@ export async function updateGoalAction(id: string, data: unknown) {
   if (!session?.user?.id) return { error: "Not authenticated" }
 
   const result = await updateGoal(session.user.id, id, data)
-  if (!result.error) revalidatePath("/goals")
-  return result
+  if (result.error) return { error: result.error }
+  revalidatePath("/goals")
+  return {}
 }
 
 export async function deleteGoalAction(id: string) {
@@ -27,8 +29,9 @@ export async function deleteGoalAction(id: string) {
   if (!session?.user?.id) return { error: "Not authenticated" }
 
   const result = await deleteGoal(session.user.id, id)
-  if (!result.error) revalidatePath("/goals")
-  return result
+  if (result.error) return { error: result.error }
+  revalidatePath("/goals")
+  return {}
 }
 
 export async function addContributionAction(goalId: string, data: unknown) {
@@ -36,6 +39,7 @@ export async function addContributionAction(goalId: string, data: unknown) {
   if (!session?.user?.id) return { error: "Not authenticated" }
 
   const result = await addContribution(session.user.id, goalId, data)
-  if (!result.error) revalidatePath(`/goals/${goalId}`)
-  return result
+  if (result.error) return { error: result.error }
+  revalidatePath("/goals")
+  return {}
 }

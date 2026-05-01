@@ -101,7 +101,7 @@ export function GoalsPreview({ goals }: GoalsPreviewProps) {
         {goals.map((goal) => (
           <Link
             key={goal.id}
-            href={`/goals/${goal.id}`}
+            href="/goals"
             className="group flex cursor-pointer items-center gap-4 rounded-xl border border-border bg-muted/30 p-3 transition-all duration-200 hover:-translate-y-0.5 hover:border-primary/30 hover:bg-muted"
           >
             <CircleRing percentage={goal.percentage} />

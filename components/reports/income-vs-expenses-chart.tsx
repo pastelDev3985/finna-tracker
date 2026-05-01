@@ -11,15 +11,13 @@ import {
   ResponsiveContainer,
 } from "recharts"
 import { getCurrencySymbol } from "@/lib/currency"
-import type { Decimal } from "@/lib/generated/prisma/internal/prismaNamespace"
-
 interface DataItem {
   month: number
   year: number
   income: string
-  incomeRaw: Decimal
+  incomeRaw: number
   expenses: string
-  expensesRaw: Decimal
+  expensesRaw: number
 }
 
 interface Props {

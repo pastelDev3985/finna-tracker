@@ -43,7 +43,7 @@ export default async function ReportsPage({ searchParams }: Props) {
     categoryName: item.categoryName,
     color: item.color,
     total: formatCurrency(item.total, currency),
-    totalRaw: item.total,
+    totalRaw: item.total.toNumber(),
   }));
 
   // Format trend data
@@ -51,16 +51,16 @@ export default async function ReportsPage({ searchParams }: Props) {
     month: item.month,
     year: item.year,
     income: formatCurrency(item.income, currency),
-    incomeRaw: item.income,
+    incomeRaw: item.income.toNumber(),
     expenses: formatCurrency(item.expenses, currency),
-    expensesRaw: item.expenses,
+    expensesRaw: item.expenses.toNumber(),
   }));
 
   // Format daily spend data
   const dailySpend = (dailySpendResult.data ?? []).map((item) => ({
     date: item.date,
     total: formatCurrency(item.total, currency),
-    totalRaw: item.total,
+    totalRaw: item.total.toNumber(),
   }));
 
   // Format category breakdown data
@@ -70,7 +70,7 @@ export default async function ReportsPage({ searchParams }: Props) {
       categoryName: item.categoryName,
       color: item.color,
       total: formatCurrency(item.total, currency),
-      totalRaw: item.total,
+      totalRaw: item.total.toNumber(),
       percentage: item.percentage,
     }),
   );

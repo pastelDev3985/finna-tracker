@@ -13,8 +13,9 @@ export async function createTransactionAction(data: unknown) {
   if (!session?.user?.id) return { error: "Not authenticated" }
 
   const result = await createTransaction(session.user.id, data)
-  if (!result.error) revalidatePath("/transactions")
-  return result
+  if (result.error) return { error: result.error }
+  revalidatePath("/transactions")
+  return {}
 }
 
 export async function updateTransactionAction(id: string, data: unknown) {
@@ -22,8 +23,9 @@ export async function updateTransactionAction(id: string, data: unknown) {
   if (!session?.user?.id) return { error: "Not authenticated" }
 
   const result = await updateTransaction(session.user.id, id, data)
-  if (!result.error) revalidatePath("/transactions")
-  return result
+  if (result.error) return { error: result.error }
+  revalidatePath("/transactions")
+  return {}
 }
 
 export async function deleteTransactionAction(id: string) {
@@ -31,6 +33,7 @@ export async function deleteTransactionAction(id: string) {
   if (!session?.user?.id) return { error: "Not authenticated" }
 
   const result = await deleteTransaction(session.user.id, id)
-  if (!result.error) revalidatePath("/transactions")
-  return result
+  if (result.error) return { error: result.error }
+  revalidatePath("/transactions")
+  return {}
 }

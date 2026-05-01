@@ -11,14 +11,12 @@ import {
   Cell,
 } from "recharts"
 import { getCurrencySymbol } from "@/lib/currency"
-import type { Decimal } from "@/lib/generated/prisma/internal/prismaNamespace"
-
 interface DataItem {
   categoryId: string
   categoryName: string
   color: string | null
   total: string
-  totalRaw: Decimal
+  totalRaw: number
 }
 
 interface Props {

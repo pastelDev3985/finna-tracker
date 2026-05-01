@@ -2,12 +2,10 @@
 
 import { useState } from "react"
 import { getCurrencySymbol } from "@/lib/currency"
-import type { Decimal } from "@/lib/generated/prisma/internal/prismaNamespace"
-
 interface DataItem {
   date: string
   total: string
-  totalRaw: Decimal
+  totalRaw: number
 }
 
 interface Props {
@@ -89,7 +87,7 @@ export function DailySpendHeatmap({ data, month, year, currency }: Props) {
                 <div key={dayIndex}>
                   {day ? (
                     <div
-                      className="aspect-square flex items-center justify-center rounded-lg text-xs font-medium cursor-pointer transition-all duration-200 hover:ring-2 hover:ring-primary"
+                      className="relative aspect-square flex items-center justify-center rounded-lg text-xs font-medium cursor-pointer transition-all duration-200 hover:ring-2 hover:ring-primary"
                       style={{ backgroundColor: bgColor }}
                       onMouseEnter={() => setHoveredDay(dateStr)}
                       onMouseLeave={() => setHoveredDay(null)}

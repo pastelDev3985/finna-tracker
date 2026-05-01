@@ -26,9 +26,11 @@ export default async function BudgetsPage({ searchParams }: Props) {
 
   const budgets = (budgetsResult.data ?? []).map((b) => ({
     id: b.id,
+    categoryId: b.categoryId,
     categoryName: b.category.name,
     spentAmount: formatCurrency(b.spentAmount, currency),
     limitAmount: formatCurrency(b.limitAmount, currency),
+    limitAmountRaw: b.limitAmount.toNumber().toFixed(2),
     percentUsed: b.percentUsed,
     isOverBudget: b.isOverBudget,
   }))

@@ -80,22 +80,22 @@ export function SettingsCategories({
         const result = await updateCategoryAction(editingId, data);
         if (result.error) {
           toast.error(result.error);
-        } else {
-          toast.success("Category updated");
-          setCategories((prev) =>
-            prev.map((c) => (c.id === editingId ? { ...c, ...data } : c)),
-          );
-          setEditingId(null);
+          return;
         }
+        toast.success("Category updated");
+        setCategories((prev) =>
+          prev.map((c) => (c.id === editingId ? { ...c, ...data } : c)),
+        );
+        setEditingId(null);
       } else {
         const result = await createCategoryAction(data);
         if (result.error) {
           toast.error(result.error);
-        } else {
-          toast.success("Category created");
-          if (result.data) {
-            setCategories((prev) => [...prev, result.data as Category]);
-          }
+          return;
+        }
+        toast.success("Category created");
+        if (result.data) {
+          setCategories((prev) => [...prev, result.data as Category]);
         }
       }
       reset();

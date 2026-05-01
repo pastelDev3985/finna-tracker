@@ -9,8 +9,9 @@ export async function upsertBudgetAction(data: unknown) {
   if (!session?.user?.id) return { error: "Not authenticated" }
 
   const result = await upsertBudget(session.user.id, data)
-  if (!result.error) revalidatePath("/budgets")
-  return result
+  if (result.error) return { error: result.error }
+  revalidatePath("/budgets")
+  return {}
 }
 
 export async function deleteBudgetAction(id: string) {
@@ -18,6 +19,7 @@ export async function deleteBudgetAction(id: string) {
   if (!session?.user?.id) return { error: "Not authenticated" }
 
   const result = await deleteBudget(session.user.id, id)
-  if (!result.error) revalidatePath("/budgets")
-  return result
+  if (result.error) return { error: result.error }
+  revalidatePath("/budgets")
+  return {}
 }

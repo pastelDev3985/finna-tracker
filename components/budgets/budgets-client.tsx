@@ -43,7 +43,7 @@ export function BudgetsClient({
 }: BudgetsClientProps) {
   const [showForm, setShowForm] = useState(false)
   const [editBudget, setEditBudget] = useState<BudgetCardData | null>(null)
-  const [isPending] = useTransition()
+  const [isPending, startTransition] = useTransition()
   const router = useRouter()
 
   function navigate(delta: number) {
@@ -51,7 +51,9 @@ export function BudgetsClient({
     let y = year
     if (m < 1) { m = 12; y -= 1 }
     if (m > 12) { m = 1; y += 1 }
-    router.push(`/budgets?month=${m}&year=${y}`)
+    startTransition(() => {
+      router.push(`/budgets?month=${m}&year=${y}`)
+    })
   }
 
   return (
@@ -142,7 +144,7 @@ export function BudgetsClient({
             year={year}
             defaultValues={
               editBudget
-                ? { categoryId: editBudget.id, limitAmount: editBudget.limitAmount }
+                ? { categoryId: editBudget.categoryId, limitAmount: editBudget.limitAmountRaw }
                 : undefined
             }
             onSuccess={() => {

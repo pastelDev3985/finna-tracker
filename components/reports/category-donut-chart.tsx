@@ -1,19 +1,20 @@
 "use client"
 
 import { PieChart, Pie, Cell, Legend, Tooltip, ResponsiveContainer } from "recharts"
-import type { Decimal } from "@/lib/generated/prisma/internal/prismaNamespace"
+import { getCurrencySymbol } from "@/lib/currency"
 
 interface DataItem {
   categoryId: string
   categoryName: string
   color: string | null
   total: string
-  totalRaw: Decimal
+  totalRaw: number
   percentage: number
 }
 
 interface Props {
   data: DataItem[]
+  currency: string
 }
 
 const COLORS = [
@@ -27,7 +28,8 @@ const COLORS = [
   "#6366f1",
 ]
 
-export function CategoryDonutChart({ data }: Props) {
+export function CategoryDonutChart({ data, currency }: Props) {
+  const currencySymbol = getCurrencySymbol(currency)
   const totalSpend = data.reduce((sum, item) => sum + Number(item.totalRaw), 0)
 
   const chartData = data.map((item, index) => ({
@@ -45,11 +47,11 @@ export function CategoryDonutChart({ data }: Props) {
   }) => {
     if (active && payload && payload.length) {
       const value = payload[0].value
-      const percentage = ((value / totalSpend) * 100).toFixed(1)
+      const percentage = totalSpend > 0 ? ((value / totalSpend) * 100).toFixed(1) : "0.0"
       return (
         <div className="bg-secondary/90 backdrop-blur-md border border-white/20 rounded-lg p-3 shadow-lg">
           <p className="text-sm font-medium text-white">{payload[0].name}</p>
-          <p className="text-xs text-text-muted">₵{value.toFixed(2)}</p>
+          <p className="text-xs text-text-muted">{currencySymbol}{value.toFixed(2)}</p>
           <p className="text-xs text-text-muted">{percentage}%</p>
         </div>
       )
@@ -80,8 +82,8 @@ export function CategoryDonutChart({ data }: Props) {
           height={36}
           wrapperStyle={{ paddingTop: "20px" }}
           formatter={(value, props) => {
-            const entry = props.payload as any
-            const percentage = ((entry.value / totalSpend) * 100).toFixed(1)
+            const entry = props.payload as { value: number }
+            const percentage = totalSpend > 0 ? ((entry.value / totalSpend) * 100).toFixed(1) : "0.0"
             return `${value} (${percentage}%)`
           }}
         />

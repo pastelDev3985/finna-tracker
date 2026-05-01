@@ -1,4 +1,3 @@
-import { redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
 import { getCurrencySymbol } from "@/lib/currency"
 import { listCategories } from "@/lib/services/categories"
@@ -30,7 +29,6 @@ export default async function NewTransactionPage() {
           categories={categories}
           currencySymbol={currencySymbol}
           mode="create"
-          onSuccess={() => redirect("/transactions")}
         />
       </div>
     </div>

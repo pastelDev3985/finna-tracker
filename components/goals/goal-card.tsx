@@ -1,7 +1,6 @@
 "use client"
 
 import { Trash2 } from "lucide-react"
-import Link from "next/link"
 import { useTransition } from "react"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
@@ -88,7 +87,7 @@ export function GoalCard({ goal }: GoalCardProps) {
   const [isPending, startTransition] = useTransition()
 
   function handleDelete(e: React.MouseEvent) {
-    e.preventDefault()
+    e.stopPropagation()
     if (!confirm("Delete this goal? All contributions will be removed.")) return
     startTransition(async () => {
       const result = await deleteGoalAction(goal.id)
@@ -104,9 +103,8 @@ export function GoalCard({ goal }: GoalCardProps) {
   const badge = STATUS_BADGE[goal.status]
 
   return (
-    <Link
-      href={`/goals/${goal.id}`}
-      className="glass group relative flex cursor-pointer flex-col gap-4 rounded-2xl p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
+    <div
+      className="glass group relative flex flex-col gap-4 rounded-2xl p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
     >
       {/* Status + delete */}
       <div className="flex items-center justify-between gap-2">
@@ -154,6 +152,6 @@ export function GoalCard({ goal }: GoalCardProps) {
           )}
         </div>
       </div>
-    </Link>
+    </div>
   )
 }

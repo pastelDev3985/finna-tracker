@@ -2,6 +2,7 @@
 
 import { Loader2 } from "lucide-react"
 import { useState, useTransition } from "react"
+import { useRouter } from "next/navigation"
 import { toast } from "sonner"
 import { z } from "zod"
 import { Button } from "@/components/ui/button"
@@ -68,6 +69,7 @@ export function TransactionForm({
   defaultValues,
   onSuccess,
 }: TransactionFormProps) {
+  const router = useRouter()
   const [isPending, startTransition] = useTransition()
 
   const [type, setType] = useState<"INCOME" | "EXPENSE">(defaultValues?.type ?? "EXPENSE")
@@ -106,7 +108,11 @@ export function TransactionForm({
       }
 
       toast.success(mode === "edit" ? "Transaction updated." : "Transaction added.")
-      onSuccess?.()
+      if (onSuccess) {
+        onSuccess()
+      } else if (mode === "create") {
+        router.push("/transactions")
+      }
     })
   }
 

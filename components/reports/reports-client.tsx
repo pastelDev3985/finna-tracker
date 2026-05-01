@@ -1,6 +1,6 @@
 "use client";
 
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
@@ -8,29 +8,27 @@ import { SpendByCategoryChart } from "./spend-by-category-chart";
 import { IncomeVsExpensesChart } from "./income-vs-expenses-chart";
 import { DailySpendHeatmap } from "./daily-spend-heatmap";
 import { CategoryDonutChart } from "./category-donut-chart";
-import type { Decimal } from "@/lib/generated/prisma/internal/prismaNamespace";
-
 interface CategorySpendItem {
   categoryId: string;
   categoryName: string;
   color: string | null;
   total: string;
-  totalRaw: Decimal;
+  totalRaw: number;
 }
 
 interface TrendItem {
   month: number;
   year: number;
   income: string;
-  incomeRaw: Decimal;
+  incomeRaw: number;
   expenses: string;
-  expensesRaw: Decimal;
+  expensesRaw: number;
 }
 
 interface DailySpendItem {
   date: string;
   total: string;
-  totalRaw: Decimal;
+  totalRaw: number;
 }
 
 interface CategoryBreakdownItem {
@@ -38,7 +36,7 @@ interface CategoryBreakdownItem {
   categoryName: string;
   color: string | null;
   total: string;
-  totalRaw: Decimal;
+  totalRaw: number;
   percentage: number;
 }
 
@@ -62,7 +60,6 @@ export function ReportsClient({
   currency,
 }: Props) {
   const router = useRouter();
-  const searchParams = useSearchParams();
 
   const handlePreviousMonth = () => {
     let newMonth = month - 1;
@@ -166,7 +163,7 @@ export function ReportsClient({
         <div className="rounded-2xl backdrop-blur-lg bg-white/10 dark:bg-[rgba(32,32,32,0.6)] border border-white/15 dark:border-white/8 p-6 shadow-[0_8px_32px_rgba(0,0,0,0.15)]">
           <h3 className="text-lg font-semibold mb-4">Category Breakdown</h3>
           {categoryBreakdown.length > 0 ? (
-            <CategoryDonutChart data={categoryBreakdown} />
+            <CategoryDonutChart data={categoryBreakdown} currency={currency} />
           ) : (
             <div className="h-64 flex items-center justify-center text-text-muted">
               No expense categories this period

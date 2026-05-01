@@ -4,9 +4,11 @@ import { cn } from "@/lib/utils"
 
 export interface BudgetCardData {
   id: string
+  categoryId: string
   categoryName: string
   spentAmount: string
   limitAmount: string
+  limitAmountRaw: string
   percentUsed: number
   isOverBudget: boolean
 }
