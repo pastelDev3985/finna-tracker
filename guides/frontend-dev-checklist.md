@@ -479,52 +479,52 @@ while (true) {
 > **All server actions are fully built.** Import from `lib/actions/settings.ts`: `updateProfileAction`, `changePasswordAction`, `updateCurrencyAction`, `deleteAccountAction`. Import category actions from `lib/actions/categories.ts` (already exists from Phase 3). All return `{ data } | { error: string }`.
 
 ### 9.1 Settings page (`app/(app)/settings/page.tsx`)
-- [ ] Tabbed or sectioned layout with these sections:
+- [x] Tabbed or sectioned layout with these sections:
 
 **Profile**
-- [ ] Name and email fields pre-populated from session
-- [ ] Calls `updateProfileAction({ name, email })` on save
-- [ ] Inline field errors + Sonner toast on success/failure
-- [ ] If email changes: note to user that their inbox may need re-verification (informational only — no forced re-verification currently)
+- [x] Name and email fields pre-populated from session
+- [x] Calls `updateProfileAction({ name, email })` on save
+- [x] Inline field errors + Sonner toast on success/failure
+- [x] If email changes: note to user that their inbox may need re-verification (informational only — no forced re-verification currently)
 
 **Password**
-- [ ] Current password + new password + confirm new password inputs — all with show/hide toggles
-- [ ] Calls `changePasswordAction({ currentPassword, newPassword, confirmPassword })`
-- [ ] Inline field errors (wrong current password shows on that field) + Sonner toast
-- [ ] Clears all fields on success
+- [x] Current password + new password + confirm new password inputs — all with show/hide toggles
+- [x] Calls `changePasswordAction({ currentPassword, newPassword, confirmPassword })`
+- [x] Inline field errors (wrong current password shows on that field) + Sonner toast
+- [x] Clears all fields on success
 
 **Currency**
-- [ ] Searchable `Select` (shadcn/ui `Combobox` pattern) populated from `SUPPORTED_CURRENCIES` (`lib/currency.ts`)
-- [ ] Calls `updateCurrencyAction({ currency })` on change
-- [ ] Current currency pre-selected from session
-- [ ] On success: revalidation fires automatically (server action calls `revalidatePath` for all data pages)
+- [x] Searchable `Select` (shadcn/ui `Combobox` pattern) populated from `SUPPORTED_CURRENCIES` (`lib/currency.ts`)
+- [x] Calls `updateCurrencyAction({ currency })` on change
+- [x] Current currency pre-selected from session
+- [x] On success: revalidation fires automatically (server action calls `revalidatePath` for all data pages)
 
 **Appearance**
-- [ ] Dark/light mode toggle (mirrors sidebar toggle)
-- [ ] Lucide `Sun`/`Moon` icons — no text labels
+- [x] Dark/light mode toggle (mirrors sidebar toggle)
+- [x] Lucide `Sun`/`Moon` icons — no text labels
 
 **Categories**
-- [ ] List of user's categories with type badge (Income / Expense)
-- [ ] Inline rename with edit icon — calls `updateCategoryAction`
-- [ ] Delete icon — shows `Dialog` confirmation; calls `deleteCategoryAction`; blocked if transactions exist (shows inline error from server action)
-- [ ] "Add Category" form — calls `createCategoryAction`
+- [x] List of user's categories with type badge (Income / Expense)
+- [x] Inline rename with edit icon — calls `updateCategoryAction`
+- [x] Delete icon — shows `Dialog` confirmation; calls `deleteCategoryAction`; blocked if transactions exist (shows inline error from server action)
+- [x] "Add Category" form — calls `createCategoryAction`
 
 **Danger Zone**
-- [ ] Delete account section with red warning styling
-- [ ] Requires password confirmation in a shadcn `Dialog`
-- [ ] Calls `deleteAccountAction({ password })`
-- [ ] On success: calls `signOut()` from `next-auth/react` → redirects to `/login`
+- [x] Delete account section with red warning styling
+- [x] Requires password confirmation in a shadcn `Dialog`
+- [x] Calls `deleteAccountAction({ password })`
+- [x] On success: calls `signOut()` from `next-auth/react` → redirects to `/login`
 
 ### 9.2 Theme system verification
-- [ ] `next-themes` `ThemeProvider` wraps the app in `app/layout.tsx`
-- [ ] No flash of unstyled content on page load (`suppressHydrationWarning` on `<html>`)
-- [ ] Dark mode verified across: sidebar, all cards, forms, charts, dialogs, sheets, badges, inputs
+- [x] `next-themes` `ThemeProvider` wraps the app in `app/layout.tsx`
+- [x] No flash of unstyled content on page load (`suppressHydrationWarning` on `<html>`)
+- [x] Dark mode verified across: sidebar, all cards, forms, charts, dialogs, sheets, badges, inputs
 
 ### 9.3 Exit criteria
-- [ ] Currency change re-renders all monetary values with correct symbol
-- [ ] Dark/light toggle in settings and sidebar both update the same theme state
-- [ ] Category delete blocked with clear error if transactions exist
-- [ ] Account deletion redirects to `/login`
+- [x] Currency change re-renders all monetary values with correct symbol
+- [x] Dark/light toggle in settings and sidebar both update the same theme state
+- [x] Category delete blocked with clear error if transactions exist
+- [x] Account deletion redirects to `/login`
 
 ---
 
