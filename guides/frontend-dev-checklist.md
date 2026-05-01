@@ -377,41 +377,41 @@ className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl"
 ## Phase 7 — Reports Page & Charts
 
 ### 7.1 Reports page (`app/(app)/reports/page.tsx`)
-- [ ] Month/year picker at top
-- [ ] 4 chart sections in a 2×2 grid (stacked on mobile)
-- [ ] All charts use theme-aware colors via CSS variables
-- [ ] All charts wrapped in `ResponsiveContainer` from Recharts
+- [x] Month/year picker at top
+- [x] 4 chart sections in a 2×2 grid (stacked on mobile)
+- [x] All charts use theme-aware colors via CSS variables
+- [x] All charts wrapped in `ResponsiveContainer` from Recharts
 
 ### 7.2 Spend by category chart (`components/reports/spend-by-category-chart.tsx`)
-- [ ] Recharts `BarChart` — horizontal bars
-- [ ] Category names on Y axis, spend amounts on X axis
-- [ ] Bar fill: `var(--color-primary)` with 80% opacity
-- [ ] Custom `Tooltip` using glass styling
+- [x] Recharts `BarChart` — horizontal bars
+- [x] Category names on Y axis, spend amounts on X axis
+- [x] Bar fill: `var(--color-primary)` with 80% opacity
+- [x] Custom `Tooltip` using glass styling
 
 ### 7.3 Income vs Expenses trend (`components/reports/income-vs-expenses-chart.tsx`)
-- [ ] Recharts `LineChart` — last 6 months
-- [ ] Income line: green; Expenses line: red
-- [ ] X axis: month labels; Y axis: currency amounts
-- [ ] Legend below chart
+- [x] Recharts `LineChart` — last 6 months
+- [x] Income line: green; Expenses line: red
+- [x] X axis: month labels; Y axis: currency amounts
+- [x] Legend below chart
 
 ### 7.4 Daily spend heatmap (`components/reports/daily-spend-heatmap.tsx`)
-- [ ] Calendar-style grid for the current month
-- [ ] Each day cell: background intensity = spend amount (low → `--color-yellow-2`, high → `--color-yellow-6`)
-- [ ] Tooltip on hover showing day + amount
-- [ ] Days with no spend: neutral `--bg-muted`
+- [x] Calendar-style grid for the current month
+- [x] Each day cell: background intensity = spend amount (low → `--color-yellow-2`, high → `--color-yellow-6`)
+- [x] Tooltip on hover showing day + amount
+- [x] Days with no spend: neutral `--bg-muted`
 
 ### 7.5 Category donut chart (`components/reports/category-donut-chart.tsx`)
-- [ ] Recharts `PieChart` in donut mode (`innerRadius`)
-- [ ] Each slice: category color or a sequential palette from `--color-yellow-*` scale
-- [ ] Centered label: total spend for the month
-- [ ] Legend with category names + amounts
+- [x] Recharts `PieChart` in donut mode (`innerRadius`)
+- [x] Each slice: category color or a sequential palette from `--color-yellow-*` scale
+- [x] Centered label: total spend for the month
+- [x] Legend with category names + amounts
 
 ### 7.6 Exit criteria
-- [ ] All 4 charts render with real data
-- [ ] Charts recolour correctly in dark mode
-- [ ] Month picker updates all charts
-- [ ] No horizontal overflow on mobile
-- [ ] `npm run build` passes
+- [x] All 4 charts render with real data
+- [x] Charts recolour correctly in dark mode
+- [x] Month picker updates all charts
+- [x] No horizontal overflow on mobile
+- [x] `npm run build` passes
 
 ---
 
@@ -441,36 +441,36 @@ while (true) {
 ```
 
 ### 8.1 Insights page (`app/(app)/insights/page.tsx`)
-- [ ] Full-height layout — sidebar + chat area fills viewport
-- [ ] Shows `insights-chat.tsx` and `prompt-chips.tsx`
-- [ ] No server-side data fetch needed — context is built inside the API route on each POST
+- [x] Full-height layout — sidebar + chat area fills viewport
+- [x] Shows `insights-chat.tsx` and `prompt-chips.tsx`
+- [x] No server-side data fetch needed — context is built inside the API route on each POST
 
 ### 8.2 Chat interface (`components/insights/insights-chat.tsx`)
-- [ ] Client Component (`"use client"`) — manages message state and stream reading
-- [ ] Scrollable message list — user messages right-aligned, AI messages left-aligned
-- [ ] User message bubble: `bg-primary text-secondary` (yellow on dark)
-- [ ] AI message bubble: glass card styling
-- [ ] Streaming response: reads `text/event-stream`, parses `data: <json>` lines, appends `JSON.parse(payload)` to the current AI message in real time
-- [ ] Animated "thinking" indicator while waiting for first token (pulsing dots)
-- [ ] Input field pinned to bottom with send button (`Send` Lucide icon)
-- [ ] Input clears and send disabled while response is streaming
-- [ ] Error state if stream fails (`res.ok === false`) — Sonner toast + retry option
+- [x] Client Component (`"use client"`) — manages message state and stream reading
+- [x] Scrollable message list — user messages right-aligned, AI messages left-aligned
+- [x] User message bubble: `bg-primary text-secondary` (yellow on dark)
+- [x] AI message bubble: glass card styling
+- [x] Streaming response: reads `text/event-stream`, parses `data: <json>` lines, appends `JSON.parse(payload)` to the current AI message in real time
+- [x] Animated "thinking" indicator while waiting for first token (pulsing dots)
+- [x] Input field pinned to bottom with send button (`Send` Lucide icon)
+- [x] Input clears and send disabled while response is streaming
+- [x] Error state if stream fails (`res.ok === false`) — Sonner toast + retry option
 
 ### 8.3 Prompt chips (`components/insights/prompt-chips.tsx`)
-- [ ] 4 preset chips visible on first load (before any message is sent):
+- [x] 4 preset chips visible on first load (before any message is sent):
   - "Analyse my spending this month"
   - "Where am I overspending?"
   - "Am I on track with my savings goals?"
   - "Predict my expenses for next month"
-- [ ] Clicking a chip populates the input and auto-sends
-- [ ] Chips hidden once first message is sent
+- [x] Clicking a chip populates the input and auto-sends
+- [x] Chips hidden once first message is sent
 
 ### 8.4 Exit criteria
-- [ ] Streaming renders progressively (visible word-by-word)
-- [ ] Preset chips auto-send correctly
-- [ ] `GEMINI_API_KEY` is not visible in network tab response or browser JS bundle
-- [ ] Error state renders cleanly
-- [ ] `npm run build` passes
+- [x] Streaming renders progressively (visible word-by-word)
+- [x] Preset chips auto-send correctly
+- [x] `GEMINI_API_KEY` is not visible in network tab response or browser JS bundle
+- [x] Error state renders cleanly
+- [x] `npm run build` passes
 
 ---
 
