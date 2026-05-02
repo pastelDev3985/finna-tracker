@@ -4,7 +4,6 @@ import { useEffect, useState } from "react"
 import { useTheme } from "next-themes"
 import { Sun, Moon } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
 
 export function SettingsAppearance() {
   const { theme, setTheme } = useTheme()
@@ -12,11 +11,11 @@ export function SettingsAppearance() {
   useEffect(() => setMounted(true), [])
 
   return (
-    <Card className="backdrop-blur-[16px] bg-white/[0.08] dark:bg-[rgba(32,32,32,0.6)] border border-white/[0.15] p-6">
+    <div className="glass p-4 sm:p-6">
       <div className="space-y-6">
         <div>
           <h3 className="text-sm font-medium mb-3">Theme</h3>
-          <p className="text-xs text-muted mb-4">
+          <p className="mb-4 text-sm text-muted-foreground">
             Choose between light and dark mode.
           </p>
         </div>
@@ -27,8 +26,8 @@ export function SettingsAppearance() {
             variant={theme === "light" ? "default" : "outline"}
             className={`flex items-center justify-center gap-2 ${
               theme === "light"
-                ? "bg-primary text-secondary"
-                : "border-white/20"
+                ? "bg-primary text-primary-foreground"
+                : "border-border"
             }`}
           >
             <Sun className="w-4 h-4" />
@@ -39,8 +38,8 @@ export function SettingsAppearance() {
             variant={theme === "dark" ? "default" : "outline"}
             className={`flex items-center justify-center gap-2 ${
               theme === "dark"
-                ? "bg-primary text-secondary"
-                : "border-white/20"
+                ? "bg-primary text-primary-foreground"
+                : "border-border"
             }`}
           >
             <Moon className="w-4 h-4" />
@@ -49,11 +48,11 @@ export function SettingsAppearance() {
         </div>
 
         {mounted && (
-          <div className="text-xs text-muted p-3 bg-bg-muted rounded-lg">
+          <div className="rounded-lg bg-muted/70 p-3 text-sm text-foreground/90">
             Current theme: <strong>{theme === "dark" ? "Dark" : "Light"}</strong>
           </div>
         )}
       </div>
-    </Card>
+    </div>
   )
 }

@@ -1,6 +1,7 @@
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
+import { budgetProgressIndicatorClass } from "@/lib/budget-progress"
 
 export interface BudgetCardData {
   id: string
@@ -19,11 +20,10 @@ interface BudgetCardProps {
 }
 
 export function BudgetCard({ budget, onEdit }: BudgetCardProps) {
-  const progressColor = budget.isOverBudget
-    ? "[&>div]:bg-[var(--color-error)]"
-    : budget.percentUsed >= 75
-      ? "[&>div]:bg-[var(--color-warning)]"
-      : "[&>div]:bg-[var(--color-success)]"
+  const progressColor = budgetProgressIndicatorClass(
+    budget.percentUsed,
+    budget.isOverBudget,
+  )
 
   return (
     <button
@@ -44,7 +44,7 @@ export function BudgetCard({ budget, onEdit }: BudgetCardProps) {
 
       <Progress
         value={Math.min(budget.percentUsed, 100)}
-        className={cn("h-2 rounded-full mb-3", progressColor)}
+        className={cn("mb-3 w-full", progressColor)}
       />
 
       <div className="flex items-center justify-between gap-2 text-sm">

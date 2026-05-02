@@ -58,8 +58,8 @@ export function OnboardingClient({
     incomeCategories.length > 0 ? incomeCategories[0] : null;
 
   return (
-    <div className="flex min-h-full flex-1 flex-col items-center justify-center bg-background px-4 py-16">
-      <div className="glass-light w-full max-w-lg rounded-2xl border border-border-light p-8">
+    <div className="flex min-h-full flex-1 flex-col items-center justify-center bg-background px-4 py-8 sm:py-16">
+      <div className="glass-light w-full max-w-lg rounded-2xl border border-border-light p-5 sm:p-8">
         {step === 1 ? (
           <Step1 userName={userName} onNext={() => setStep(2)} />
         ) : step === 2 ? (
@@ -78,13 +78,13 @@ export function OnboardingClient({
 
 function Step1({ userName, onNext }: { userName: string; onNext: () => void }) {
   return (
-    <div className="flex flex-col gap-6 text-center">
+    <div className="flex flex-col gap-5 text-center">
       <div className="flex flex-col items-center gap-3">
         {/* <div className="flex size-14 items-center justify-center rounded-2xl bg-primary/10">
           <Sparkles className="size-7 text-primary" aria-hidden />
         </div> */}
         <div>
-          <h1 className="font-heading text-2xl font-bold text-foreground">
+          <h1 className="font-heading text-xl font-bold text-foreground sm:text-2xl">
             Welcome, {userName}!
           </h1>
           <p className="mt-2 text-sm text-muted-foreground">

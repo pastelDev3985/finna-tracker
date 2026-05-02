@@ -6,9 +6,14 @@ import { listCategories } from "@/lib/services/categories"
 import { listTransactions } from "@/lib/services/transactions"
 import { PageHeader } from "@/components/shared/page-header"
 import { TransactionList } from "@/components/transactions/transaction-list"
+import { TransactionSortBar } from "@/components/transactions/transaction-sort-bar"
+import {
+  parseTransactionSort,
+  transactionsListHref,
+} from "@/lib/transactions-sort"
 
 interface Props {
-  searchParams: Promise<{ page?: string }>
+  searchParams: Promise<{ page?: string; sort?: string }>
 }
 
 export default async function TransactionsPage({ searchParams }: Props) {
@@ -17,11 +22,12 @@ export default async function TransactionsPage({ searchParams }: Props) {
   const currency = session!.user.currency ?? "GHS"
   const currencySymbol = getCurrencySymbol(currency)
 
-  const { page: pageStr } = await searchParams
+  const { page: pageStr, sort: sortRaw } = await searchParams
   const page = Math.max(1, parseInt(pageStr ?? "1", 10))
+  const sort = parseTransactionSort(sortRaw)
 
   const [txResult, catResult] = await Promise.all([
-    listTransactions(userId, { page, limit: 25 }),
+    listTransactions(userId, { page, limit: 25, sort }),
     listCategories(userId),
   ])
 
@@ -53,20 +59,22 @@ export default async function TransactionsPage({ searchParams }: Props) {
   const totalPages = paginated?.totalPages ?? 1
 
   return (
-    <div className="flex flex-col gap-6 p-6 lg:p-8">
+    <div className="flex flex-col gap-4 p-4 sm:gap-6 sm:p-6 lg:p-8">
       <PageHeader
         title="Transactions"
         description={`${total} transaction${total !== 1 ? "s" : ""} recorded`}
         action={
           <Link
             href="/transactions/new"
-            className="inline-flex h-8 cursor-pointer items-center gap-1.5 rounded-lg bg-primary px-2.5 text-sm font-semibold text-primary-foreground transition-all duration-200 hover:-translate-y-px hover:bg-primary-hover"
+            className="inline-flex h-9 cursor-pointer items-center gap-1.5 rounded-xl bg-primary px-3 text-sm font-semibold text-primary-foreground transition-all duration-150 hover:-translate-y-px hover:bg-primary-hover active:translate-y-0 active:bg-primary-active active:scale-[0.97] sm:rounded-lg"
           >
             <Plus className="size-4" aria-hidden />
-            Add
+            <span>Add</span>
           </Link>
         }
       />
+
+      <TransactionSortBar currentSort={sort} />
 
       <TransactionList
         transactions={rows}
@@ -83,16 +91,16 @@ export default async function TransactionsPage({ searchParams }: Props) {
           <div className="flex gap-2">
             {page > 1 && (
               <Link
-                href={`/transactions?page=${page - 1}`}
-                className="cursor-pointer rounded-lg border border-border px-3 py-1.5 text-sm transition-all duration-200 hover:bg-muted hover:text-foreground"
+                href={transactionsListHref(page - 1, sort)}
+                className="cursor-pointer rounded-lg border border-border px-3 py-1.5 text-sm transition-all duration-150 hover:bg-muted hover:text-foreground active:bg-muted/80 active:scale-[0.98]"
               >
                 Previous
               </Link>
             )}
             {page < totalPages && (
               <Link
-                href={`/transactions?page=${page + 1}`}
-                className="cursor-pointer rounded-lg border border-border px-3 py-1.5 text-sm transition-all duration-200 hover:bg-muted hover:text-foreground"
+                href={transactionsListHref(page + 1, sort)}
+                className="cursor-pointer rounded-lg border border-border px-3 py-1.5 text-sm transition-all duration-150 hover:bg-muted hover:text-foreground active:bg-muted/80 active:scale-[0.98]"
               >
                 Next
               </Link>

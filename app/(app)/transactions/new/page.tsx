@@ -18,13 +18,13 @@ export default async function NewTransactionPage() {
   }))
 
   return (
-    <div className="mx-auto max-w-lg p-6 lg:p-8">
+    <div className="mx-auto max-w-lg p-4 sm:p-6 lg:p-8">
       <PageHeader
         title="Add transaction"
         description="Record an income or expense entry."
-        className="mb-6"
+        className="mb-4 sm:mb-6"
       />
-      <div className="glass rounded-2xl p-6">
+      <div className="glass rounded-2xl p-4 sm:p-6">
         <TransactionForm
           categories={categories}
           currencySymbol={currencySymbol}

@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { PageHeader } from "@/components/shared/page-header";
+import { SettingsSection } from "@/components/settings/settings-section";
 import { SettingsProfile } from "@/components/settings/settings-profile";
 import { SettingsPassword } from "@/components/settings/settings-password";
 import { SettingsCurrency } from "@/components/settings/settings-currency";
@@ -9,6 +9,7 @@ import { SettingsAppearance } from "@/components/settings/settings-appearance";
 import { SettingsCategories } from "@/components/settings/settings-categories";
 import { SettingsDangerZone } from "@/components/settings/settings-danger-zone";
 import { listCategories } from "@/lib/services/categories";
+import { Separator } from "@/components/ui/separator";
 import type { CategoryData } from "@/types";
 
 export default async function SettingsPage() {
@@ -19,52 +20,71 @@ export default async function SettingsPage() {
   const categories = (categoriesResult.data ?? []) as CategoryData[];
 
   return (
-    <div className="flex flex-col gap-6 p-6 lg:p-8">
+    <div className="flex flex-col gap-8 p-4 sm:gap-12 sm:p-6 lg:p-8">
       <PageHeader
         title="Settings"
-        description="Manage your profile, currency, and preferences."
+        description="Manage your profile, currency, and preferences — scroll to each section below."
       />
 
-      <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 border-b bg-transparent mb-4">
-          <TabsTrigger value="profile">Profile</TabsTrigger>
-          <TabsTrigger value="password">Password</TabsTrigger>
-          <TabsTrigger value="currency">Currency</TabsTrigger>
-          <TabsTrigger value="appearance">Appearance</TabsTrigger>
-          <TabsTrigger value="categories">Categories</TabsTrigger>
-          <TabsTrigger value="danger">Danger</TabsTrigger>
-        </TabsList>
-
-        {/* Profile Tab */}
-        <TabsContent value="profile" className="mt-6">
+      <div className="flex flex-col gap-10 sm:gap-14">
+        <SettingsSection
+          id="profile"
+          title="Profile"
+          description="Your display name and email used for your account."
+        >
           <SettingsProfile user={session.user} />
-        </TabsContent>
+        </SettingsSection>
 
-        {/* Password Tab */}
-        <TabsContent value="password" className="mt-6">
+        <Separator />
+
+        <SettingsSection
+          id="password"
+          title="Password"
+          description="Change your password. Use a strong, unique password you do not reuse elsewhere."
+        >
           <SettingsPassword />
-        </TabsContent>
+        </SettingsSection>
 
-        {/* Currency Tab */}
-        <TabsContent value="currency" className="mt-6">
+        <Separator />
+
+        <SettingsSection
+          id="currency"
+          title="Currency"
+          description="How amounts are formatted across the app. Stored values are not converted when you switch."
+        >
           <SettingsCurrency defaultCurrency={session.user.currency ?? "GHS"} />
-        </TabsContent>
+        </SettingsSection>
 
-        {/* Appearance Tab */}
-        <TabsContent value="appearance" className="mt-6">
+        <Separator />
+
+        <SettingsSection
+          id="appearance"
+          title="Appearance"
+          description="Choose light or dark mode for the interface."
+        >
           <SettingsAppearance />
-        </TabsContent>
+        </SettingsSection>
 
-        {/* Categories Tab */}
-        <TabsContent value="categories" className="mt-6">
+        <Separator />
+
+        <SettingsSection
+          id="categories"
+          title="Categories"
+          description="Customise income and expense categories. Deleting a category may be blocked if transactions still use it."
+        >
           <SettingsCategories initialCategories={categories} />
-        </TabsContent>
+        </SettingsSection>
 
-        {/* Danger Zone Tab */}
-        <TabsContent value="danger" className="mt-6">
+        <Separator />
+
+        <SettingsSection
+          id="danger"
+          title="Danger zone"
+          description="Irreversible actions. Proceed only if you intend to remove your account and data."
+        >
           <SettingsDangerZone />
-        </TabsContent>
-      </Tabs>
+        </SettingsSection>
+      </div>
     </div>
   );
 }

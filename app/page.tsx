@@ -8,10 +8,13 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { GlassEffect } from "@/components/shared/glass-effect";
+import { cn } from "@/lib/utils";
 
 export default function Home() {
   return (
     <div className="relative flex min-h-full flex-1 flex-col overflow-hidden bg-background">
+      <GlassEffect />
       {/* ── Decorative background orbs ── */}
       {/*
         These give the glass elements something to blur against.
@@ -32,31 +35,26 @@ export default function Home() {
       {/* ── Page content ── */}
       <div className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
         {/* ── Navbar ── */}
-        <header className="glass mb-12 flex flex-row items-center justify-between gap-4 rounded-2xl px-4 py-3 sm:px-5">
-          <div className="flex items-center gap-3">
-            <div className="flex size-9 items-center justify-center rounded-xl border border-border bg-primary/10 font-heading text-lg font-bold text-primary shadow-sm">
+        <header className="glass mb-10 flex flex-row items-center justify-between gap-3 rounded-2xl px-4 py-3 sm:mb-12 sm:px-5">
+          <div className="flex items-center gap-2.5">
+            <div className="flex size-8 shrink-0 items-center justify-center rounded-xl border border-border bg-primary/10 font-heading text-base font-bold text-primary shadow-sm sm:size-9 sm:text-lg">
               F
             </div>
-            <div>
-              <p className="font-heading text-base font-semibold tracking-tight text-foreground">
-                Finora
-              </p>
-              <p className="text-xs text-muted-foreground">
-                AI-powered personal finance
-              </p>
-            </div>
+            <p className="font-heading text-base font-semibold tracking-tight text-foreground">
+              Finora
+            </p>
           </div>
-          <nav className="flex flex-wrap items-center gap-2 sm:gap-3">
+          <nav className="flex items-center gap-2">
             <ThemeToggle />
             <Link
               href="/login"
-              className="inline-flex h-9 cursor-pointer items-center justify-center rounded-lg border border-border bg-transparent px-4 text-sm font-medium text-foreground transition-all duration-200 hover:-translate-y-px hover:bg-muted"
+              className="inline-flex h-8 cursor-pointer items-center justify-center rounded-lg border border-border bg-transparent px-3 text-sm font-medium text-foreground transition-all duration-150 hover:bg-muted active:bg-muted/80 active:scale-[0.97] sm:h-9 sm:px-4"
             >
               Sign in
             </Link>
             <Link
               href="/register"
-              className="inline-flex h-9 cursor-pointer items-center justify-center rounded-lg bg-primary px-4 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-200 hover:-translate-y-px hover:bg-primary-hover active:bg-primary-active"
+              className="inline-flex h-8 cursor-pointer items-center justify-center rounded-lg bg-primary px-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-150 hover:bg-primary-hover active:bg-primary-active active:scale-[0.97] sm:h-9 sm:px-4"
             >
               Get started
             </Link>
@@ -71,7 +69,7 @@ export default function Home() {
             <span>Money no go control you again</span>
           </div>
 
-          <h1 className="font-heading text-4xl font-bold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
+          <h1 className="font-heading text-[2.25rem] font-bold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
             See your money in{" "}
             <span className="relative inline-block">
               <span className="relative z-10 bg-linear-to-r from-foreground to-primary bg-clip-text text-transparent">
@@ -92,10 +90,10 @@ export default function Home() {
             better money moves every day.
           </p>
 
-          <div className="flex flex-row items-center justify-center gap-3 sm:flex-col">
+          <div className="flex w-full flex-col items-center justify-center gap-3 px-2 sm:flex-row sm:px-0">
             <Link
               href="/register"
-              className="group inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-8 text-sm font-semibold text-primary-foreground transition-all duration-200 hover:-translate-y-px hover:bg-primary-hover active:bg-primary-active"
+              className="group inline-flex h-12 w-full cursor-pointer items-center justify-center gap-2 rounded-xl bg-primary px-8 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-150 hover:-translate-y-px hover:bg-primary-hover active:translate-y-0 active:bg-primary-active active:scale-[0.97] sm:w-auto sm:rounded-lg"
             >
               Create free account
               <ArrowRight
@@ -105,7 +103,7 @@ export default function Home() {
             </Link>
             <Link
               href="/login"
-              className="glass inline-flex h-12 cursor-pointer items-center justify-center rounded-lg px-6 text-sm font-medium text-foreground transition-all duration-200 hover:-translate-y-px hover:shadow-md"
+              className="glass inline-flex h-12 w-full cursor-pointer items-center justify-center rounded-xl px-6 text-sm font-medium text-foreground transition-all duration-150 hover:-translate-y-px hover:shadow-md active:translate-y-0 active:scale-[0.97] active:bg-muted/40 sm:w-auto sm:rounded-lg"
             >
               I already have access
             </Link>
@@ -127,20 +125,22 @@ export default function Home() {
         </div>
 
         {/* ── Stats strip ── */}
-        <div className="mx-auto mt-16 grid max-w-2xl grid-cols-3 gap-4">
+        <div className="mx-auto mt-12 grid max-w-2xl grid-cols-3 gap-2 sm:mt-16 sm:gap-4">
           {[
             { stat: "15+", label: "Default categories" },
-            { stat: "AI-first", label: "Powered by Claude" },
+            { stat: "AI-first", label: "Powered by Gemini" },
             { stat: "100%", label: "Private — your data" },
           ].map(({ stat, label }) => (
             <div
               key={label}
-              className="glass flex flex-col items-center gap-1 rounded-2xl py-5 text-center"
+              className="glass flex flex-col items-center gap-1 rounded-2xl py-4 text-center sm:py-5"
             >
-              <span className="font-heading text-xl font-bold text-primary">
+              <span className="font-heading text-lg font-bold text-primary sm:text-xl">
                 {stat}
               </span>
-              <span className="text-xs text-muted-foreground">{label}</span>
+              <span className="text-[10px] leading-tight text-muted-foreground sm:text-xs">
+                {label}
+              </span>
             </div>
           ))}
         </div>
@@ -182,18 +182,18 @@ export default function Home() {
               },
               {
                 icon: BrainCircuit,
-                title: "AI insights (Claude)",
-                body: "Ask your finances anything. Get real answers about your spending, goals, and money habits powered by Claude.",
+                title: "AI insights (Gemini)",
+                body: "Ask your finances anything. Get real answers about your spending, goals, and money habits powered by Gemini.",
                 highlight: true,
               },
             ].map(({ icon: Icon, title, body, highlight }) => (
               <div
                 key={title}
-                className={`glass-light relative overflow-hidden rounded-2xl border p-5 transition-all duration-200 hover:-translate-y-1 hover:shadow-lg ${
-                  highlight
-                    ? "border-primary/30 hover:border-primary/50"
-                    : "border-border hover:border-primary/20"
-                }`}
+                className={cn(
+                  "glass-light relative rounded-2xl p-5 transition-all duration-200 hover:-translate-y-1",
+                  highlight &&
+                    "ring-1 ring-inset ring-primary/45 hover:ring-primary/60",
+                )}
               >
                 {highlight && (
                   <div
@@ -233,7 +233,7 @@ export default function Home() {
 
         {/* ── AI teaser panel ── */}
         <section className="mt-16 lg:mt-20" aria-label="AI insights preview">
-          <div className="glass relative overflow-hidden rounded-2xl p-8 sm:p-10">
+          <div className="glass relative overflow-hidden rounded-2xl p-5 sm:p-8 lg:p-10">
             {/* Background glow inside panel */}
             <div
               className="pointer-events-none absolute -top-12 -left-12 h-64 w-64 rounded-full bg-primary/15 blur-[60px]"
@@ -249,7 +249,7 @@ export default function Home() {
                     AI Finance Assistant
                   </span>
                 </div>
-                <blockquote className="font-heading text-lg font-semibold leading-snug text-foreground sm:text-xl">
+                <blockquote className="font-heading text-base font-semibold leading-snug text-foreground sm:text-xl">
                   &ldquo;You spent 34% more on food this month compared to last.
                   Want me to show you where to cut back?&rdquo;
                 </blockquote>
@@ -262,7 +262,7 @@ export default function Home() {
               <div className="shrink-0">
                 <Link
                   href="/register"
-                  className="group inline-flex h-11 cursor-pointer items-center gap-2 rounded-lg bg-primary px-6 text-sm font-semibold text-primary-foreground transition-all duration-200 hover:-translate-y-px hover:bg-primary-hover"
+                  className="group inline-flex h-11 cursor-pointer items-center gap-2 rounded-lg bg-primary px-6 text-sm font-semibold text-primary-foreground transition-all duration-150 hover:-translate-y-px hover:bg-primary-hover active:translate-y-0 active:bg-primary-active active:scale-[0.97]"
                 >
                   Try it free
                   <ArrowRight
@@ -277,7 +277,7 @@ export default function Home() {
       </div>
 
       {/* ── Footer ── */}
-      <footer className="relative z-10 mt-16 border-t border-border">
+      <footer className="relative z-10 mt-12 border-t border-border sm:mt-16">
         <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
             {/* Brand */}
@@ -305,13 +305,13 @@ export default function Home() {
             >
               <Link
                 href="/login"
-                className="cursor-pointer font-medium text-muted-foreground transition-colors duration-200 hover:text-foreground"
+                className="cursor-pointer font-medium text-muted-foreground transition-all duration-150 hover:text-foreground active:scale-[0.98] active:opacity-80"
               >
                 Sign in
               </Link>
               <Link
                 href="/register"
-                className="cursor-pointer font-medium text-primary transition-colors duration-200 hover:text-primary-hover"
+                className="cursor-pointer font-medium text-primary transition-all duration-150 hover:text-primary-hover active:scale-[0.98] active:opacity-80"
               >
                 Register →
               </Link>

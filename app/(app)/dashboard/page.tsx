@@ -78,7 +78,7 @@ export default async function DashboardPage() {
   }));
 
   return (
-    <div className="flex flex-col gap-6 p-6 pb-24 lg:p-8 lg:pb-8">
+    <div className="flex flex-col gap-4 p-4 sm:gap-6 sm:p-6 lg:p-8">
       <PageHeader
         title={`Good ${greeting()}, ${session?.user?.name?.split(" ")[0] ?? "there"}`}
         description="Here's your financial snapshot for this month."
@@ -93,19 +93,19 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* Budget & Goals grid - responsive across all screens */}
-      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2">
+      {/* Budget & Goals grid */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6">
         <BudgetHealthStrip budgets={budgetItems} />
         <GoalsPreview goals={goalItems} />
       </div>
 
       <RecentTransactions transactions={txItems} />
 
-      {/* Floating quick-add FAB */}
+      {/* Mobile FAB — sits above the bottom nav (bottom-[4.5rem] = 16+4 spacing) */}
       <Link
         href="/transactions/new"
         aria-label="Add transaction"
-        className="fixed bottom-6 right-6 flex size-14 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground shadow-xl transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-2xl active:translate-y-0 lg:hidden"
+        className="fixed bottom-[4.5rem] right-4 flex size-14 cursor-pointer items-center justify-center rounded-full bg-primary text-primary-foreground shadow-xl transition-all duration-150 hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-2xl active:translate-y-0 active:scale-95 active:bg-primary-active md:hidden"
       >
         <Plus className="size-6" aria-hidden />
       </Link>
@@ -114,7 +114,7 @@ export default async function DashboardPage() {
       <Link
         href="/transactions/new"
         aria-label="Add transaction"
-        className="fixed bottom-8 right-8 hidden cursor-pointer items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-xl transition-all duration-200 hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-2xl lg:flex"
+        className="fixed bottom-8 right-8 hidden cursor-pointer items-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-semibold text-primary-foreground shadow-xl transition-all duration-150 hover:-translate-y-0.5 hover:bg-primary-hover hover:shadow-2xl active:translate-y-0 active:scale-[0.97] active:bg-primary-active md:flex"
       >
         <Plus className="size-4" aria-hidden />
         Add transaction

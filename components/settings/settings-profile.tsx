@@ -8,7 +8,6 @@ import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
 import { updateProfileAction } from "@/lib/actions/settings";
 
 const ProfileSchema = z.object({
@@ -59,7 +58,7 @@ export function SettingsProfile({ user }: SettingsProfileProps) {
   };
 
   return (
-    <Card className="backdrop-blur-[16px] bg-white/[0.08] dark:bg-[rgba(32,32,32,0.6)] border border-white/[0.15] p-6">
+    <div className="glass p-4 sm:p-6">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
           <div>
@@ -93,7 +92,7 @@ export function SettingsProfile({ user }: SettingsProfileProps) {
             {errors.email && (
               <p className="text-xs text-error mt-1">{errors.email.message}</p>
             )}
-            <p className="text-xs text-muted mt-1">
+            <p className="mt-1 text-xs text-muted-foreground">
               Changing your email may require re-verification.
             </p>
           </div>
@@ -102,11 +101,11 @@ export function SettingsProfile({ user }: SettingsProfileProps) {
         <Button
           type="submit"
           disabled={isLoading}
-          className="bg-primary text-secondary font-semibold rounded-lg hover:-translate-y-px transition-all duration-200"
+          className="rounded-lg bg-primary font-semibold text-primary-foreground transition-all duration-200 hover:-translate-y-px"
         >
           {isLoading ? "Saving..." : "Save Changes"}
         </Button>
       </form>
-    </Card>
+    </div>
   );
 }

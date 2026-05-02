@@ -9,7 +9,6 @@ import { Trash2, Plus, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -140,19 +139,19 @@ export function SettingsCategories({
   const expenseCategories = categories.filter((c) => c.type === "EXPENSE");
 
   return (
-    <Card className="backdrop-blur-[16px] bg-white/[0.08] dark:bg-[rgba(32,32,32,0.6)] border border-white/[0.15] p-6">
+    <div className="glass p-4 sm:p-6">
       <div className="space-y-6">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-sm font-medium">Manage Categories</h3>
-            <p className="text-xs text-muted mt-1">
+            <p className="mt-1 text-xs text-muted-foreground">
               Add, rename, or remove expense and income categories.
             </p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger
               render={
-                <Button className="bg-primary text-secondary font-semibold rounded-lg hover:-translate-y-px transition-all duration-200 gap-2" />
+                <Button className="gap-2 rounded-lg bg-primary font-semibold text-primary-foreground transition-all duration-200 hover:-translate-y-px" />
               }
             >
               <Plus className="w-4 h-4" />
@@ -210,7 +209,7 @@ export function SettingsCategories({
                 <Button
                   type="submit"
                   disabled={isLoading}
-                  className="w-full bg-primary text-secondary font-semibold rounded-lg hover:-translate-y-px transition-all duration-200 disabled:opacity-50"
+                  className="w-full rounded-lg bg-primary font-semibold text-primary-foreground transition-all duration-200 hover:-translate-y-px disabled:opacity-50"
                 >
                   {isLoading
                     ? "Creating..."
@@ -227,7 +226,7 @@ export function SettingsCategories({
           <div className="space-y-6">
             {incomeCategories.length > 0 && (
               <div>
-                <h4 className="text-xs font-semibold text-muted uppercase mb-3">
+                <h4 className="mb-3 text-xs font-semibold uppercase text-muted-foreground">
                   Income
                 </h4>
                 <div className="space-y-2">
@@ -249,7 +248,7 @@ export function SettingsCategories({
                         <button
                           type="button"
                           onClick={() => handleEdit(category)}
-                          className="p-2 text-muted hover:text-primary transition-colors cursor-pointer"
+                          className="cursor-pointer p-2 text-muted-foreground transition-colors hover:text-primary"
                           aria-label={`Edit ${category.name}`}
                         >
                           <Pencil className="w-4 h-4" aria-hidden />
@@ -257,7 +256,7 @@ export function SettingsCategories({
                         <button
                           type="button"
                           onClick={() => setDeletingCategory(category)}
-                          className="p-2 text-muted hover:text-error transition-colors cursor-pointer"
+                          className="cursor-pointer p-2 text-muted-foreground transition-colors hover:text-error"
                           aria-label={`Delete ${category.name}`}
                         >
                           <Trash2 className="w-4 h-4" aria-hidden />
@@ -271,7 +270,7 @@ export function SettingsCategories({
 
             {expenseCategories.length > 0 && (
               <div>
-                <h4 className="text-xs font-semibold text-muted uppercase mb-3">
+                <h4 className="mb-3 text-xs font-semibold uppercase text-muted-foreground">
                   Expenses
                 </h4>
                 <div className="space-y-2">
@@ -293,7 +292,7 @@ export function SettingsCategories({
                         <button
                           type="button"
                           onClick={() => handleEdit(category)}
-                          className="p-2 text-muted hover:text-primary transition-colors cursor-pointer"
+                          className="cursor-pointer p-2 text-muted-foreground transition-colors hover:text-primary"
                           aria-label={`Edit ${category.name}`}
                         >
                           <Pencil className="w-4 h-4" aria-hidden />
@@ -301,7 +300,7 @@ export function SettingsCategories({
                         <button
                           type="button"
                           onClick={() => setDeletingCategory(category)}
-                          className="p-2 text-muted hover:text-error transition-colors cursor-pointer"
+                          className="cursor-pointer p-2 text-muted-foreground transition-colors hover:text-error"
                           aria-label={`Delete ${category.name}`}
                         >
                           <Trash2 className="w-4 h-4" aria-hidden />
@@ -314,7 +313,9 @@ export function SettingsCategories({
             )}
           </div>
         ) : (
-          <p className="text-sm text-muted py-4">No categories found.</p>
+          <p className="py-4 text-sm text-muted-foreground">
+            No categories found.
+          </p>
         )}
       </div>
 
@@ -353,6 +354,6 @@ export function SettingsCategories({
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </Card>
+    </div>
   );
 }

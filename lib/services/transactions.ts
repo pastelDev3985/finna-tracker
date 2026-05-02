@@ -35,6 +35,10 @@ const TransactionFiltersSchema = z.object({
   categoryId: z.string().optional(),
   page: z.coerce.number().int().min(1).optional().default(1),
   limit: z.coerce.number().int().min(1).max(100).optional().default(25),
+  sort: z
+    .enum(["date_desc", "date_asc", "category_asc", "category_desc"])
+    .optional()
+    .default("date_desc"),
 })
 
 // ─── Service functions ────────────────────────────────────────────────────────
@@ -48,8 +52,26 @@ export async function listTransactions(
     return { error: "Invalid filter parameters" }
   }
 
-  const { startDate, endDate, type, categoryId, page, limit } = parsed.data
+  const { startDate, endDate, type, categoryId, page, limit, sort } =
+    parsed.data
   const skip = (page - 1) * limit
+
+  const orderBy =
+    sort === "date_asc"
+      ? ([{ date: "asc" as const }, { id: "asc" as const }] as const)
+      : sort === "category_asc"
+        ? ([
+            { category: { name: "asc" as const } },
+            { date: "desc" as const },
+            { id: "desc" as const },
+          ] as const)
+        : sort === "category_desc"
+          ? ([
+              { category: { name: "desc" as const } },
+              { date: "desc" as const },
+              { id: "desc" as const },
+            ] as const)
+          : ([{ date: "desc" as const }, { id: "desc" as const }] as const)
 
   const where = {
     userId,
@@ -70,7 +92,7 @@ export async function listTransactions(
       prisma.transaction.findMany({
         where,
         include: { category: true },
-        orderBy: { date: "desc" },
+        orderBy: [...orderBy],
         skip,
         take: limit,
       }),

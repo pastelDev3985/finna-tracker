@@ -9,7 +9,6 @@ import { Eye, EyeOff } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
 import { changePasswordAction } from "@/lib/actions/settings";
 
 const PasswordSchema = z
@@ -79,7 +78,7 @@ const PasswordInput = ({
           })
         }
         aria-label={showPasswords[showKey] ? "Hide password" : "Show password"}
-        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
+        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground transition-colors hover:text-primary"
       >
         {showPasswords[showKey] ? (
           <EyeOff className="w-4 h-4" aria-hidden />
@@ -128,7 +127,7 @@ export function SettingsPassword() {
   };
 
   return (
-    <Card className="backdrop-blur-[16px] bg-white/[0.08] dark:bg-[rgba(32,32,32,0.6)] border border-white/[0.15] p-6">
+    <div className="glass p-4 sm:p-6">
       <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
         <div className="space-y-4">
           <PasswordInput
@@ -169,11 +168,11 @@ export function SettingsPassword() {
         <Button
           type="submit"
           disabled={isLoading}
-          className="bg-primary text-secondary font-semibold rounded-lg hover:-translate-y-px transition-all duration-200"
+          className="rounded-lg bg-primary font-semibold text-primary-foreground transition-all duration-200 hover:-translate-y-px"
         >
           {isLoading ? "Updating..." : "Update Password"}
         </Button>
       </form>
-    </Card>
+    </div>
   );
 }

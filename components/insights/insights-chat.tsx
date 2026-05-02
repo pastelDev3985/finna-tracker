@@ -128,11 +128,11 @@ export function InsightsChat() {
   }
 
   return (
-    <div className="flex flex-col gap-4 overflow-hidden rounded-2xl backdrop-blur-lg bg-white/10 dark:bg-[rgba(32,32,32,0.6)] border border-white/15 dark:border-white/8 h-full">
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto p-6 space-y-4">
+    <div className="glass flex flex-col h-full">
+      {/* Messages area */}
+      <div className="flex-1 overflow-y-auto space-y-3 p-3 sm:space-y-4 sm:p-5">
         {messages.length === 0 && showChips ? (
-          <div className="flex flex-col items-center justify-center h-full gap-4">
+          <div className="flex h-full flex-col items-center justify-center gap-4 py-4">
             <PromptChips onChipClick={handleSendMessage} />
           </div>
         ) : (
@@ -145,16 +145,16 @@ export function InsightsChat() {
                 }`}
               >
                 <div
-                  className={`max-w-[70%] rounded-2xl px-4 py-3 ${
+                  className={`max-w-[85%] rounded-2xl px-3 py-2.5 sm:max-w-[70%] sm:px-4 sm:py-3 ${
                     message.role === "user"
-                      ? "bg-primary text-secondary font-medium"
-                      : "backdrop-blur-lg bg-white/10 dark:bg-[rgba(32,32,32,0.6)] border border-white/15 dark:border-white/8 text-foreground"
+                      ? "bg-primary text-primary-foreground font-medium"
+                      : "glass text-foreground"
                   }`}
                 >
-                  <p className="text-sm whitespace-pre-wrap break-words">
+                  <p className="text-sm leading-relaxed whitespace-pre-wrap break-words">
                     {message.content}
                     {message.isStreaming && (
-                      <span className="inline-block ml-1 animate-pulse">▌</span>
+                      <span className="ml-1 inline-block animate-pulse">▌</span>
                     )}
                   </p>
                 </div>
@@ -163,16 +163,16 @@ export function InsightsChat() {
             {isLoading &&
               messages[messages.length - 1]?.role === "assistant" && (
                 <div className="flex justify-start">
-                  <div className="backdrop-blur-lg bg-white/10 dark:bg-[rgba(32,32,32,0.6)] border border-white/15 dark:border-white/8 rounded-2xl px-4 py-3">
-                    <div className="flex gap-1">
-                      <div className="w-2 h-2 bg-primary rounded-full animate-bounce" />
+                  <div className="glass px-4 py-3">
+                    <div className="flex gap-1.5">
+                      <div className="h-2 w-2 animate-bounce rounded-full bg-primary" />
                       <div
-                        className="w-2 h-2 bg-primary rounded-full animate-bounce"
-                        style={{ animationDelay: "0.1s" }}
+                        className="h-2 w-2 animate-bounce rounded-full bg-primary"
+                        style={{ animationDelay: "0.15s" }}
                       />
                       <div
-                        className="w-2 h-2 bg-primary rounded-full animate-bounce"
-                        style={{ animationDelay: "0.2s" }}
+                        className="h-2 w-2 animate-bounce rounded-full bg-primary"
+                        style={{ animationDelay: "0.3s" }}
                       />
                     </div>
                   </div>
@@ -183,9 +183,15 @@ export function InsightsChat() {
         )}
       </div>
 
-      {/* Input */}
-      <div className="border-t border-white/15 dark:border-white/8 p-4">
-        <div className="flex gap-2">
+      {/* Input bar */}
+      <div className="shrink-0 border-t border-border/50 p-3 sm:p-4">
+        <form
+          className="flex gap-2"
+          onSubmit={(e) => {
+            e.preventDefault();
+            handleSendMessage(input);
+          }}
+        >
           <Input
             value={input}
             onChange={(e) => setInput(e.target.value)}
@@ -195,23 +201,26 @@ export function InsightsChat() {
                 handleSendMessage(input);
               }
             }}
-            placeholder="Ask about your finances..."
+            placeholder="Ask about your finances…"
             disabled={isLoading}
-            className="flex-1 border-white/20 dark:border-white/10"
+            className="flex-1 text-base"
+            autoComplete="off"
+            inputMode="text"
           />
           <Button
-            onClick={() => handleSendMessage(input)}
+            type="submit"
             disabled={isLoading || !input.trim()}
             size="icon"
-            className="cursor-pointer"
+            className="h-10 w-10 shrink-0 cursor-pointer"
+            aria-label="Send message"
           >
             {isLoading ? (
-              <Loader2 className="w-4 h-4 animate-spin" />
+              <Loader2 className="h-4 w-4 animate-spin" aria-hidden />
             ) : (
-              <Send className="w-4 h-4" />
+              <Send className="h-4 w-4" aria-hidden />
             )}
           </Button>
-        </div>
+        </form>
       </div>
     </div>
   );

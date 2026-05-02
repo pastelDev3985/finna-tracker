@@ -2,6 +2,7 @@ import { ArrowRight, Wallet } from "lucide-react"
 import Link from "next/link"
 import { Progress } from "@/components/ui/progress"
 import { cn } from "@/lib/utils"
+import { budgetProgressIndicatorClass } from "@/lib/budget-progress"
 
 interface BudgetStripItem {
   id: string
@@ -19,7 +20,7 @@ interface BudgetHealthStripProps {
 export function BudgetHealthStrip({ budgets }: BudgetHealthStripProps) {
   if (budgets.length === 0) {
     return (
-      <div className="glass rounded-2xl p-6">
+      <div className="glass rounded-2xl p-4 sm:p-6">
         <SectionHeader />
         <div className="mt-4 flex flex-col items-center gap-3 rounded-xl border border-dashed border-border py-8 text-center">
           <Wallet className="size-8 text-muted-foreground" aria-hidden />
@@ -41,7 +42,7 @@ export function BudgetHealthStrip({ budgets }: BudgetHealthStripProps) {
   }
 
   return (
-    <div className="glass rounded-2xl p-6">
+    <div className="glass rounded-2xl p-4 sm:p-6">
       <SectionHeader />
       <div className="mt-4 flex gap-3 overflow-x-auto pb-1 scrollbar-thin">
         {budgets.map((b) => (
@@ -56,12 +57,8 @@ export function BudgetHealthStrip({ budgets }: BudgetHealthStripProps) {
             <Progress
               value={Math.min(b.percentUsed, 100)}
               className={cn(
-                "h-1.5 rounded-full",
-                b.isOverBudget
-                  ? "[&>div]:bg-[var(--color-error)]"
-                  : b.percentUsed >= 75
-                    ? "[&>div]:bg-[var(--color-warning)]"
-                    : "[&>div]:bg-[var(--color-success)]"
+                "w-full",
+                budgetProgressIndicatorClass(b.percentUsed, b.isOverBudget),
               )}
             />
             <div className="mt-2 flex items-center justify-between gap-1">

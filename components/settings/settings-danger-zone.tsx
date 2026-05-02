@@ -10,7 +10,6 @@ import { Eye, EyeOff, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Card } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -58,7 +57,7 @@ export function SettingsDangerZone() {
   };
 
   return (
-    <Card className="backdrop-blur-[16px] bg-white/[0.08] dark:bg-[rgba(32,32,32,0.6)] border border-error/30 p-6">
+    <div className="glass border-error/30 p-4 sm:p-6">
       <div className="space-y-6">
         <div>
           <h3 className="text-sm font-medium text-error flex items-center gap-2">
@@ -91,7 +90,7 @@ export function SettingsDangerZone() {
                 <p className="text-sm font-medium text-error">
                   This action is permanent and cannot be undone.
                 </p>
-                <p className="text-xs text-muted mt-2">
+                <p className="mt-2 text-xs text-muted-foreground">
                   All your data, including transactions, budgets, goals, and
                   categories, will be permanently deleted.
                 </p>
@@ -115,7 +114,7 @@ export function SettingsDangerZone() {
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={showPassword ? "Hide password" : "Show password"}
-                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-primary transition-colors"
                     >
                       {showPassword ? (
                         <EyeOff className="w-4 h-4" aria-hidden />
@@ -157,6 +156,6 @@ export function SettingsDangerZone() {
           </DialogContent>
         </Dialog>
       </div>
-    </Card>
+    </div>
   );
 }

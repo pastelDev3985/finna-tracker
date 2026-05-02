@@ -11,6 +11,8 @@ const APP_ROUTES = [
   "/reports",
   "/insights",
   "/settings",
+  "/guide",
+  "/terms",
   "/onboarding",
 ];
 

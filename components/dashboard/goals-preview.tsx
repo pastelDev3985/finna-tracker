@@ -73,7 +73,7 @@ function CircleRing({ percentage }: { percentage: number }) {
 export function GoalsPreview({ goals }: GoalsPreviewProps) {
   if (goals.length === 0) {
     return (
-      <div className="glass rounded-2xl p-6">
+      <div className="glass rounded-2xl p-4 sm:p-6">
         <SectionHeader />
         <div className="mt-4 flex flex-col items-center gap-3 rounded-xl border border-dashed border-border py-8 text-center">
           <Target className="size-8 text-muted-foreground" aria-hidden />
@@ -95,7 +95,7 @@ export function GoalsPreview({ goals }: GoalsPreviewProps) {
   }
 
   return (
-    <div className="glass rounded-2xl p-6">
+    <div className="glass rounded-2xl p-4 sm:p-6">
       <SectionHeader />
       <div className="mt-4 space-y-3">
         {goals.map((goal) => (

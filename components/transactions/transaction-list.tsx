@@ -98,7 +98,72 @@ export function TransactionList({
 
   return (
     <>
-      <div className="w-full overflow-x-auto rounded-2xl border border-border">
+      {/* ── Mobile card list (< md) ──────────────────────────────────── */}
+      <div className="flex flex-col divide-y divide-border overflow-hidden rounded-2xl border border-border md:hidden">
+        {transactions.map((tx) => (
+          <div
+            key={tx.id}
+            className="flex items-center gap-3 bg-card px-4 py-3 transition-colors duration-150 active:bg-muted/50"
+            onClick={() => setEditTx(tx)}
+            role="button"
+            tabIndex={0}
+            onKeyDown={(e) => e.key === "Enter" && setEditTx(tx)}
+            aria-label={`Edit ${tx.categoryName} transaction`}
+          >
+            {/* Type badge */}
+            <div
+              className={cn(
+                "flex size-9 shrink-0 items-center justify-center rounded-xl text-xs font-bold",
+                tx.type === "INCOME"
+                  ? "bg-[var(--color-success)]/10 text-[var(--color-success)]"
+                  : "bg-[var(--color-error)]/10 text-[var(--color-error)]",
+              )}
+              aria-hidden
+            >
+              {tx.type === "INCOME" ? "+" : "-"}
+            </div>
+
+            {/* Text */}
+            <div className="min-w-0 flex-1">
+              <p className="truncate text-sm font-semibold text-foreground">
+                {tx.categoryName}
+              </p>
+              <p className="truncate text-xs text-muted-foreground">
+                {tx.note ? tx.note : tx.date}
+              </p>
+            </div>
+
+            {/* Amount + delete */}
+            <div className="flex shrink-0 flex-col items-end gap-1.5">
+              <span
+                className={cn(
+                  "text-sm font-semibold tabular-nums",
+                  tx.type === "INCOME"
+                    ? "text-[var(--color-success)]"
+                    : "text-[var(--color-error)]",
+                )}
+              >
+                {tx.type === "INCOME" ? "+" : "-"}
+                {tx.amount}
+              </span>
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setDeleteTx(tx);
+                }}
+                className="flex size-6 cursor-pointer items-center justify-center rounded-md text-muted-foreground/60 transition-all duration-200 hover:bg-destructive/10 hover:text-destructive"
+                aria-label={`Delete ${tx.categoryName} transaction`}
+              >
+                <Trash2 className="size-3" aria-hidden />
+              </button>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* ── Desktop table (≥ md) ─────────────────────────────────────── */}
+      <div className="hidden w-full overflow-x-auto rounded-2xl border border-border md:block">
         <Table className="min-w-full">
           <TableHeader>
             <TableRow className="bg-muted/30 hover:bg-muted/30">
@@ -124,7 +189,7 @@ export function TransactionList({
                     <Badge
                       variant="outline"
                       className={cn(
-                        "text-[10px] font-medium border",
+                        "border text-[10px] font-medium",
                         tx.type === "INCOME"
                           ? "border-[var(--color-success)]/30 bg-[var(--color-success)]/10 text-[var(--color-success)]"
                           : "border-[var(--color-error)]/30 bg-[var(--color-error)]/10 text-[var(--color-error)]",
@@ -149,7 +214,7 @@ export function TransactionList({
                 <TableCell className="text-right">
                   <span
                     className={cn(
-                      "font-semibold tabular-nums text-sm",
+                      "text-sm font-semibold tabular-nums",
                       tx.type === "INCOME"
                         ? "text-[var(--color-success)]"
                         : "text-[var(--color-error)]",
@@ -180,7 +245,7 @@ export function TransactionList({
 
       {/* Edit sheet */}
       <Sheet open={!!editTx} onOpenChange={(open) => !open && setEditTx(null)}>
-        <SheetContent side="right" className="w-full max-w-sm overflow-y-auto">
+        <SheetContent side="bottom" className="rounded-t-2xl sm:side-right sm:max-w-sm sm:rounded-none">
           <SheetHeader className="mb-4">
             <SheetTitle>Edit transaction</SheetTitle>
             <SheetDescription>

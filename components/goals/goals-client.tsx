@@ -26,7 +26,7 @@ export function GoalsClient({ goals, currencySymbol }: GoalsClientProps) {
   const router = useRouter()
 
   return (
-    <div className="flex flex-col gap-6 p-6 lg:p-8">
+    <div className="flex flex-col gap-4 p-4 sm:gap-6 sm:p-6 lg:p-8">
       <PageHeader
         title="Savings goals"
         description={`${goals.length} goal${goals.length !== 1 ? "s" : ""} in progress`}

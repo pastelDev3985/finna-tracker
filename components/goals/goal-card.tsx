@@ -125,7 +125,7 @@ export function GoalCard({ goal }: GoalCardProps) {
           type="button"
           onClick={() => setShowDeleteDialog(true)}
           disabled={isPending}
-          className="invisible flex size-7 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-all duration-200 hover:bg-destructive/10 hover:text-destructive group-hover:visible"
+          className="flex size-7 cursor-pointer items-center justify-center rounded-lg text-muted-foreground/50 transition-all duration-200 hover:bg-destructive/10 hover:text-destructive md:invisible md:group-hover:visible"
           aria-label={`Delete ${goal.name}`}
         >
           <Trash2 className="size-3.5" aria-hidden />

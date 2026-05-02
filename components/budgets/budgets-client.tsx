@@ -57,45 +57,47 @@ export function BudgetsClient({
   }
 
   return (
-    <div className="flex flex-col gap-6 p-6 lg:p-8">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <PageHeader
-          title="Budgets"
-          description="Set and track your monthly spending limits."
-        />
-        <div className="flex items-center gap-3">
-          {/* Month picker */}
-          <div className="flex items-center gap-1 rounded-xl border border-border bg-card px-2 py-1">
-            <button
-              type="button"
-              onClick={() => navigate(-1)}
-              disabled={isPending}
-              className="flex size-7 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-all duration-200 hover:bg-muted hover:text-foreground"
-              aria-label="Previous month"
-            >
-              <ChevronLeft className="size-4" aria-hidden />
-            </button>
-            <span className="min-w-[90px] text-center text-sm font-semibold text-foreground">
-              {MONTH_NAMES[month - 1]} {year}
-            </span>
-            <button
-              type="button"
-              onClick={() => navigate(1)}
-              disabled={isPending}
-              className="flex size-7 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-all duration-200 hover:bg-muted hover:text-foreground"
-              aria-label="Next month"
-            >
-              <ChevronRight className="size-4" aria-hidden />
-            </button>
-          </div>
-
+    <div className="flex flex-col gap-4 p-4 sm:gap-6 sm:p-6 lg:p-8">
+      <div className="flex flex-col gap-3">
+        <div className="flex items-start justify-between gap-4">
+          <PageHeader
+            title="Budgets"
+            description="Set and track your monthly spending limits."
+          />
           <Button
             onClick={() => { setEditBudget(null); setShowForm(true) }}
-            className="cursor-pointer font-semibold"
+            className="shrink-0 cursor-pointer font-semibold"
+            size="sm"
           >
             <Plus className="size-4" aria-hidden />
-            Set budget
+            <span className="hidden sm:inline">Set budget</span>
+            <span className="sm:hidden">Add</span>
           </Button>
+        </div>
+
+        {/* Month picker — full width on mobile */}
+        <div className="flex items-center justify-center gap-1 rounded-xl border border-border bg-card px-2 py-1 sm:self-start">
+          <button
+            type="button"
+            onClick={() => navigate(-1)}
+            disabled={isPending}
+            className="flex size-8 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-all duration-200 hover:bg-muted hover:text-foreground"
+            aria-label="Previous month"
+          >
+            <ChevronLeft className="size-4" aria-hidden />
+          </button>
+          <span className="min-w-[100px] text-center text-sm font-semibold text-foreground">
+            {MONTH_NAMES[month - 1]} {year}
+          </span>
+          <button
+            type="button"
+            onClick={() => navigate(1)}
+            disabled={isPending}
+            className="flex size-8 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-all duration-200 hover:bg-muted hover:text-foreground"
+            aria-label="Next month"
+          >
+            <ChevronRight className="size-4" aria-hidden />
+          </button>
         </div>
       </div>
 

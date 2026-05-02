@@ -142,11 +142,19 @@
   --primary-hover: color-mix(in srgb, var(--primary) 90%, var(--fin-dark-11));
   --primary-active: color-mix(in srgb, var(--primary) 78%, var(--fin-dark-11));
 
-  /* Glass recipe tokens — light mode: opaque enough to be visible */
-  --glass-bg: rgb(255 255 255 / 0.72);
-  --glass-border: rgb(0 0 0 / 0.07);
-  --glass-shadow: 0 4px 24px rgb(0 0 0 / 0.07);
-  --glass-blur: 14px;
+  /* Glass recipe tokens — light mode */
+  --glass-bg: rgb(255 255 255 / 0.68);
+  --glass-border: rgb(0 0 0 / 0.09);
+  --glass-border-hover: rgb(0 0 0 / 0.18);
+  --glass-shadow:
+    0 4px 24px rgb(0 0 0 / 0.08),
+    0 2px 8px rgb(0 0 0 / 0.05);
+  --glass-shadow-hover:
+    0 12px 40px rgb(0 0 0 / 0.14),
+    0 4px 16px rgb(0 0 0 / 0.08);
+  --glass-blur: 18px;
+  --glass-saturate: 160%;
+  --glass-brightness: 1.06;
 
   /* shadcn mappings — Finora */
   --background: var(--bg-main);
@@ -226,10 +234,19 @@
   --primary-hover: color-mix(in srgb, var(--primary) 88%, #ffffff);
   --primary-active: color-mix(in srgb, var(--primary) 76%, #ffffff);
 
-  --glass-bg: rgb(32 32 32 / 0.6);
-  --glass-border: rgb(255 255 255 / 0.08);
-  --glass-shadow: 0 8px 32px rgb(0 0 0 / 0.35);
-  --glass-blur: 18px;
+  /* Glass recipe tokens — dark mode: white-tint for crystal translucency */
+  --glass-bg: rgb(255 255 255 / 0.09);
+  --glass-border: rgb(255 255 255 / 0.22);
+  --glass-border-hover: rgb(255 255 255 / 0.40);
+  --glass-shadow:
+    0 8px 32px rgb(0 0 0 / 0.32),
+    0 2px 8px rgb(0 0 0 / 0.20);
+  --glass-shadow-hover:
+    0 16px 48px rgb(0 0 0 / 0.46),
+    0 4px 16px rgb(0 0 0 / 0.26);
+  --glass-blur: 28px;
+  --glass-saturate: 180%;
+  --glass-brightness: 1.10;
 
   --background: var(--bg-main);
   --foreground: var(--text-primary);
@@ -263,36 +280,178 @@
 }
 
 /* ─── Glassmorphism utilities ──────────────────────────────────────────────── */
+
+/* Core liquid-glass mixin — matches reference implementation */
 .glass {
-  border-radius: 16px;
+  position: relative;
+  border-radius: 20px;
   border: 1px solid var(--glass-border);
   background: var(--glass-bg);
-  box-shadow: var(--glass-shadow);
-  -webkit-backdrop-filter: blur(var(--glass-blur));
-  backdrop-filter: blur(var(--glass-blur));
+  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) brightness(var(--glass-brightness));
+  backdrop-filter: blur(var(--glass-blur)) saturate(var(--glass-saturate)) brightness(var(--glass-brightness));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.20),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04),
+    var(--glass-shadow);
+  overflow: hidden;
+  isolation: isolate;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
 }
 
+/* Pointer-reactive specular highlight — position driven by --mx/--my CSS vars
+   set dynamically by GlassEffect component; defaults to top-center */
+.glass::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle 220px at var(--mx, 50%) var(--my, -10%),
+    rgba(255, 255, 255, 0.18) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 1;
+  transition: background 0.1s ease;
+}
+
+/* Permanent top sheen line — the bright rim light */
+.glass::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.60), transparent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+.glass:hover {
+  border-color: var(--glass-border-hover);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.30),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+    var(--glass-shadow-hover);
+}
+
+/* Force-dark variant (used explicitly in dark contexts) */
 .glass-dark {
-  border-radius: 16px;
-  border: 1px solid var(--glass-border);
-  background: rgb(32 32 32 / 0.6);
-  box-shadow: var(--glass-shadow);
-  -webkit-backdrop-filter: blur(18px);
-  backdrop-filter: blur(18px);
+  position: relative;
+  border-radius: 20px;
+  border: 1px solid rgb(255 255 255 / 0.22);
+  background: rgb(255 255 255 / 0.09);
+  -webkit-backdrop-filter: blur(28px) saturate(180%) brightness(1.10);
+  backdrop-filter: blur(28px) saturate(180%) brightness(1.10);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04),
+    0 8px 32px rgb(0 0 0 / 0.32),
+    0 2px 8px rgb(0 0 0 / 0.20);
+  overflow: hidden;
+  isolation: isolate;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
 }
 
+.glass-dark::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Light-surface variant (auth pages, onboarding) */
 .glass-light {
-  border-radius: 16px;
-  border: 1px solid rgb(255 255 255 / 0.4);
-  background: rgb(255 255 255 / 0.6);
-  box-shadow: var(--glass-shadow);
-  -webkit-backdrop-filter: blur(12px);
-  backdrop-filter: blur(12px);
+  position: relative;
+  border-radius: 20px;
+  border: 1px solid rgb(255 255 255 / 0.55);
+  /* Slightly more translucent so backdrop-filter reads on light cream backgrounds */
+  background: rgb(255 255 255 / 0.48);
+  -webkit-backdrop-filter: blur(20px) saturate(165%) brightness(1.05);
+  backdrop-filter: blur(20px) saturate(165%) brightness(1.05);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.85),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.20),
+    0 4px 24px rgb(0 0 0 / 0.08),
+    0 2px 8px rgb(0 0 0 / 0.05);
+  overflow: hidden;
+  isolation: isolate;
+  transition: box-shadow 0.25s ease, border-color 0.25s ease, transform 0.2s ease;
+}
+
+/* Same pointer-reactive specular as .glass — GlassEffect sets --mx / --my */
+.glass-light::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: radial-gradient(
+    circle 220px at var(--mx, 50%) var(--my, -10%),
+    rgba(255, 255, 255, 0.22) 0%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 1;
+  transition: background 0.1s ease;
+}
+
+.glass-light:hover {
+  border-color: rgb(0 0 0 / 0.14);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.95),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.22),
+    0 12px 40px rgb(0 0 0 / 0.12),
+    0 4px 16px rgb(0 0 0 / 0.06);
+}
+
+.glass-light::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 10%;
+  right: 10%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.95), transparent);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 2;
 }
 
 .dark .glass-light {
-  border-color: rgb(255 255 255 / 0.08);
-  background: rgb(32 32 32 / 0.55);
+  border-color: rgb(255 255 255 / 0.20);
+  background: rgb(255 255 255 / 0.09);
+  -webkit-backdrop-filter: blur(28px) saturate(180%) brightness(1.10);
+  backdrop-filter: blur(28px) saturate(180%) brightness(1.10);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.04),
+    0 8px 32px rgb(0 0 0 / 0.32),
+    0 2px 8px rgb(0 0 0 / 0.20);
+}
+
+.dark .glass-light:hover {
+  border-color: rgb(255 255 255 / 0.32);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.24),
+    inset 0 -1px 0 rgba(255, 255, 255, 0.06),
+    0 14px 48px rgb(0 0 0 / 0.40),
+    0 4px 16px rgb(0 0 0 / 0.28);
+}
+
+.dark .glass-light::before {
+  background: radial-gradient(
+    circle 220px at var(--mx, 50%) var(--my, -10%),
+    rgba(255, 255, 255, 0.14) 0%,
+    transparent 70%
+  );
 }
 
 /* ─── Scrollbar styling ────────────────────────────────────────────────────── */

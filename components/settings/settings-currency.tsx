@@ -4,7 +4,6 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Check, ChevronsUpDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
 import {
   Command,
   CommandEmpty,
@@ -57,11 +56,11 @@ export function SettingsCurrency({ defaultCurrency }: SettingsCurrencyProps) {
   };
 
   return (
-    <Card className="backdrop-blur-[16px] bg-white/[0.08] dark:bg-[rgba(32,32,32,0.6)] border border-white/[0.15] p-6">
+    <div className="glass p-4 sm:p-6">
       <div className="space-y-6">
         <div>
           <h3 className="text-sm font-medium mb-3">Select Currency</h3>
-          <p className="text-xs text-muted mb-4">
+          <p className="mb-4 text-sm text-muted-foreground">
             This only changes the display format. All amounts will be shown in
             the currency you select, but no conversion is performed.
           </p>
@@ -116,11 +115,11 @@ export function SettingsCurrency({ defaultCurrency }: SettingsCurrencyProps) {
           </Popover>
         </div>
 
-        <div className="text-xs text-muted p-3 bg-bg-muted rounded-lg">
+        <div className="rounded-lg bg-muted/70 p-3 text-sm text-foreground/90">
           Current selection: <strong>{currentCurrency?.name}</strong> (
           {currentCurrency?.symbol})
         </div>
       </div>
-    </Card>
+    </div>
   );
 }

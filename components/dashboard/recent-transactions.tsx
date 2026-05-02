@@ -18,7 +18,7 @@ interface RecentTransactionsProps {
 export function RecentTransactions({ transactions }: RecentTransactionsProps) {
   if (transactions.length === 0) {
     return (
-      <div className="glass rounded-2xl p-6">
+      <div className="glass rounded-2xl p-4 sm:p-6">
         <SectionHeader />
         <div className="mt-4 flex flex-col items-center gap-3 rounded-xl border border-dashed border-border py-8 text-center">
           <ArrowLeftRight className="size-8 text-muted-foreground" aria-hidden />
@@ -40,7 +40,7 @@ export function RecentTransactions({ transactions }: RecentTransactionsProps) {
   }
 
   return (
-    <div className="glass rounded-2xl p-6">
+    <div className="glass rounded-2xl p-4 sm:p-6">
       <SectionHeader />
       <div className="mt-4 divide-y divide-border">
         {transactions.map((tx) => (

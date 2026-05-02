@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Liquid Glass</title>
+<link href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --glass-bg: rgba(255,255,255,0.12);
+    --glass-border: rgba(255,255,255,0.28);
+    --glass-shine: rgba(255,255,255,0.55);
+    --glass-shadow: rgba(0,0,0,0.25);
+    --blur: 28px;
+    --tint: rgba(255,255,255,0.06);
+  }
+
+  html, body {
+    min-height: 100vh;
+    font-family: -apple-system, 'SF Pro Display', 'Helvetica Neue', sans-serif;
+    overflow-x: hidden;
+    background: #0a0a14;
+    color: #fff;
+  }
+
+  /* ── Animated gradient backdrop ── */
+  .bg {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    background: 
+      radial-gradient(ellipse 80% 60% at 20% 20%, #1a1060 0%, transparent 60%),
+      radial-gradient(ellipse 60% 80% at 80% 80%, #0d3060 0%, transparent 60%),
+      radial-gradient(ellipse 70% 50% at 60% 30%, #2d0a4a 0%, transparent 55%),
+      radial-gradient(ellipse 50% 70% at 30% 70%, #081830 0%, transparent 60%),
+      #070714;
+    animation: bgShift 12s ease-in-out infinite alternate;
+  }
+
+  @keyframes bgShift {
+    0%   { filter: hue-rotate(0deg) brightness(1); }
+    50%  { filter: hue-rotate(15deg) brightness(1.08); }
+    100% { filter: hue-rotate(-10deg) brightness(0.95); }
+  }
+
+  /* Floating orbs behind everything */
+  .orb {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.35;
+    animation: float linear infinite;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .orb-1 { width: 500px; height: 500px; background: #5b21b6; top: -100px; left: -100px; animation-duration: 20s; }
+  .orb-2 { width: 400px; height: 400px; background: #1e40af; bottom: -100px; right: -50px; animation-duration: 25s; animation-delay: -8s; }
+  .orb-3 { width: 300px; height: 300px; background: #831843; top: 40%; left: 50%; animation-duration: 18s; animation-delay: -4s; }
+
+  @keyframes float {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    25%       { transform: translate(30px, -40px) scale(1.05); }
+    50%       { transform: translate(-20px, 30px) scale(0.97); }
+    75%       { transform: translate(40px, 10px) scale(1.03); }
+  }
+
+  /* ── Layout ── */
+  .page {
+    position: relative;
+    z-index: 1;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 60px 32px 100px;
+  }
+
+  .hero {
+    text-align: center;
+    margin-bottom: 72px;
+  }
+  .hero h1 {
+    font-size: clamp(40px, 7vw, 72px);
+    font-weight: 300;
+    letter-spacing: -2px;
+    line-height: 1.05;
+    background: linear-gradient(135deg, #fff 30%, rgba(255,255,255,0.45) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 16px;
+  }
+  .hero p {
+    font-size: 18px;
+    font-weight: 300;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.3px;
+  }
+
+  .section-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.35);
+    margin-bottom: 20px;
+  }
+
+  section { margin-bottom: 64px; }
+
+  /* ══════════════════════════════════════════
+     CORE GLASS MIXIN — applied to everything
+     ══════════════════════════════════════════ */
+  .glass {
+    position: relative;
+    background: var(--glass-bg);
+    backdrop-filter: blur(var(--blur)) saturate(180%) brightness(1.1);
+    -webkit-backdrop-filter: blur(var(--blur)) saturate(180%) brightness(1.1);
+    border: 1px solid var(--glass-border);
+    border-radius: 20px;
+    overflow: hidden;
+    isolation: isolate;
+    /* Subtle inner glow along the top edge */
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.22),
+      inset 0 -1px 0 rgba(255,255,255,0.04),
+      0 8px 32px rgba(0,0,0,0.3),
+      0 2px 8px rgba(0,0,0,0.2);
+    transition: box-shadow 0.3s ease, border-color 0.3s ease, transform 0.2s ease;
+  }
+
+  /* Specular highlight pseudo — moves with pointer */
+  .glass::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: radial-gradient(circle 260px at var(--mx, 50%) var(--my, 20%), rgba(255,255,255,0.18) 0%, transparent 70%);
+    pointer-events: none;
+    z-index: 1;
+    transition: background 0.08s ease;
+  }
+
+  /* Top sheen line */
+  .glass::after {
+    content: '';
+    position: absolute;
+    top: 0; left: 10%; right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.6), transparent);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 2;
+  }
+
+  .glass:hover {
+    border-color: rgba(255,255,255,0.42);
+    box-shadow:
+      inset 0 1px 0 rgba(255,255,255,0.3),
+      inset 0 -1px 0 rgba(255,255,255,0.06),
+      0 16px 48px rgba(0,0,0,0.4),
+      0 4px 16px rgba(0,0,0,0.25);
+  }
+
+  /* ── Buttons ── */
+  .btn-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px;
+    align-items: center;
+  }
+
+  .btn {
+    padding: 13px 28px;
+    font-size: 15px;
+    font-weight: 400;
+    letter-spacing: 0.2px;
+    color: rgba(255,255,255,0.9);
+    cursor: pointer;
+    border: none;
+    outline: none;
+    user-select: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .btn:active { transform: scale(0.96) !important; }
+
+  /* Primary — deeper tint */
+  .btn-primary {
+    background: rgba(120, 80, 255, 0.25);
+    border-color: rgba(160,120,255,0.4);
+    border-radius: 14px;
+    --glass-bg: rgba(120,80,255,0.2);
+  }
+  .btn-primary::before {
+    background: radial-gradient(circle 180px at var(--mx,50%) var(--my,30%), rgba(200,180,255,0.22) 0%, transparent 70%);
+  }
+
+  /* Ghost */
+  .btn-ghost { border-radius: 14px; }
+
+  /* Pill */
+  .btn-pill { border-radius: 50px; padding: 12px 32px; }
+
+  /* Icon button */
+  .btn-icon { border-radius: 50%; width: 52px; height: 52px; padding: 0; justify-content: center; font-size: 20px; }
+
+  .btn-danger {
+    background: rgba(200, 50, 80, 0.18);
+    border-color: rgba(255,100,120,0.35);
+    border-radius: 14px;
+  }
+
+  .btn-success {
+    background: rgba(40, 180, 120, 0.15);
+    border-color: rgba(80,220,160,0.32);
+    border-radius: 14px;
+  }
+
+  /* ── Cards ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px;
+  }
+
+  .card { padding: 28px 24px; }
+
+  .card-icon {
+    width: 44px; height: 44px;
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    margin-bottom: 18px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+
+  .card h3 {
+    font-size: 17px;
+    font-weight: 500;
+    color: rgba(255,255,255,0.92);
+    margin-bottom: 8px;
+    letter-spacing: -0.3px;
+  }
+
+  .card p {
+    font-size: 14px;
+    line-height: 1.6;
+    color: rgba(255,255,255,0.48);
+    font-weight: 300;
+  }
+
+  .card-badge {
+    display: inline-block;
+    margin-top: 18px;
+    padding: 4px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.65);
+  }
+
+  /* Tinted cards */
+  .card-purple { --glass-bg: rgba(100,60,220,0.15); background: rgba(100,60,220,0.15); }
+  .card-blue   { --glass-bg: rgba(30,80,200,0.15);  background: rgba(30,80,200,0.15); }
+  .card-rose   { --glass-bg: rgba(180,40,100,0.15); background: rgba(180,40,100,0.15); }
+
+  /* ── Feature panel (wide card) ── */
+  .panel {
+    padding: 36px 36px;
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    margin-bottom: 20px;
+  }
+
+  .panel-art {
+    flex-shrink: 0;
+    width: 90px; height: 90px;
+    border-radius: 22px;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.18);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 40px;
+    box-shadow: inset 0 1px 0 rgba(255,255,255,0.25), 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  .panel-text h2 {
+    font-size: 22px;
+    font-weight: 500;
+    letter-spacing: -0.5px;
+    color: rgba(255,255,255,0.92);
+    margin-bottom: 8px;
+  }
+
+  .panel-text p {
+    font-size: 15px;
+    line-height: 1.65;
+    color: rgba(255,255,255,0.45);
+    font-weight: 300;
+    max-width: 440px;
+  }
+
+  /* ── Notification / toast style ── */
+  .toast-stack { display: flex; flex-direction: column; gap: 12px; }
+
+  .toast {
+    padding: 16px 20px;
+    display: flex; align-items: center; gap: 16px;
+    border-radius: 16px;
+  }
+
+  .toast-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+
+  .toast-body { flex: 1; }
+  .toast-body strong { font-size: 14px; font-weight: 500; color: rgba(255,255,255,0.88); display: block; }
+  .toast-body span   { font-size: 13px; color: rgba(255,255,255,0.4); }
+  .toast-time { font-size: 12px; color: rgba(255,255,255,0.28); flex-shrink: 0; }
+
+  /* ── Segmented control ── */
+  .seg-wrap {
+    display: inline-flex;
+    padding: 4px;
+    gap: 2px;
+    border-radius: 14px;
+  }
+
+  .seg-btn {
+    padding: 8px 22px;
+    border-radius: 10px;
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.5);
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .seg-btn.active {
+    background: rgba(255,255,255,0.18);
+    color: rgba(255,255,255,0.95);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+
+  .seg-btn:not(.active):hover { color: rgba(255,255,255,0.75); }
+
+  /* ── Slider ── */
+  .slider-wrap { padding: 24px 28px; }
+  .slider-label { font-size: 13px; color: rgba(255,255,255,0.45); margin-bottom: 16px; display: flex; justify-content: space-between; }
+  input[type=range] {
+    -webkit-appearance: none; appearance: none;
+    width: 100%; height: 4px;
+    background: rgba(255,255,255,0.15);
+    border-radius: 4px; outline: none; cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px; height: 22px; border-radius: 50%;
+    background: rgba(255,255,255,0.9);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.6);
+    border: 1px solid rgba(255,255,255,0.5);
+    cursor: grab;
+  }
+  input[type=range]::-webkit-slider-thumb:active { cursor: grabbing; transform: scale(1.15); }
+
+  @media (max-width: 600px) {
+    .panel { flex-direction: column; align-items: flex-start; }
+    .panel-art { width: 64px; height: 64px; font-size: 30px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
+<div class="orb orb-3"></div>
+
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>Liquid Glass</h1>
+    <p>Move your pointer around — watch the light follow.</p>
+  </div>
+
+  <!-- BUTTONS -->
+  <section>
+    <p class="section-label">Buttons</p>
+    <div class="btn-row">
+      <button class="glass btn btn-primary">Continue</button>
+      <button class="glass btn btn-ghost">Learn More</button>
+      <button class="glass btn btn-pill">Get Started →</button>
+      <button class="glass btn btn-danger">Delete</button>
+      <button class="glass btn btn-success">✓ Confirm</button>
+      <button class="glass btn btn-icon">⟳</button>
+      <button class="glass btn btn-icon">♡</button>
+      <button class="glass btn btn-icon">↑</button>
+    </div>
+  </section>
+
+  <!-- SEGMENTED CONTROL -->
+  <section>
+    <p class="section-label">Segmented Control</p>
+    <div class="glass seg-wrap">
+      <button class="seg-btn active" onclick="setActive(this)">All</button>
+      <button class="seg-btn" onclick="setActive(this)">Photos</button>
+      <button class="seg-btn" onclick="setActive(this)">Videos</button>
+      <button class="seg-btn" onclick="setActive(this)">Albums</button>
+    </div>
+  </section>
+
+  <!-- CARDS -->
+  <section>
+    <p class="section-label">Cards</p>
+    <div class="card-grid">
+      <div class="glass card card-purple">
+        <div class="card-icon">✦</div>
+        <h3>Intelligence</h3>
+        <p>On-device processing keeps your data private while delivering powerful results.</p>
+        <span class="card-badge">On-device</span>
+      </div>
+      <div class="glass card card-blue">
+        <div class="card-icon">⌘</div>
+        <h3>Integration</h3>
+        <p>Works seamlessly across every app and surface — exactly where you need it most.</p>
+        <span class="card-badge">System-wide</span>
+      </div>
+      <div class="glass card card-rose">
+        <div class="card-icon">◈</div>
+        <h3>Personalised</h3>
+        <p>Understands your context and adapts to your preferences over time.</p>
+        <span class="card-badge">Adaptive</span>
+      </div>
+      <div class="glass card">
+        <div class="card-icon">◎</div>
+        <h3>Always On</h3>
+        <p>Proactively surfaces what matters, before you even think to search.</p>
+        <span class="card-badge">Proactive</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURE PANELS -->
+  <section>
+    <p class="section-label">Feature Panels</p>
+    <div class="glass panel">
+      <div class="panel-art">🌐</div>
+      <div class="panel-text">
+        <h2>Spatial Computing</h2>
+        <p>A new way to experience the world around you. Glass surfaces and volumetric light blend the digital and physical into a single, unified layer.</p>
+      </div>
+    </div>
+    <div class="glass panel">
+      <div class="panel-art">⬡</div>
+      <div class="panel-text">
+        <h2>Dynamic Island</h2>
+        <p>Live activities, ongoing notifications, and real-time information flow through a surface that adapts to what matters — all in one place.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- NOTIFICATIONS -->
+  <section>
+    <p class="section-label">Notifications</p>
+    <div class="toast-stack">
+      <div class="glass toast">
+        <div class="toast-dot" style="background:#a78bfa;"></div>
+        <div class="toast-body">
+          <strong>New message from Alex</strong>
+          <span>On my way — see you in 10 minutes!</span>
+        </div>
+        <span class="toast-time">now</span>
+      </div>
+      <div class="glass toast">
+        <div class="toast-dot" style="background:#34d399;"></div>
+        <div class="toast-body">
+          <strong>Workout complete</strong>
+          <span>You closed all three rings today.</span>
+        </div>
+        <span class="toast-time">2m ago</span>
+      </div>
+      <div class="glass toast">
+        <div class="toast-dot" style="background:#f472b6;"></div>
+        <div class="toast-body">
+          <strong>Calendar reminder</strong>
+          <span>Design review starts in 15 minutes.</span>
+        </div>
+        <span class="toast-time">9m ago</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- SLIDER -->
+  <section>
+    <p class="section-label">Controls</p>
+    <div class="glass slider-wrap">
+      <div class="slider-label">
+        <span>Blur intensity</span>
+        <span id="blur-val">28px</span>
+      </div>
+      <input type="range" min="8" max="48" value="28" id="blur-slider">
+    </div>
+  </section>
+
+</div>
+
+<script>
+  /* ──────────────────────────────────────────────
+     Pointer-reactive specular highlight
+     Updates --mx / --my CSS vars on every glass
+     surface based on the element-local cursor pos
+  ────────────────────────────────────────────── */
+  const glassEls = document.querySelectorAll('.glass');
+
+  document.addEventListener('mousemove', (e) => {
+    glassEls.forEach(el => {
+      const rect = el.getBoundingClientRect();
+      const x = ((e.clientX - rect.left) / rect.width  * 100).toFixed(1) + '%';
+      const y = ((e.clientY - rect.top)  / rect.height * 100).toFixed(1) + '%';
+      el.style.setProperty('--mx', x);
+      el.style.setProperty('--my', y);
+    });
+  });
+
+  /* Segmented control */
+  function setActive(btn) {
+    btn.closest('.seg-wrap').querySelectorAll('.seg-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+  }
+
+  /* Blur slider demo */
+  const slider = document.getElementById('blur-slider');
+  const blurVal = document.getElementById('blur-val');
+  slider.addEventListener('input', () => {
+    const v = slider.value;
+    blurVal.textContent = v + 'px';
+    document.querySelectorAll('.glass').forEach(el => {
+      el.style.setProperty('--blur', v + 'px');
+    });
+  });
+</script>
+</body>
+</html>
