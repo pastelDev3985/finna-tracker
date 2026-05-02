@@ -1,5 +1,6 @@
 "use client"
 
+import { useEffect, useState } from "react"
 import { useTheme } from "next-themes"
 import { Sun, Moon } from "lucide-react"
 import { Button } from "@/components/ui/button"
@@ -7,6 +8,8 @@ import { Card } from "@/components/ui/card"
 
 export function SettingsAppearance() {
   const { theme, setTheme } = useTheme()
+  const [mounted, setMounted] = useState(false)
+  useEffect(() => setMounted(true), [])
 
   return (
     <Card className="backdrop-blur-[16px] bg-white/[0.08] dark:bg-[rgba(32,32,32,0.6)] border border-white/[0.15] p-6">
@@ -45,9 +48,11 @@ export function SettingsAppearance() {
           </Button>
         </div>
 
-        <div className="text-xs text-muted p-3 bg-bg-muted rounded-lg">
-          Current theme: <strong>{theme === "dark" ? "Dark" : "Light"}</strong>
-        </div>
+        {mounted && (
+          <div className="text-xs text-muted p-3 bg-bg-muted rounded-lg">
+            Current theme: <strong>{theme === "dark" ? "Dark" : "Light"}</strong>
+          </div>
+        )}
       </div>
     </Card>
   )

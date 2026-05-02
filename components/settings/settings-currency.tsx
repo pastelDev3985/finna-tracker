@@ -67,24 +67,26 @@ export function SettingsCurrency({ defaultCurrency }: SettingsCurrencyProps) {
           </p>
 
           <Popover open={open} onOpenChange={setOpen}>
-            <PopoverTrigger>
-              <Button
-                variant="outline"
-                role="combobox"
-                aria-expanded={open}
-                className="w-full justify-between"
-                disabled={isLoading}
-              >
-                {currentCurrency ? (
-                  <span>
-                    {currentCurrency.symbol} • {currentCurrency.code} —{" "}
-                    {currentCurrency.name}
-                  </span>
-                ) : (
-                  "Select currency..."
-                )}
-                <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-              </Button>
+            <PopoverTrigger
+              render={
+                <Button
+                  variant="outline"
+                  role="combobox"
+                  aria-expanded={open}
+                  className="w-full justify-between"
+                  disabled={isLoading}
+                />
+              }
+            >
+              {currentCurrency ? (
+                <span>
+                  {currentCurrency.symbol} • {currentCurrency.code} —{" "}
+                  {currentCurrency.name}
+                </span>
+              ) : (
+                "Select currency..."
+              )}
+              <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
             </PopoverTrigger>
             <PopoverContent className="w-full p-0">
               <Command>

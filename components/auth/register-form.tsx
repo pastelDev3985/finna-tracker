@@ -4,6 +4,7 @@ import { Eye, EyeOff, Loader2 } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { signIn } from "next-auth/react";
 import { toast } from "sonner";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
@@ -111,9 +112,21 @@ export function RegisterForm() {
         return;
       }
 
-      toast.success("Account created. You can sign in now.");
-      router.push("/login");
-      router.refresh();
+      // Auto sign-in so the verify-email page has a session to gate on
+      const signInResult = await signIn("credentials", {
+        email: parsed.data.email,
+        password: parsed.data.password,
+        redirect: false,
+      });
+
+      if (signInResult?.ok) {
+        toast.success("Account created. Please verify your email.");
+        router.push("/verify-email");
+        router.refresh();
+      } else {
+        toast.success("Account created. Please sign in.");
+        router.push("/login");
+      }
     } catch {
       toast.error("Something went wrong. Please try again.");
     } finally {

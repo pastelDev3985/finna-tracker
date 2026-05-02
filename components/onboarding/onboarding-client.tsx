@@ -16,6 +16,7 @@ import { Label } from "@/components/ui/label";
 import { createTransactionAction } from "@/lib/actions/transactions";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
+import { getCurrencySymbol } from "@/lib/currency";
 
 const FEATURES = [
   {
@@ -36,17 +37,19 @@ const FEATURES = [
   {
     icon: Sparkles,
     title: "AI insights",
-    desc: "Chat with your financial data powered by Claude.",
+    desc: "Chat with your financial data powered by Gemini.",
   },
 ];
 
 interface OnboardingClientProps {
   userName: string;
+  currency: string;
   categories: Array<{ id: string; name: string; type: "INCOME" | "EXPENSE" }>;
 }
 
 export function OnboardingClient({
   userName,
+  currency,
   categories,
 }: OnboardingClientProps) {
   const [step, setStep] = useState<1 | 2 | 3>(1);
@@ -65,6 +68,7 @@ export function OnboardingClient({
           <Step3
             onBack={() => setStep(2)}
             firstIncomeCategory={firstIncomeCategory}
+            currency={currency}
           />
         )}
       </div>
@@ -182,14 +186,17 @@ function Step2({ onNext }: { onNext: () => void }) {
 function Step3({
   onBack,
   firstIncomeCategory,
+  currency,
 }: {
   onBack: () => void;
+  currency: string;
   firstIncomeCategory: {
     id: string;
     name: string;
     type: "INCOME" | "EXPENSE";
   } | null;
 }) {
+  const currencySymbol = getCurrencySymbol(currency);
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const [amount, setAmount] = useState("");
@@ -262,7 +269,7 @@ function Step3({
           </Label>
           <div className="mt-2 flex items-center gap-2">
             <span className="text-lg font-semibold text-muted-foreground">
-              ₵
+              {currencySymbol}
             </span>
             <Input
               id="amount"

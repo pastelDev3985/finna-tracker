@@ -14,6 +14,8 @@ import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogFooter,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
@@ -57,6 +59,7 @@ export function SettingsCategories({
   const [isLoading, setIsLoading] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [deletingCategory, setDeletingCategory] = useState<Category | null>(null);
 
   const {
     register,
@@ -114,22 +117,17 @@ export function SettingsCategories({
     setIsDialogOpen(true);
   };
 
-  const handleDelete = async (id: string) => {
-    if (
-      !confirm(
-        "Delete this category? If it has no transactions, it will be removed.",
-      )
-    )
-      return;
-
+  const handleDelete = async () => {
+    if (!deletingCategory) return;
     setIsLoading(true);
     try {
-      const result = await deleteCategoryAction(id);
+      const result = await deleteCategoryAction(deletingCategory.id);
       if (result.error) {
         toast.error(result.error);
       } else {
         toast.success("Category deleted");
-        setCategories((prev) => prev.filter((c) => c.id !== id));
+        setCategories((prev) => prev.filter((c) => c.id !== deletingCategory.id));
+        setDeletingCategory(null);
       }
     } catch {
       toast.error("Failed to delete category");
@@ -152,11 +150,13 @@ export function SettingsCategories({
             </p>
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-            <DialogTrigger>
-              <Button className="bg-primary text-secondary font-semibold rounded-lg hover:-translate-y-px transition-all duration-200 gap-2">
-                <Plus className="w-4 h-4" />
-                New Category
-              </Button>
+            <DialogTrigger
+              render={
+                <Button className="bg-primary text-secondary font-semibold rounded-lg hover:-translate-y-px transition-all duration-200 gap-2" />
+              }
+            >
+              <Plus className="w-4 h-4" />
+              New Category
             </DialogTrigger>
             <DialogContent>
               <DialogHeader>
@@ -247,16 +247,20 @@ export function SettingsCategories({
                       </div>
                       <div className="flex items-center gap-2">
                         <button
+                          type="button"
                           onClick={() => handleEdit(category)}
-                          className="p-2 text-muted hover:text-primary transition-colors"
+                          className="p-2 text-muted hover:text-primary transition-colors cursor-pointer"
+                          aria-label={`Edit ${category.name}`}
                         >
-                          <Pencil className="w-4 h-4" />
+                          <Pencil className="w-4 h-4" aria-hidden />
                         </button>
                         <button
-                          onClick={() => handleDelete(category.id)}
-                          className="p-2 text-muted hover:text-error transition-colors"
+                          type="button"
+                          onClick={() => setDeletingCategory(category)}
+                          className="p-2 text-muted hover:text-error transition-colors cursor-pointer"
+                          aria-label={`Delete ${category.name}`}
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4" aria-hidden />
                         </button>
                       </div>
                     </div>
@@ -287,16 +291,20 @@ export function SettingsCategories({
                       </div>
                       <div className="flex items-center gap-2">
                         <button
+                          type="button"
                           onClick={() => handleEdit(category)}
-                          className="p-2 text-muted hover:text-primary transition-colors"
+                          className="p-2 text-muted hover:text-primary transition-colors cursor-pointer"
+                          aria-label={`Edit ${category.name}`}
                         >
-                          <Pencil className="w-4 h-4" />
+                          <Pencil className="w-4 h-4" aria-hidden />
                         </button>
                         <button
-                          onClick={() => handleDelete(category.id)}
-                          className="p-2 text-muted hover:text-error transition-colors"
+                          type="button"
+                          onClick={() => setDeletingCategory(category)}
+                          className="p-2 text-muted hover:text-error transition-colors cursor-pointer"
+                          aria-label={`Delete ${category.name}`}
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-4 h-4" aria-hidden />
                         </button>
                       </div>
                     </div>
@@ -309,6 +317,42 @@ export function SettingsCategories({
           <p className="text-sm text-muted py-4">No categories found.</p>
         )}
       </div>
+
+      <Dialog
+        open={!!deletingCategory}
+        onOpenChange={(open) => !open && setDeletingCategory(null)}
+      >
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Delete category?</DialogTitle>
+            <DialogDescription>
+              Delete{" "}
+              <span className="font-medium text-foreground">
+                {deletingCategory?.name}
+              </span>
+              ? This can only be done if no transactions use this category.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              type="button"
+              variant="outline"
+              onClick={() => setDeletingCategory(null)}
+              disabled={isLoading}
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="destructive"
+              onClick={handleDelete}
+              disabled={isLoading}
+            >
+              {isLoading ? "Deleting…" : "Delete"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
     </Card>
   );
 }

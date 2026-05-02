@@ -90,7 +90,7 @@ export function TransactionList({
           No transactions found
         </p>
         <p className="mt-1 text-xs text-muted-foreground">
-          Try adjusting your filters or add a new transaction.
+          Add your first transaction to get started.
         </p>
       </div>
     );

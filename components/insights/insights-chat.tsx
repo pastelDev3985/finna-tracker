@@ -32,7 +32,12 @@ export function InsightsChat() {
   async function handleSendMessage(messageText: string) {
     if (!messageText.trim()) return;
 
-    // Add user message
+    // Snapshot history (excluding any still-streaming placeholder) before
+    // adding the new user message, then include the new message in the payload.
+    const historySnapshot = messages
+      .filter((m) => !m.isStreaming)
+      .map((m) => ({ role: m.role, content: m.content }));
+
     const userMessage: Message = {
       id: `user-${Date.now()}`,
       role: "user",
@@ -60,10 +65,7 @@ export function InsightsChat() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           message: messageText,
-          history: messages.map((m) => ({
-            role: m.role,
-            content: m.content,
-          })),
+          history: historySnapshot,
         }),
       });
 
@@ -71,7 +73,8 @@ export function InsightsChat() {
         throw new Error("Failed to fetch AI response");
       }
 
-      const reader = response.body!.getReader();
+      if (!response.body) throw new Error("Empty response body");
+      const reader = response.body.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
 

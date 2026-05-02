@@ -72,13 +72,15 @@ export function SettingsDangerZone() {
         </div>
 
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger>
-            <Button
-              variant="destructive"
-              className="bg-error text-white hover:bg-error/90 rounded-lg transition-all duration-200"
-            >
-              Delete My Account
-            </Button>
+          <DialogTrigger
+            render={
+              <Button
+                variant="destructive"
+                className="bg-error text-white hover:bg-error/90 rounded-lg transition-all duration-200"
+              />
+            }
+          >
+            Delete My Account
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
@@ -112,13 +114,13 @@ export function SettingsDangerZone() {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
+                      aria-label={showPassword ? "Hide password" : "Show password"}
                       className="absolute right-3 top-1/2 -translate-y-1/2 text-muted hover:text-primary transition-colors"
-                      tabIndex={-1}
                     >
                       {showPassword ? (
-                        <EyeOff className="w-4 h-4" />
+                        <EyeOff className="w-4 h-4" aria-hidden />
                       ) : (
-                        <Eye className="w-4 h-4" />
+                        <Eye className="w-4 h-4" aria-hidden />
                       )}
                     </button>
                   </div>

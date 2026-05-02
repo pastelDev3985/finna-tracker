@@ -1,10 +1,19 @@
 "use client"
 
 import { Trash2 } from "lucide-react"
-import { useTransition } from "react"
+import { useState, useTransition } from "react"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
 import { Badge } from "@/components/ui/badge"
+import { Button } from "@/components/ui/button"
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 import { deleteGoalAction } from "@/lib/actions/goals"
 
@@ -85,16 +94,16 @@ const STATUS_BADGE = {
 export function GoalCard({ goal }: GoalCardProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false)
 
-  function handleDelete(e: React.MouseEvent) {
-    e.stopPropagation()
-    if (!confirm("Delete this goal? All contributions will be removed.")) return
+  function confirmDelete() {
     startTransition(async () => {
       const result = await deleteGoalAction(goal.id)
       if (result.error) {
         toast.error(result.error)
       } else {
         toast.success("Goal deleted.")
+        setShowDeleteDialog(false)
         router.refresh()
       }
     })
@@ -103,6 +112,7 @@ export function GoalCard({ goal }: GoalCardProps) {
   const badge = STATUS_BADGE[goal.status]
 
   return (
+    <>
     <div
       className="glass group relative flex flex-col gap-4 rounded-2xl p-5 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg"
     >
@@ -113,7 +123,7 @@ export function GoalCard({ goal }: GoalCardProps) {
         </Badge>
         <button
           type="button"
-          onClick={handleDelete}
+          onClick={() => setShowDeleteDialog(true)}
           disabled={isPending}
           className="invisible flex size-7 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-all duration-200 hover:bg-destructive/10 hover:text-destructive group-hover:visible"
           aria-label={`Delete ${goal.name}`}
@@ -153,5 +163,35 @@ export function GoalCard({ goal }: GoalCardProps) {
         </div>
       </div>
     </div>
+
+    <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Delete goal?</DialogTitle>
+          <DialogDescription>
+            This will permanently delete{" "}
+            <span className="font-medium text-foreground">{goal.name}</span>{" "}
+            and all its contributions. This action cannot be undone.
+          </DialogDescription>
+        </DialogHeader>
+        <DialogFooter>
+          <Button
+            variant="outline"
+            onClick={() => setShowDeleteDialog(false)}
+            disabled={isPending}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="destructive"
+            onClick={confirmDelete}
+            disabled={isPending}
+          >
+            {isPending ? "Deleting…" : "Delete"}
+          </Button>
+        </DialogFooter>
+      </DialogContent>
+    </Dialog>
+    </>
   )
 }

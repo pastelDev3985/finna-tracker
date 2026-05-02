@@ -159,7 +159,7 @@ className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl"
   - [x] Zod field-level error messages displayed inline
   - [x] Submit button disabled while in-flight
   - [x] Sonner toast on success (then redirect) and on error
-  - [ ] **"Forgot password?" link** below the password field → `/forgot-password`
+  - [x] **"Forgot password?" link** below the password field → `/forgot-password`
 - [x] Centered layout — full viewport height, vertical + horizontal centering
 - [x] Finora logo/wordmark at top
 
@@ -169,7 +169,7 @@ className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl"
 - [x] Fields: `name`, `email`, `password`, `confirmPassword`
 - [x] Password confirmation validated client-side before submit
 - [x] Link back to `/login`
-- [ ] **Post-submit redirect:** API response now includes `requiresEmailVerification: true` — redirect to `/verify-email` instead of `/dashboard` or `/onboarding`
+- [x] **Post-submit redirect:** API response now includes `requiresEmailVerification: true` — redirect to `/verify-email` instead of `/dashboard` or `/onboarding`
 
 ### 1.3 Email verification page (`app/(auth)/verify-email/page.tsx`)
 
@@ -178,25 +178,25 @@ className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl"
 > - `POST /api/auth/verify-email` — body `{ otp: string }`; returns `{ verified: true }` or `{ error: string }`
 > - `POST /api/auth/resend-otp` — no body; returns `{ message: string }` or `{ error: string }`; 60-second cooldown enforced server-side
 
-- [ ] Glass card layout — same pattern as login/register pages
-- [ ] Heading: "Verify your email" + subtitle with the user's masked email address and "we sent a 6-digit code"
-- [ ] 6-digit OTP input — single `<input maxLength={6}>` or 6 individual digit boxes with auto-advance
-- [ ] "Verify" submit button — disabled while in-flight; spinner on submit
-- [ ] Inline error display for wrong code, expired code, or server errors
-- [ ] **"Resend code" button** — disabled for 60 seconds after the last send; shows a live countdown ("Resend in 42s"); enabled again after cooldown
-- [ ] On success (`{ verified: true }`): force a session token refresh (NextAuth `update()` from `useSession`), then redirect to `/onboarding`
-- [ ] Accessible from middleware redirect if a signed-in user has `isEmailVerified: false` (see 1.6)
+- [x] Glass card layout — same pattern as login/register pages
+- [x] Heading: "Verify your email" + subtitle with the user's masked email address and "we sent a 6-digit code"
+- [x] 6-digit OTP input — single `<input maxLength={6}>` or 6 individual digit boxes with auto-advance
+- [x] "Verify" submit button — disabled while in-flight; spinner on submit
+- [x] Inline error display for wrong code, expired code, or server errors
+- [x] **"Resend code" button** — disabled for 60 seconds after the last send; shows a live countdown ("Resend in 42s"); enabled again after cooldown
+- [x] On success (`{ verified: true }`): force a session token refresh (NextAuth `update()` from `useSession`), then redirect to `/onboarding`
+- [x] Accessible from middleware redirect if a signed-in user has `isEmailVerified: false` (see 1.6)
 
 ### 1.4 Forgot password page (`app/(auth)/forgot-password/page.tsx`)
 
 > **Backend contract:** `POST /api/auth/forgot-password` — public (no session needed); body `{ email: string }`; **always returns 200** with a generic message regardless of whether the email exists (prevents enumeration)
 
-- [ ] Glass card layout
-- [ ] Heading: "Forgot your password?" + subtitle
-- [ ] Email input with label + inline validation
-- [ ] Submit button — disabled while in-flight; spinner on submit
-- [ ] **After submission:** replace the form with a success state — e.g. envelope icon + "Check your inbox. If that email is registered, a reset link has been sent." — always shown, never reveals whether the email exists
-- [ ] "Back to sign in" link → `/login`
+- [x] Glass card layout
+- [x] Heading: "Forgot your password?" + subtitle
+- [x] Email input with label + inline validation
+- [x] Submit button — disabled while in-flight; spinner on submit
+- [x] **After submission:** replace the form with a success state — e.g. envelope icon + "Check your inbox. If that email is registered, a reset link has been sent." — always shown, never reveals whether the email exists
+- [x] "Back to sign in" link → `/login`
 
 ### 1.5 Reset password page (`app/(auth)/reset-password/page.tsx`)
 
@@ -205,32 +205,32 @@ className="backdrop-blur-lg bg-white/10 border border-white/20 rounded-2xl"
 > - `GET /api/auth/reset-password?token=<raw>` — public; validates token before showing the form; returns `{ valid: true }` or `{ error: string }`
 > - `POST /api/auth/reset-password` — public; body `{ token: string, newPassword: string, confirmPassword: string }`; returns `{ success: true }` or `{ error: string }`
 
-- [ ] On page mount: call `GET /api/auth/reset-password?token=<urlParam>` to validate the token
-  - [ ] If invalid or expired: show error card — "This reset link is invalid or has expired" + "Request a new link" button → `/forgot-password`
-  - [ ] If valid: render the new-password form
-- [ ] Form fields: new password + confirm new password — both with show/hide toggles
-- [ ] `token` value passed as hidden field (or included in the submit payload from state)
-- [ ] Submit button disabled while in-flight + inline field errors
-- [ ] On success: Sonner toast "Password updated — please sign in" → redirect to `/login`
-- [ ] On error (e.g. link consumed in another tab): show inline error + "Request a new link" button
+- [x] On page mount: call `GET /api/auth/reset-password?token=<urlParam>` to validate the token
+  - [x] If invalid or expired: show error card — "This reset link is invalid or has expired" + "Request a new link" button → `/forgot-password`
+  - [x] If valid: render the new-password form
+- [x] Form fields: new password + confirm new password — both with show/hide toggles
+- [x] `token` value passed as hidden field (or included in the submit payload from state)
+- [x] Submit button disabled while in-flight + inline field errors
+- [x] On success: Sonner toast "Password updated — please sign in" → redirect to `/login`
+- [x] On error (e.g. link consumed in another tab): show inline error + "Request a new link" button
 
 ### 1.6 Middleware gate for unverified users
 
 > **Backend note:** `session.user.isEmailVerified` (boolean) is present in every authenticated JWT. `proxy.ts` currently does **not** gate on this field — that's a deliberate hold pending this task.
 
-- [ ] Update `proxy.ts`: if the session exists **and** `session.user.isEmailVerified === false`, redirect to `/verify-email` unless the current path is already `/verify-email`
-- [ ] Ensure `/verify-email` is in the middleware's allowed-through list so it doesn't redirect-loop
-- [ ] Verify that public auth routes (`/login`, `/register`, `/forgot-password`, `/reset-password`) are also excluded from the gate
+- [x] Update `proxy.ts`: if the session exists **and** `session.user.isEmailVerified === false`, redirect to `/verify-email` unless the current path is already `/verify-email`
+- [x] Ensure `/verify-email` is in the middleware's allowed-through list so it doesn't redirect-loop
+- [x] Verify that public auth routes (`/login`, `/register`, `/forgot-password`, `/reset-password`) are also excluded from the gate
 
 ### 1.7 Exit criteria
 
 - [x] Login and register forms render correctly in light and dark mode
 - [x] Field errors appear inline (not just a toast)
 - [x] Submit button shows a loading state while waiting
-- [ ] Register → redirects to `/verify-email`; OTP entry works end-to-end
-- [ ] "Forgot password?" link visible on login page
-- [ ] Full reset flow works: email → inbox → link → new password → login
-- [ ] Unverified user who signs in is intercepted by middleware and lands on `/verify-email`
+- [x] Register → redirects to `/verify-email`; OTP entry works end-to-end
+- [x] "Forgot password?" link visible on login page
+- [x] Full reset flow works: email → inbox → link → new password → login
+- [x] Unverified user who signs in is intercepted by middleware and lands on `/verify-email`
 
 ---
 

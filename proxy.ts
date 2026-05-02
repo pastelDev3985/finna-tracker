@@ -14,42 +14,70 @@ const APP_ROUTES = [
   "/onboarding",
 ];
 
-const AUTH_ROUTES = ["/login", "/register"];
+// Routes that kick logged-in users back to the app
+const AUTH_ONLY_ROUTES = ["/login", "/register"];
+
+type SessionUser = { id?: string; isEmailVerified?: boolean };
 
 export default auth(async (req: NextRequest & { auth: unknown }) => {
-  const isLoggedIn = !!req.auth;
+  const session = req.auth as { user?: SessionUser } | null;
+  const isLoggedIn = !!session;
+  const isEmailVerified = session?.user?.isEmailVerified ?? false;
   const { pathname } = req.nextUrl;
 
-  const isAuthRoute = AUTH_ROUTES.includes(pathname);
-  const isAppRoute = APP_ROUTES.some((route) => pathname.startsWith(route));
+  // ── /verify-email ─────────────────────────────────────────────────────────
+  // Must be logged-in (so the OTP API has a session to gate on).
+  // Already-verified users go straight to the app.
+  if (pathname === "/verify-email") {
+    if (!isLoggedIn) {
+      return NextResponse.redirect(new URL("/login", req.nextUrl));
+    }
+    if (isEmailVerified) {
+      return NextResponse.redirect(new URL("/dashboard", req.nextUrl));
+    }
+    return NextResponse.next();
+  }
 
-  if (isAuthRoute && isLoggedIn) {
+  // ── Auth-only routes (/login, /register) ──────────────────────────────────
+  // Logged-in users should never see these pages.
+  if (AUTH_ONLY_ROUTES.includes(pathname) && isLoggedIn) {
+    if (!isEmailVerified) {
+      return NextResponse.redirect(new URL("/verify-email", req.nextUrl));
+    }
     return NextResponse.redirect(new URL("/dashboard", req.nextUrl));
   }
 
-  if (isAppRoute && !isLoggedIn) {
-    const loginUrl = new URL("/login", req.nextUrl);
-    loginUrl.searchParams.set("callbackUrl", pathname);
-    return NextResponse.redirect(loginUrl);
-  }
+  // ── App routes (/dashboard, /transactions, …) ─────────────────────────────
+  const isAppRoute = APP_ROUTES.some((route) => pathname.startsWith(route));
 
-  // If logged in and accessing an app route (except onboarding), check if user has categories
-  // If no categories, redirect to onboarding
-  if (isLoggedIn && isAppRoute && !pathname.startsWith("/onboarding")) {
-    const userId = (req.auth as { user?: { id?: string } })?.user?.id;
-    if (userId) {
-      try {
-        const categoryCount = await prisma.category.count({
-          where: { userId },
-        });
+  if (isAppRoute) {
+    // Must be logged in
+    if (!isLoggedIn) {
+      const loginUrl = new URL("/login", req.nextUrl);
+      loginUrl.searchParams.set("callbackUrl", pathname);
+      return NextResponse.redirect(loginUrl);
+    }
 
-        // New user with no categories → redirect to onboarding
-        if (categoryCount === 0) {
-          return NextResponse.redirect(new URL("/onboarding", req.nextUrl));
+    // Must have verified email
+    if (!isEmailVerified) {
+      return NextResponse.redirect(new URL("/verify-email", req.nextUrl));
+    }
+
+    // New user with no categories → onboarding
+    if (!pathname.startsWith("/onboarding")) {
+      const userId = session?.user?.id;
+      if (userId) {
+        try {
+          const categoryCount = await prisma.category.count({
+            where: { userId },
+          });
+          if (categoryCount === 0) {
+            return NextResponse.redirect(new URL("/onboarding", req.nextUrl));
+          }
+        } catch (error) {
+          console.error("[proxy] Error checking categories:", error);
+          // Fail open — don't break the app on DB errors
         }
-      } catch (error) {
-        console.error("[proxy] Error checking categories:", error);
-        // On error, allow the request through (fail open, don't break the app)
       }
     }
   }

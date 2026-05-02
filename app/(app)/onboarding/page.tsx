@@ -27,6 +27,7 @@ export default async function OnboardingPage() {
   return (
     <OnboardingClient
       userName={session?.user?.name?.split(" ")[0] ?? "there"}
+      currency={session?.user?.currency ?? "GHS"}
       categories={categories}
     />
   )
