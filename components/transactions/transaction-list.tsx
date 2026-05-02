@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { Trash2 } from "lucide-react"
-import { useState, useTransition } from "react"
-import { toast } from "sonner"
-import { Badge } from "@/components/ui/badge"
-import { Button } from "@/components/ui/button"
+import { Trash2 } from "lucide-react";
+import { useState, useTransition } from "react";
+import { toast } from "sonner";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import {
   Dialog,
   DialogContent,
@@ -12,14 +12,14 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
+} from "@/components/ui/dialog";
 import {
   Sheet,
   SheetContent,
   SheetDescription,
   SheetHeader,
   SheetTitle,
-} from "@/components/ui/sheet"
+} from "@/components/ui/sheet";
 import {
   Table,
   TableBody,
@@ -27,36 +27,36 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table"
-import { cn } from "@/lib/utils"
-import { deleteTransactionAction } from "@/lib/actions/transactions"
-import { TransactionForm } from "./transaction-form"
+} from "@/components/ui/table";
+import { cn } from "@/lib/utils";
+import { deleteTransactionAction } from "@/lib/actions/transactions";
+import { TransactionForm } from "./transaction-form";
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
 export interface TxRow {
-  id: string
-  categoryId: string
-  categoryName: string
-  type: "INCOME" | "EXPENSE"
-  amount: string
-  rawAmount: string
-  date: string
-  rawDate: string
-  note: string | null
-  recurrence: string
+  id: string;
+  categoryId: string;
+  categoryName: string;
+  type: "INCOME" | "EXPENSE";
+  amount: string;
+  rawAmount: string;
+  date: string;
+  rawDate: string;
+  note: string | null;
+  recurrence: string;
 }
 
 interface Category {
-  id: string
-  name: string
-  type: "INCOME" | "EXPENSE"
+  id: string;
+  name: string;
+  type: "INCOME" | "EXPENSE";
 }
 
 interface TransactionListProps {
-  transactions: TxRow[]
-  categories: Category[]
-  currencySymbol: string
+  transactions: TxRow[];
+  categories: Category[];
+  currencySymbol: string;
 }
 
 // ─── Component ──────────────────────────────────────────────────────────────
@@ -66,38 +66,40 @@ export function TransactionList({
   categories,
   currencySymbol,
 }: TransactionListProps) {
-  const [editTx, setEditTx] = useState<TxRow | null>(null)
-  const [deleteTx, setDeleteTx] = useState<TxRow | null>(null)
-  const [isPending, startTransition] = useTransition()
+  const [editTx, setEditTx] = useState<TxRow | null>(null);
+  const [deleteTx, setDeleteTx] = useState<TxRow | null>(null);
+  const [isPending, startTransition] = useTransition();
 
   function handleDelete() {
-    if (!deleteTx) return
+    if (!deleteTx) return;
     startTransition(async () => {
-      const result = await deleteTransactionAction(deleteTx.id)
+      const result = await deleteTransactionAction(deleteTx.id);
       if (result.error) {
-        toast.error(result.error)
+        toast.error(result.error);
       } else {
-        toast.success("Transaction deleted.")
-        setDeleteTx(null)
+        toast.success("Transaction deleted.");
+        setDeleteTx(null);
       }
-    })
+    });
   }
 
   if (transactions.length === 0) {
     return (
       <div className="rounded-xl border border-dashed border-border py-16 text-center">
-        <p className="text-sm font-medium text-foreground">No transactions found</p>
+        <p className="text-sm font-medium text-foreground">
+          No transactions found
+        </p>
         <p className="mt-1 text-xs text-muted-foreground">
           Try adjusting your filters or add a new transaction.
         </p>
       </div>
-    )
+    );
   }
 
   return (
     <>
-      <div className="overflow-hidden rounded-2xl border border-border">
-        <Table>
+      <div className="w-full overflow-x-auto rounded-2xl border border-border">
+        <Table className="min-w-full">
           <TableHeader>
             <TableRow className="bg-muted/30 hover:bg-muted/30">
               <TableHead className="w-[110px]">Date</TableHead>
@@ -125,7 +127,7 @@ export function TransactionList({
                         "text-[10px] font-medium border",
                         tx.type === "INCOME"
                           ? "border-[var(--color-success)]/30 bg-[var(--color-success)]/10 text-[var(--color-success)]"
-                          : "border-[var(--color-error)]/30 bg-[var(--color-error)]/10 text-[var(--color-error)]"
+                          : "border-[var(--color-error)]/30 bg-[var(--color-error)]/10 text-[var(--color-error)]",
                       )}
                     >
                       {tx.type === "INCOME" ? "IN" : "OUT"}
@@ -150,18 +152,19 @@ export function TransactionList({
                       "font-semibold tabular-nums text-sm",
                       tx.type === "INCOME"
                         ? "text-[var(--color-success)]"
-                        : "text-[var(--color-error)]"
+                        : "text-[var(--color-error)]",
                     )}
                   >
-                    {tx.type === "INCOME" ? "+" : "-"}{tx.amount}
+                    {tx.type === "INCOME" ? "+" : "-"}
+                    {tx.amount}
                   </span>
                 </TableCell>
                 <TableCell>
                   <button
                     type="button"
                     onClick={(e) => {
-                      e.stopPropagation()
-                      setDeleteTx(tx)
+                      e.stopPropagation();
+                      setDeleteTx(tx);
                     }}
                     className="invisible flex size-7 cursor-pointer items-center justify-center rounded-lg text-muted-foreground transition-all duration-200 hover:bg-destructive/10 hover:text-destructive group-hover:visible"
                     aria-label={`Delete ${tx.categoryName} transaction`}
@@ -180,7 +183,9 @@ export function TransactionList({
         <SheetContent side="right" className="w-full max-w-sm overflow-y-auto">
           <SheetHeader className="mb-4">
             <SheetTitle>Edit transaction</SheetTitle>
-            <SheetDescription>Update the details of this transaction.</SheetDescription>
+            <SheetDescription>
+              Update the details of this transaction.
+            </SheetDescription>
           </SheetHeader>
           {editTx && (
             <TransactionForm
@@ -203,16 +208,23 @@ export function TransactionList({
       </Sheet>
 
       {/* Delete confirm dialog */}
-      <Dialog open={!!deleteTx} onOpenChange={(open) => !open && setDeleteTx(null)}>
+      <Dialog
+        open={!!deleteTx}
+        onOpenChange={(open) => !open && setDeleteTx(null)}
+      >
         <DialogContent>
           <DialogHeader>
             <DialogTitle>Delete transaction?</DialogTitle>
             <DialogDescription>
               This will permanently delete the{" "}
-              <span className="font-medium text-foreground">{deleteTx?.categoryName}</span>{" "}
+              <span className="font-medium text-foreground">
+                {deleteTx?.categoryName}
+              </span>{" "}
               transaction of{" "}
-              <span className="font-medium text-foreground">{deleteTx?.amount}</span>.
-              This action cannot be undone.
+              <span className="font-medium text-foreground">
+                {deleteTx?.amount}
+              </span>
+              . This action cannot be undone.
             </DialogDescription>
           </DialogHeader>
           <DialogFooter>
@@ -236,5 +248,5 @@ export function TransactionList({
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

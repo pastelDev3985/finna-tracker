@@ -4,7 +4,7 @@ import { useRouter } from "next/navigation";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { PageHeader } from "@/components/shared/page-header";
 import { Button } from "@/components/ui/button";
-import { SpendByCategoryChart } from "./spend-by-category-chart"; 
+import { SpendByCategoryChart } from "./spend-by-category-chart";
 import { IncomeVsExpensesChart } from "./income-vs-expenses-chart";
 import { DailySpendHeatmap } from "./daily-spend-heatmap";
 import { CategoryDonutChart } from "./category-donut-chart";
@@ -94,25 +94,25 @@ export function ReportsClient({
       />
 
       {/* Month/Year Picker */}
-      <div className="flex items-center justify-between rounded-2xl backdrop-blur-lg bg-white/10 dark:bg-[rgba(32,32,32,0.6)] border border-white/15 dark:border-white/8 p-4">
+      <div className="flex flex-row items-center justify-between gap-2 sm:gap-3 rounded-2xl backdrop-blur-lg bg-white/10 dark:bg-[rgba(32,32,32,0.6)] border border-white/15 dark:border-white/8 p-2 sm:p-4">
         <Button
           variant="ghost"
           size="icon"
           onClick={handlePreviousMonth}
-          className="cursor-pointer hover:bg-white/20 dark:hover:bg-white/10 transition-all duration-200"
+          className="cursor-pointer hover:bg-white/20 dark:hover:bg-white/10 transition-all duration-200 h-9 w-9 sm:h-10 sm:w-10"
         >
-          <ChevronLeft className="w-5 h-5" />
+          <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
         </Button>
-        <span className="text-lg font-semibold text-center min-w-[180px]">
+        <span className="text-base sm:text-lg font-semibold text-center min-w-[120px] sm:min-w-[180px]">
           {monthName}
         </span>
         <Button
           variant="ghost"
           size="icon"
           onClick={handleNextMonth}
-          className="cursor-pointer hover:bg-white/20 dark:hover:bg-white/10 transition-all duration-200"
+          className="cursor-pointer hover:bg-white/20 dark:hover:bg-white/10 transition-all duration-200 h-9 w-9 sm:h-10 sm:w-10"
         >
-          <ChevronRight className="w-5 h-5" />
+          <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
         </Button>
       </div>
 

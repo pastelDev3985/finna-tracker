@@ -5,14 +5,13 @@ import {
   Sparkles,
   Target,
   Wallet,
-} from "lucide-react"
-import Link from "next/link"
-import { ThemeToggle } from "@/components/theme-toggle"
+} from "lucide-react";
+import Link from "next/link";
+import { ThemeToggle } from "@/components/theme-toggle";
 
 export default function Home() {
   return (
     <div className="relative flex min-h-full flex-1 flex-col overflow-hidden bg-background">
-
       {/* ── Decorative background orbs ── */}
       {/*
         These give the glass elements something to blur against.
@@ -32,9 +31,8 @@ export default function Home() {
 
       {/* ── Page content ── */}
       <div className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
-
         {/* ── Navbar ── */}
-        <header className="glass mb-12 flex flex-col items-stretch justify-between gap-4 rounded-2xl px-4 py-3 sm:flex-row sm:items-center sm:px-5">
+        <header className="glass mb-12 flex flex-row items-center justify-between gap-4 rounded-2xl px-4 py-3 sm:px-5">
           <div className="flex items-center gap-3">
             <div className="flex size-9 items-center justify-center rounded-xl border border-border bg-primary/10 font-heading text-lg font-bold text-primary shadow-sm">
               F
@@ -67,7 +65,6 @@ export default function Home() {
 
         {/* ── Hero ── */}
         <div className="mx-auto max-w-3xl space-y-8 text-center">
-
           {/* Announcement badge */}
           <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/25 bg-primary/10 px-3 py-1.5 text-xs font-medium text-foreground">
             <Sparkles className="size-3 text-primary" aria-hidden />
@@ -84,18 +81,18 @@ export default function Home() {
                 className="absolute -inset-1 z-0 rounded-lg bg-primary/15 blur-sm"
                 aria-hidden
               />
-            </span>
-            {" "}not noise.
+            </span>{" "}
+            not noise.
           </h1>
 
           <p className="mx-auto max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
             You know that feeling when your money just disappears? One minute
-            you get balance, next minute you dey wonder what happened.
-            Finora helps you see everything clearly — so you can stay in
-            control and make better money moves every day.
+            you get balance, next minute you dey wonder what happened. Finora
+            helps you see everything clearly so you can stay in control and make
+            better money moves every day.
           </p>
 
-          <div className="flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+          <div className="flex flex-row items-center justify-center gap-3 sm:flex-col">
             <Link
               href="/register"
               className="group inline-flex h-12 cursor-pointer items-center justify-center gap-2 rounded-lg bg-primary px-8 text-sm font-semibold text-primary-foreground transition-all duration-200 hover:-translate-y-px hover:bg-primary-hover active:bg-primary-active"
@@ -116,27 +113,25 @@ export default function Home() {
 
           {/* Trust pills */}
           <ul className="flex flex-wrap justify-center gap-2 text-xs text-muted-foreground">
-            {[
-              "Free to start",
-              "No card required",
-              "Dark mode ready",
-            ].map((t) => (
-              <li
-                key={t}
-                className="glass rounded-full border border-border px-3 py-1.5"
-              >
-                {t}
-              </li>
-            ))}
+            {["Free to start", "No card required", "Dark mode ready"].map(
+              (t) => (
+                <li
+                  key={t}
+                  className="glass rounded-full border border-border px-3 py-1.5"
+                >
+                  {t}
+                </li>
+              ),
+            )}
           </ul>
         </div>
 
         {/* ── Stats strip ── */}
         <div className="mx-auto mt-16 grid max-w-2xl grid-cols-3 gap-4">
           {[
-            { stat: "15+",      label: "Default categories" },
+            { stat: "15+", label: "Default categories" },
             { stat: "AI-first", label: "Powered by Claude" },
-            { stat: "100%",     label: "Private — your data" },
+            { stat: "100%", label: "Private — your data" },
           ].map(({ stat, label }) => (
             <div
               key={label}
@@ -151,10 +146,7 @@ export default function Home() {
         </div>
 
         {/* ── Feature cards ── */}
-        <section
-          className="mt-16 lg:mt-20"
-          aria-labelledby="features-heading"
-        >
+        <section className="mt-16 lg:mt-20" aria-labelledby="features-heading">
           <div className="mb-10 text-center">
             <p className="text-xs font-semibold uppercase tracking-widest text-primary">
               Why Finora
@@ -166,7 +158,8 @@ export default function Home() {
               Built for real money clarity
             </h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-muted-foreground sm:text-base">
-              From daily expense tracking to AI-powered financial advice — everything you need in one focused app.
+              From daily expense tracking to AI-powered financial advice to
+              everything you need in one focused app.
             </p>
           </div>
 
@@ -175,7 +168,7 @@ export default function Home() {
               {
                 icon: Wallet,
                 title: "Effortless tracking",
-                body: "Log every cedi of income and spending in seconds. Categories, notes, recurrence — all covered.",
+                body: "Log every cedi of income and spending in seconds. Categories, notes, recurrence, all covered.",
               },
               {
                 icon: Layers,
@@ -190,7 +183,7 @@ export default function Home() {
               {
                 icon: BrainCircuit,
                 title: "AI insights (Claude)",
-                body: "Ask your finances anything. Get real answers about your spending, goals, and money habits — powered by Claude.",
+                body: "Ask your finances anything. Get real answers about your spending, goals, and money habits powered by Claude.",
                 highlight: true,
               },
             ].map(({ icon: Icon, title, body, highlight }) => (
@@ -281,7 +274,6 @@ export default function Home() {
             </div>
           </div>
         </section>
-
       </div>
 
       {/* ── Footer ── */}
@@ -289,16 +281,16 @@ export default function Home() {
         <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8">
           <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
             {/* Brand */}
-            <div className="flex items-center gap-3">
-              <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 font-heading text-sm font-bold text-primary">
-                F
-              </div>
-              <div>
+            <div className="flex flex-col items-center gap-2 sm:flex-row sm:items-center sm:gap-3">
+              <div className="flex items-center gap-3">
+                <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 font-heading text-sm font-bold text-primary">
+                  F
+                </div>
                 <p className="text-sm font-semibold text-foreground">Finora</p>
-                <p className="text-xs text-muted-foreground">
-                  © {new Date().getFullYear()} All rights reserved.
-                </p>
               </div>
+              <p className="text-xs text-muted-foreground">
+                © {new Date().getFullYear()} All rights reserved.
+              </p>
             </div>
 
             {/* CTA */}
@@ -327,7 +319,6 @@ export default function Home() {
           </div>
         </div>
       </footer>
-
     </div>
-  )
+  );
 }

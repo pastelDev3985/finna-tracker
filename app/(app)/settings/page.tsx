@@ -9,13 +9,14 @@ import { SettingsAppearance } from "@/components/settings/settings-appearance";
 import { SettingsCategories } from "@/components/settings/settings-categories";
 import { SettingsDangerZone } from "@/components/settings/settings-danger-zone";
 import { listCategories } from "@/lib/services/categories";
+import type { CategoryData } from "@/types";
 
 export default async function SettingsPage() {
   const session = await auth();
   if (!session?.user) redirect("/login");
 
   const categoriesResult = await listCategories(session.user.id);
-  const categories = (categoriesResult.data ?? []) as any[];
+  const categories = (categoriesResult.data ?? []) as CategoryData[];
 
   return (
     <div className="flex flex-col gap-6 p-6 lg:p-8">
@@ -25,7 +26,7 @@ export default async function SettingsPage() {
       />
 
       <Tabs defaultValue="profile" className="w-full">
-        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6">
+        <TabsList className="grid w-full grid-cols-3 lg:grid-cols-6 border-b bg-transparent mb-4">
           <TabsTrigger value="profile">Profile</TabsTrigger>
           <TabsTrigger value="password">Password</TabsTrigger>
           <TabsTrigger value="currency">Currency</TabsTrigger>

@@ -1,4 +1,4 @@
-"use client"
+"use client";
 
 import {
   ArrowLeftRight,
@@ -14,45 +14,45 @@ import {
   Target,
   Wallet,
   X,
-} from "lucide-react"
-import { signOut } from "next-auth/react"
-import { useTheme } from "next-themes"
-import Link from "next/link"
-import { usePathname } from "next/navigation"
-import { useSyncExternalStore, useState } from "react"
-import { Avatar, AvatarFallback } from "@/components/ui/avatar"
-import { Separator } from "@/components/ui/separator"
-import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet"
-import { cn } from "@/lib/utils"
+} from "lucide-react";
+import { signOut } from "next-auth/react";
+import { useTheme } from "next-themes";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useSyncExternalStore, useState } from "react";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Separator } from "@/components/ui/separator";
+import { Sheet, SheetContent, SheetTitle } from "@/components/ui/sheet";
+import { cn } from "@/lib/utils";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 interface NavItem {
-  label: string
-  href: string
-  icon: React.ElementType
+  label: string;
+  href: string;
+  icon: React.ElementType;
 }
 
 interface SidebarUser {
-  name: string | null
-  email: string | null
+  name: string | null;
+  email: string | null;
 }
 
 interface SidebarProps {
-  user: SidebarUser
+  user: SidebarUser;
 }
 
 // ─── Nav items ────────────────────────────────────────────────────────────────
 
 const NAV_ITEMS: NavItem[] = [
-  { label: "Dashboard",    href: "/dashboard",    icon: LayoutDashboard },
-  { label: "Transactions", href: "/transactions", icon: ArrowLeftRight  },
-  { label: "Budgets",      href: "/budgets",      icon: Wallet          },
-  { label: "Goals",        href: "/goals",        icon: Target          },
-  { label: "Reports",      href: "/reports",      icon: BarChart2       },
-  { label: "Insights",     href: "/insights",     icon: Sparkles        },
-  { label: "Settings",     href: "/settings",     icon: Settings        },
-]
+  { label: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+  { label: "Transactions", href: "/transactions", icon: ArrowLeftRight },
+  { label: "Budgets", href: "/budgets", icon: Wallet },
+  { label: "Goals", href: "/goals", icon: Target },
+  { label: "Reports", href: "/reports", icon: BarChart2 },
+  { label: "Insights", href: "/insights", icon: Sparkles },
+  { label: "Settings", href: "/settings", icon: Settings },
+];
 
 // ─── Theme toggle hook ────────────────────────────────────────────────────────
 
@@ -60,8 +60,8 @@ function useIsClient() {
   return useSyncExternalStore(
     () => () => {},
     () => true,
-    () => false
-  )
+    () => false,
+  );
 }
 
 // ─── Nav link ─────────────────────────────────────────────────────────────────
@@ -71,13 +71,13 @@ function NavLink({
   collapsed,
   onClick,
 }: {
-  item: NavItem
-  collapsed: boolean
-  onClick?: () => void
+  item: NavItem;
+  collapsed: boolean;
+  onClick?: () => void;
 }) {
-  const pathname = usePathname()
+  const pathname = usePathname();
   const isActive =
-    pathname === item.href || pathname.startsWith(item.href + "/")
+    pathname === item.href || pathname.startsWith(item.href + "/");
 
   return (
     <Link
@@ -89,7 +89,7 @@ function NavLink({
         isActive
           ? "bg-primary/10 text-primary"
           : "text-muted-foreground hover:bg-muted hover:text-foreground",
-        collapsed && "justify-center px-0"
+        collapsed && "justify-center px-0",
       )}
     >
       {/* Active left bar */}
@@ -100,14 +100,17 @@ function NavLink({
         />
       )}
       <item.icon
-        className={cn("size-5 shrink-0 transition-colors duration-200",
-          isActive ? "text-primary" : "text-muted-foreground group-hover:text-foreground"
+        className={cn(
+          "size-5 shrink-0 transition-colors duration-200",
+          isActive
+            ? "text-primary"
+            : "text-muted-foreground group-hover:text-foreground",
         )}
         aria-hidden
       />
       {!collapsed && <span className="truncate">{item.label}</span>}
     </Link>
-  )
+  );
 }
 
 // ─── Sidebar content ──────────────────────────────────────────────────────────
@@ -118,34 +121,29 @@ function SidebarContent({
   onCollapse,
   onNavClick,
 }: {
-  user: SidebarUser
-  collapsed: boolean
-  onCollapse?: () => void
-  onNavClick?: () => void
+  user: SidebarUser;
+  collapsed: boolean;
+  onCollapse?: () => void;
+  onNavClick?: () => void;
 }) {
-  const { setTheme, resolvedTheme } = useTheme()
-  const mounted = useIsClient()
-  const isDark = resolvedTheme === "dark"
+  const { setTheme, resolvedTheme } = useTheme();
+  const mounted = useIsClient();
+  const isDark = resolvedTheme === "dark";
 
   const initials = (user.name ?? user.email ?? "U")
     .split(" ")
     .map((n) => n[0])
     .join("")
     .toUpperCase()
-    .slice(0, 2)
+    .slice(0, 2);
 
   return (
-    <div
-      className={cn(
-        "flex h-full flex-col",
-        collapsed ? "w-16" : "w-56"
-      )}
-    >
+    <div className={cn("flex h-full flex-col", collapsed ? "w-16" : "w-56")}>
       {/* Logo + collapse toggle */}
       <div
         className={cn(
           "flex h-16 shrink-0 items-center border-b border-border",
-          collapsed ? "justify-center px-0" : "justify-between px-4"
+          collapsed ? "justify-center px-0" : "justify-between px-4",
         )}
       >
         {!collapsed && (
@@ -194,7 +192,7 @@ function SidebarContent({
             title={isDark ? "Switch to light mode" : "Switch to dark mode"}
             className={cn(
               "flex h-10 w-full cursor-pointer items-center gap-3 rounded-xl px-3 text-sm font-medium text-muted-foreground transition-all duration-200 hover:bg-muted hover:text-foreground",
-              collapsed && "justify-center px-0"
+              collapsed && "justify-center px-0",
             )}
             aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
           >
@@ -213,7 +211,7 @@ function SidebarContent({
         <div
           className={cn(
             "flex items-center gap-2.5 rounded-xl px-2 py-2",
-            collapsed && "justify-center px-0"
+            collapsed && "justify-center px-0",
           )}
         >
           <Avatar className="size-8 shrink-0">
@@ -243,19 +241,19 @@ function SidebarContent({
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 // ─── Desktop sidebar ──────────────────────────────────────────────────────────
 
 function DesktopSidebar({ user }: { user: SidebarUser }) {
-  const [collapsed, setCollapsed] = useState(false)
+  const [collapsed, setCollapsed] = useState(false);
 
   return (
     <aside
       className={cn(
         "hidden md:flex shrink-0 flex-col border-r border-border bg-card transition-all duration-200",
-        collapsed ? "w-16" : "w-56"
+        collapsed ? "w-16" : "w-56",
       )}
     >
       <SidebarContent
@@ -264,7 +262,7 @@ function DesktopSidebar({ user }: { user: SidebarUser }) {
         onCollapse={() => setCollapsed((v) => !v)}
       />
     </aside>
-  )
+  );
 }
 
 // ─── Mobile drawer ────────────────────────────────────────────────────────────
@@ -273,28 +271,29 @@ export function MobileSidebarTrigger({
   open,
   onOpen,
 }: {
-  open: boolean
-  onOpen: () => void
+  open: boolean;
+  onOpen: () => void;
 }) {
   return (
     <button
       type="button"
       onClick={onOpen}
       className={cn(
-        "md:hidden flex items-center justify-center size-9 rounded-xl border border-border bg-card text-foreground transition-all duration-200 hover:bg-muted cursor-pointer"
+        "md:hidden flex items-center justify-center h-10 w-10 rounded-xl border border-border bg-card text-foreground transition-all duration-200 hover:bg-muted cursor-pointer",
       )}
       aria-label="Open menu"
       aria-expanded={open}
     >
       <LayoutDashboard className="size-4" aria-hidden />
     </button>
-  )
+  );
 }
 
 // ─── Combined sidebar wrapper ─────────────────────────────────────────────────
 
 export function AppSidebar({ user }: SidebarProps) {
-  const [mobileOpen, setMobileOpen] = useState(false)
+  const [mobileOpen, setMobileOpen] = useState(false);
+  const [mobileCollapsed, setMobileCollapsed] = useState(false);
 
   return (
     <>
@@ -305,31 +304,31 @@ export function AppSidebar({ user }: SidebarProps) {
       <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
         <SheetContent
           side="left"
-          className="w-64 p-0 border-r border-border bg-card"
+          className={cn(
+            "p-0 border-r border-border bg-card transition-all duration-200",
+            mobileCollapsed ? "w-16" : "w-48",
+          )}
           aria-label="Navigation"
         >
           <SheetTitle className="sr-only">Navigation</SheetTitle>
-          <div className="flex items-center justify-between h-16 px-4 border-b border-border">
-            <Link
-              href="/dashboard"
-              className="font-heading text-lg font-bold tracking-tight text-foreground hover:text-primary transition-colors duration-200"
-              onClick={() => setMobileOpen(false)}
-            >
-              Finora
-            </Link>
-            <button
-              type="button"
-              onClick={() => setMobileOpen(false)}
-              className="flex size-7 cursor-pointer items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-all duration-200"
-              aria-label="Close menu"
-            >
-              <X className="size-4" aria-hidden />
-            </button>
-          </div>
+          {!mobileCollapsed && (
+            <div className="flex h-16 shrink-0 items-center border-b border-border justify-between px-4">
+              <button
+                type="button"
+                onClick={() => setMobileCollapsed(true)}
+                className="flex size-7 cursor-pointer items-center justify-center rounded-lg text-muted-foreground hover:bg-muted hover:text-foreground transition-all duration-200"
+                aria-label="Collapse menu"
+              >
+                <ChevronLeft className="size-4" aria-hidden />
+              </button>
+            </div>
+          )}
           <SidebarContent
             user={user}
-            collapsed={false}
-            onNavClick={() => setMobileOpen(false)}
+            collapsed={mobileCollapsed}
+            onNavClick={() => {
+              if (!mobileCollapsed) setMobileOpen(false);
+            }}
           />
         </SheetContent>
       </Sheet>
@@ -338,12 +337,12 @@ export function AppSidebar({ user }: SidebarProps) {
       <button
         type="button"
         onClick={() => setMobileOpen(true)}
-        className="md:hidden flex items-center justify-center size-9 rounded-xl border border-border bg-card text-foreground transition-all duration-200 hover:bg-muted cursor-pointer"
+        className="md:hidden flex items-center justify-center h-10 w-10 rounded-xl border border-border bg-card text-foreground transition-all duration-200 hover:bg-muted cursor-pointer"
         aria-label="Open navigation"
         aria-expanded={mobileOpen}
       >
         <LayoutDashboard className="size-4" aria-hidden />
       </button>
     </>
-  )
+  );
 }

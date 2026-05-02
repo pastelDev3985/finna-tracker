@@ -42,8 +42,8 @@ interface Category {
   id: string;
   name: string;
   type: string;
-  color?: string;
-  icon?: string;
+  color?: string | null;
+  icon?: string | null;
 }
 
 interface SettingsCategoriesProps {
@@ -131,17 +131,11 @@ export function SettingsCategories({
         toast.success("Category deleted");
         setCategories((prev) => prev.filter((c) => c.id !== id));
       }
-    } catch (error) {
+    } catch {
       toast.error("Failed to delete category");
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const handleOpenNew = () => {
-    setEditingId(null);
-    reset();
-    setIsDialogOpen(true);
   };
 
   const incomeCategories = categories.filter((c) => c.type === "INCOME");
@@ -159,9 +153,7 @@ export function SettingsCategories({
           </div>
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger>
-              <Button
-                className="bg-primary text-secondary font-semibold rounded-lg hover:-translate-y-px transition-all duration-200 gap-2"
-              >
+              <Button className="bg-primary text-secondary font-semibold rounded-lg hover:-translate-y-px transition-all duration-200 gap-2">
                 <Plus className="w-4 h-4" />
                 New Category
               </Button>
@@ -196,7 +188,9 @@ export function SettingsCategories({
                   </Label>
                   <Select
                     value={watch("type")}
-                    onValueChange={(value: any) => setValue("type", value)}
+                    onValueChange={(value) =>
+                      setValue("type", value as "INCOME" | "EXPENSE")
+                    }
                   >
                     <SelectTrigger className="mt-2">
                       <SelectValue />
@@ -215,9 +209,14 @@ export function SettingsCategories({
 
                 <Button
                   type="submit"
-                  className="w-full bg-primary text-secondary font-semibold rounded-lg hover:-translate-y-px transition-all duration-200"
+                  disabled={isLoading}
+                  className="w-full bg-primary text-secondary font-semibold rounded-lg hover:-translate-y-px transition-all duration-200 disabled:opacity-50"
                 >
-                  {editingId ? "Update Category" : "Create Category"}
+                  {isLoading
+                    ? "Creating..."
+                    : editingId
+                      ? "Update Category"
+                      : "Create Category"}
                 </Button>
               </form>
             </DialogContent>

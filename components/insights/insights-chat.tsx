@@ -74,7 +74,6 @@ export function InsightsChat() {
       const reader = response.body!.getReader();
       const decoder = new TextDecoder();
       let buffer = "";
-      let hasReceivedFirstToken = false;
 
       while (true) {
         const { done, value } = await reader.read();
@@ -98,7 +97,6 @@ export function InsightsChat() {
 
           try {
             const chunk = JSON.parse(payload);
-            hasReceivedFirstToken = true;
             setMessages((prev) =>
               prev.map((m) =>
                 m.id === aiMessageId ? { ...m, content: m.content + chunk } : m,

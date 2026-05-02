@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth"
 import { listCategories } from "@/lib/services/categories"
 import { seedDefaultCategories } from "@/lib/services/categories"
 import { OnboardingClient } from "@/components/onboarding/onboarding-client"
+import type { CategoryData } from "@/types/index"
 
 export default async function OnboardingPage() {
   const session = await auth()
@@ -19,5 +20,14 @@ export default async function OnboardingPage() {
   // Seed default categories for the new user
   await seedDefaultCategories(userId)
 
-  return <OnboardingClient userName={session?.user?.name?.split(" ")[0] ?? "there"} />
+  // Fetch the newly seeded categories
+  const freshCategoriesResult = await listCategories(userId)
+  const categories = (freshCategoriesResult.data ?? []) as CategoryData[]
+
+  return (
+    <OnboardingClient
+      userName={session?.user?.name?.split(" ")[0] ?? "there"}
+      categories={categories}
+    />
+  )
 }

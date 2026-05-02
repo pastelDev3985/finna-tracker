@@ -1,35 +1,36 @@
-import { Plus } from "lucide-react"
-import Link from "next/link"
-import { auth } from "@/lib/auth"
-import { formatCurrency } from "@/lib/currency"
+import { Plus } from "lucide-react";
+import Link from "next/link";
+import { auth } from "@/lib/auth";
+import { formatCurrency } from "@/lib/currency";
 import {
   getDashboardSummary,
   getBudgetHealthStrip,
   getTopGoals,
   getRecentTransactions,
-} from "@/lib/services/dashboard"
-import { PageHeader } from "@/components/shared/page-header"
-import { BalanceCard } from "@/components/dashboard/balance-card"
-import { BudgetHealthStrip } from "@/components/dashboard/budget-health-strip"
-import { GoalsPreview } from "@/components/dashboard/goals-preview"
-import { RecentTransactions } from "@/components/dashboard/recent-transactions"
+} from "@/lib/services/dashboard";
+import { PageHeader } from "@/components/shared/page-header";
+import { BalanceCard } from "@/components/dashboard/balance-card";
+import { BudgetHealthStrip } from "@/components/dashboard/budget-health-strip";
+import { GoalsPreview } from "@/components/dashboard/goals-preview";
+import { RecentTransactions } from "@/components/dashboard/recent-transactions";
 
 export default async function DashboardPage() {
-  const session = await auth()
-  const userId = session!.user.id
-  const currency = session!.user.currency ?? "GHS"
+  const session = await auth();
+  const userId = session!.user.id;
+  const currency = session!.user.currency ?? "GHS";
 
   // Parallel fetch — all 4 data sources at once
-  const [summaryResult, budgetsResult, goalsResult, txResult] = await Promise.all([
-    getDashboardSummary(userId),
-    getBudgetHealthStrip(userId),
-    getTopGoals(userId),
-    getRecentTransactions(userId),
-  ])
+  const [summaryResult, budgetsResult, goalsResult, txResult] =
+    await Promise.all([
+      getDashboardSummary(userId),
+      getBudgetHealthStrip(userId),
+      getTopGoals(userId),
+      getRecentTransactions(userId),
+    ]);
 
   // ─── Serialize Decimal → string before passing to client components ──────────
 
-  const summary = summaryResult.data
+  const summary = summaryResult.data;
   const balanceProps = summary
     ? {
         totalIncome: formatCurrency(summary.totalIncome, currency),
@@ -39,7 +40,7 @@ export default async function DashboardPage() {
         month: summary.month,
         year: summary.year,
       }
-    : null
+    : null;
 
   const budgetItems = (budgetsResult.data ?? []).map((b) => ({
     id: b.id,
@@ -48,12 +49,12 @@ export default async function DashboardPage() {
     limitAmount: formatCurrency(b.limitAmount, currency),
     percentUsed: b.percentUsed,
     isOverBudget: b.isOverBudget,
-  }))
+  }));
 
   const goalItems = (goalsResult.data ?? []).map((g) => {
-    const saved = parseFloat(g.savedAmount.toString())
-    const target = parseFloat(g.targetAmount.toString())
-    const percentage = target > 0 ? Math.round((saved / target) * 100) : 0
+    const saved = parseFloat(g.savedAmount.toString());
+    const target = parseFloat(g.targetAmount.toString());
+    const percentage = target > 0 ? Math.round((saved / target) * 100) : 0;
     return {
       id: g.id,
       name: g.name,
@@ -61,19 +62,20 @@ export default async function DashboardPage() {
       targetAmount: formatCurrency(g.targetAmount, currency),
       percentage,
       status: g.status,
-    }
-  })
+    };
+  });
 
   const txItems = (txResult.data ?? []).map((tx) => ({
     id: tx.id,
     categoryName: tx.category.name,
     note: tx.note,
-    date: new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" }).format(
-      new Date(tx.date)
-    ),
+    date: new Intl.DateTimeFormat("en-GB", {
+      day: "numeric",
+      month: "short",
+    }).format(new Date(tx.date)),
     amount: formatCurrency(tx.amount, currency),
     type: tx.type as "INCOME" | "EXPENSE",
-  }))
+  }));
 
   return (
     <div className="flex flex-col gap-6 p-6 pb-24 lg:p-8 lg:pb-8">
@@ -91,8 +93,8 @@ export default async function DashboardPage() {
         </div>
       )}
 
-      {/* 2-col grid on large screens */}
-      <div className="grid gap-6 lg:grid-cols-2">
+      {/* Budget & Goals grid - responsive across all screens */}
+      <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-2">
         <BudgetHealthStrip budgets={budgetItems} />
         <GoalsPreview goals={goalItems} />
       </div>
@@ -118,12 +120,12 @@ export default async function DashboardPage() {
         Add transaction
       </Link>
     </div>
-  )
+  );
 }
 
 function greeting() {
-  const h = new Date().getHours()
-  if (h < 12) return "morning"
-  if (h < 17) return "afternoon"
-  return "evening"
+  const h = new Date().getHours();
+  if (h < 12) return "morning";
+  if (h < 17) return "afternoon";
+  return "evening";
 }
