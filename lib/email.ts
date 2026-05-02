@@ -1,4 +1,5 @@
 import { BrevoClient } from "@getbrevo/brevo"
+import { getPublicAppUrl } from "@/lib/public-app-url"
 
 // ─── Singleton ────────────────────────────────────────────────────────────────
 
@@ -67,7 +68,7 @@ export async function sendWelcomeEmail(
   <div style="max-width:480px;margin:0 auto;background:#fff;border-radius:16px;padding:40px;box-shadow:0 4px 24px rgba(0,0,0,.08);">
     <h1 style="font-size:24px;font-weight:700;color:#141414;margin-bottom:8px;">Welcome to Finora, ${firstName}!</h1>
     <p style="color:#555;margin-bottom:24px;">Your account is verified and ready to go. Start by adding your first transaction or setting up a savings goal.</p>
-    <a href="${process.env.NEXTAUTH_URL}/dashboard" style="display:inline-block;background:#FFD100;color:#141414;font-weight:700;text-decoration:none;border-radius:8px;padding:14px 28px;">Go to your Dashboard</a>
+    <a href="${getPublicAppUrl()}/dashboard" style="display:inline-block;background:#FFD100;color:#141414;font-weight:700;text-decoration:none;border-radius:8px;padding:14px 28px;">Go to your Dashboard</a>
     <p style="color:#888;font-size:12px;margin-top:32px;">Questions? Reply to this email — we're here to help.</p>
   </div>
 </body>

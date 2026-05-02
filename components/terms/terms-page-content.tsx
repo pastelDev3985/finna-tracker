@@ -90,11 +90,6 @@ export function TermsPageContent() {
               <p className="font-heading text-base font-semibold text-foreground sm:text-lg">
                 Legal agreement
               </p>
-              <p className="mt-2 text-sm leading-relaxed text-foreground/85">
-                This is a general template — replace with counsel-approved text
-                for production. Nothing here creates a lawyer–client
-                relationship.
-              </p>
             </div>
           </div>
           <div className="flex items-center gap-2 rounded-xl border border-border/60 bg-muted/40 px-3 py-2 text-sm text-foreground/90">

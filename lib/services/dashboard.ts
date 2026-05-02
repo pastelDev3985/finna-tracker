@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db"
+import { sumExpensesByCategoryIds } from "@/lib/services/budgets"
 import { Decimal } from "@/lib/generated/prisma/internal/prismaNamespace"
 import type {
   ServiceResult,
@@ -58,7 +59,7 @@ export async function getDashboardSummary(
 export async function getBudgetHealthStrip(
   userId: string
 ): Promise<ServiceResult<BudgetWithSpend[]>> {
-  const { month, year, startDate, endDate } = currentMonthRange()
+  const { month, year } = currentMonthRange()
 
   try {
     const budgets = await prisma.budget.findMany({
@@ -67,35 +68,27 @@ export async function getBudgetHealthStrip(
       orderBy: { category: { name: "asc" } },
     })
 
-    const withSpend: BudgetWithSpend[] = await Promise.all(
-      budgets.map(async (b) => {
-        const rows = await prisma.transaction.findMany({
-          where: {
-            userId,
-            categoryId: b.categoryId,
-            type: "EXPENSE",
-            date: { gte: startDate, lte: endDate },
-          },
-          select: { amount: true },
-        })
-
-        const spentAmount = rows.reduce(
-          (sum, r) => sum.add(r.amount),
-          new Decimal(0)
-        )
-
-        const percentUsed = b.limitAmount.equals(0)
-          ? 0
-          : spentAmount.div(b.limitAmount).mul(100).toNumber()
-
-        return {
-          ...b,
-          spentAmount,
-          percentUsed: Math.round(percentUsed * 10) / 10,
-          isOverBudget: spentAmount.greaterThan(b.limitAmount),
-        }
-      })
+    const spentByCategory = await sumExpensesByCategoryIds(
+      userId,
+      budgets.map((b) => b.categoryId),
+      month,
+      year
     )
+
+    const withSpend: BudgetWithSpend[] = budgets.map((b) => {
+      const spentAmount =
+        spentByCategory.get(b.categoryId) ?? new Decimal(0)
+      const percentUsed = b.limitAmount.equals(0)
+        ? 0
+        : spentAmount.div(b.limitAmount).mul(100).toNumber()
+
+      return {
+        ...b,
+        spentAmount,
+        percentUsed: Math.round(percentUsed * 10) / 10,
+        isOverBudget: spentAmount.greaterThan(b.limitAmount),
+      }
+    })
 
     return { data: withSpend }
   } catch (error) {

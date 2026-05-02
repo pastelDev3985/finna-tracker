@@ -16,7 +16,39 @@ const UpsertBudgetSchema = z.object({
   year: z.coerce.number().int().min(2000).max(2100),
 })
 
-// ─── Helper: compute spent amount for a category in a given month ─────────────
+// ─── Helper: EXPENSE totals per category for one calendar month (single query) ─
+
+export async function sumExpensesByCategoryIds(
+  userId: string,
+  categoryIds: string[],
+  month: number,
+  year: number
+): Promise<Map<string, Decimal>> {
+  const map = new Map<string, Decimal>()
+  if (categoryIds.length === 0) return map
+
+  const uniqueIds = [...new Set(categoryIds)]
+  const startDate = new Date(year, month - 1, 1)
+  const endDate = new Date(year, month, 0, 23, 59, 59, 999)
+
+  const rows = await prisma.transaction.findMany({
+    where: {
+      userId,
+      type: "EXPENSE",
+      categoryId: { in: uniqueIds },
+      date: { gte: startDate, lte: endDate },
+    },
+    select: { categoryId: true, amount: true },
+  })
+
+  for (const r of rows) {
+    map.set(
+      r.categoryId,
+      (map.get(r.categoryId) ?? new Decimal(0)).add(r.amount)
+    )
+  }
+  return map
+}
 
 async function computeSpent(
   userId: string,
@@ -24,20 +56,13 @@ async function computeSpent(
   month: number,
   year: number
 ): Promise<Decimal> {
-  const startDate = new Date(year, month - 1, 1)
-  const endDate = new Date(year, month, 0, 23, 59, 59, 999)
-
-  const rows = await prisma.transaction.findMany({
-    where: {
-      userId,
-      categoryId,
-      type: "EXPENSE",
-      date: { gte: startDate, lte: endDate },
-    },
-    select: { amount: true },
-  })
-
-  return rows.reduce((sum, r) => sum.add(r.amount), new Decimal(0))
+  const byCat = await sumExpensesByCategoryIds(
+    userId,
+    [categoryId],
+    month,
+    year
+  )
+  return byCat.get(categoryId) ?? new Decimal(0)
 }
 
 // ─── Service functions ────────────────────────────────────────────────────────
@@ -54,21 +79,27 @@ export async function listBudgets(
       orderBy: { category: { name: "asc" } },
     })
 
-    const withSpend: BudgetWithSpend[] = await Promise.all(
-      budgets.map(async (b) => {
-        const spentAmount = await computeSpent(userId, b.categoryId, month, year)
-        const percentUsed = b.limitAmount.equals(0)
-          ? 0
-          : spentAmount.div(b.limitAmount).mul(100).toNumber()
-
-        return {
-          ...b,
-          spentAmount,
-          percentUsed: Math.round(percentUsed * 10) / 10,
-          isOverBudget: spentAmount.greaterThan(b.limitAmount),
-        }
-      })
+    const spentByCategory = await sumExpensesByCategoryIds(
+      userId,
+      budgets.map((b) => b.categoryId),
+      month,
+      year
     )
+
+    const withSpend: BudgetWithSpend[] = budgets.map((b) => {
+      const spentAmount =
+        spentByCategory.get(b.categoryId) ?? new Decimal(0)
+      const percentUsed = b.limitAmount.equals(0)
+        ? 0
+        : spentAmount.div(b.limitAmount).mul(100).toNumber()
+
+      return {
+        ...b,
+        spentAmount,
+        percentUsed: Math.round(percentUsed * 10) / 10,
+        isOverBudget: spentAmount.greaterThan(b.limitAmount),
+      }
+    })
 
     return { data: withSpend }
   } catch (error) {

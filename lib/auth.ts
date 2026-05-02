@@ -10,6 +10,8 @@ const CredentialsSchema = z.object({
 })
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
+  // Required on Vercel / reverse proxies so Auth.js trusts `Host` and callback URLs
+  trustHost: true,
   providers: [
     Credentials({
       async authorize(credentials) {

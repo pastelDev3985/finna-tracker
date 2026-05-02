@@ -84,29 +84,53 @@ export async function getIncomeVsExpensesTrend(
 ): Promise<ServiceResult<MonthlyTrend[]>> {
   try {
     const now = new Date()
+
     const result: MonthlyTrend[] = []
+    const bucketKey = (year: number, month: number) => `${year}-${month}`
+    const keyToIndex = new Map<string, number>()
 
     for (let i = months - 1; i >= 0; i--) {
       const d = new Date(now.getFullYear(), now.getMonth() - i, 1)
       const month = d.getMonth() + 1
       const year = d.getFullYear()
-      const startDate = new Date(year, month - 1, 1)
-      const endDate = new Date(year, month, 0, 23, 59, 59, 999)
-
-      const transactions = await prisma.transaction.findMany({
-        where: { userId, date: { gte: startDate, lte: endDate } },
-        select: { type: true, amount: true },
+      const k = bucketKey(year, month)
+      keyToIndex.set(k, result.length)
+      result.push({
+        month,
+        year,
+        income: new Decimal(0),
+        expenses: new Decimal(0),
       })
+    }
 
-      let income = new Decimal(0)
-      let expenses = new Decimal(0)
+    const rangeStart = new Date(now.getFullYear(), now.getMonth() - (months - 1), 1)
+    const rangeEnd = new Date(
+      now.getFullYear(),
+      now.getMonth() + 1,
+      0,
+      23,
+      59,
+      59,
+      999
+    )
 
-      for (const tx of transactions) {
-        if (tx.type === "INCOME") income = income.add(tx.amount)
-        else expenses = expenses.add(tx.amount)
+    const transactions = await prisma.transaction.findMany({
+      where: { userId, date: { gte: rangeStart, lte: rangeEnd } },
+      select: { type: true, amount: true, date: true },
+    })
+
+    for (const tx of transactions) {
+      const month = tx.date.getMonth() + 1
+      const year = tx.date.getFullYear()
+      const idx = keyToIndex.get(bucketKey(year, month))
+      if (idx === undefined) continue
+
+      const bucket = result[idx]
+      if (tx.type === "INCOME") {
+        bucket.income = bucket.income.add(tx.amount)
+      } else {
+        bucket.expenses = bucket.expenses.add(tx.amount)
       }
-
-      result.push({ month, year, income, expenses })
     }
 
     return { data: result }

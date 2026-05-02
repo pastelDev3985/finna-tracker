@@ -3,6 +3,7 @@ import bcrypt from "bcryptjs"
 import { z } from "zod"
 import { prisma } from "@/lib/db"
 import { sendPasswordResetEmail } from "@/lib/email"
+import { getPublicAppUrl } from "@/lib/public-app-url"
 import type { ServiceResult } from "@/types/index"
 
 // ─── Constants ────────────────────────────────────────────────────────────────
@@ -64,7 +65,8 @@ export async function requestPasswordReset(
       data: { userId: user.id, tokenHash, expiresAt },
     })
 
-    const resetUrl = `${process.env.NEXTAUTH_URL}/reset-password?token=${rawToken}`
+    const base = getPublicAppUrl()
+    const resetUrl = `${base}/reset-password?token=${rawToken}`
     await sendPasswordResetEmail({ email: user.email, name: user.name }, resetUrl)
 
     return { data: { sent: true } }
