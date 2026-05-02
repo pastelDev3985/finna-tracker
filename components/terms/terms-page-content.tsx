@@ -12,8 +12,9 @@ const SECTIONS = [
       <>
         <p>
           By accessing or using Finora (&quot;the Service&quot;), you agree to
-          these terms. If you do not agree, do not use the Service. We may update
-          these terms; continued use after changes constitutes acceptance.
+          these terms. If you do not agree, do not use the Service. We may
+          update these terms; continued use after changes constitutes
+          acceptance.
         </p>
       </>
     ),
@@ -52,10 +53,9 @@ const SECTIONS = [
     body: (
       <>
         <p>
-          AI-generated content may be incorrect or incomplete. Do not rely on
-          it as the sole basis for financial decisions. Outputs are based on
-          data you store in the Service and general prompts, within product
-          limits.
+          AI-generated content may be incorrect or incomplete. Do not rely on it
+          as the sole basis for financial decisions. Outputs are based on data
+          you store in the Service and general prompts, within product limits.
         </p>
       </>
     ),
@@ -84,18 +84,32 @@ export function TermsPageContent() {
         <div className="relative flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
           <div className="flex gap-4">
             <div className="flex size-12 shrink-0 items-center justify-center rounded-xl border border-primary/25 bg-primary/10">
-              <Scale className="size-6 text-primary" strokeWidth={2} aria-hidden />
+              <Scale
+                className="size-6 text-primary"
+                strokeWidth={2}
+                aria-hidden
+              />
             </div>
             <div className="min-w-0">
               <p className="font-heading text-base font-semibold text-foreground sm:text-lg">
                 Legal agreement
               </p>
+              <p className="mt-1 text-sm text-foreground/90">
+                By using Finora, you agree to these terms. The app
+                provides budgeting tools for informational purposes only and
+                does not offer financial advice. You are responsible for your
+                account and data accuracy. We may collect and use your data to
+                operate and improve the service. You must not misuse the
+                platform.We may update or terminate the service at
+                any time, and continued use means you accept the changes.
+              </p>
             </div>
           </div>
-          <div className="flex items-center gap-2 rounded-xl border border-border/60 bg-muted/40 px-3 py-2 text-sm text-foreground/90">
+          <div className="flex items-center gap-2 rounded-xl border border-border/60 bg-muted/40 px-3 py-4 text-sm text-foreground/90">
             <Calendar className="size-4 shrink-0 text-primary" aria-hidden />
             <span>
-              Last updated: <strong className="text-foreground">2 May 2026</strong>
+              Last updated:{" "}
+              <strong className="text-foreground">2 May 2026</strong>
             </span>
           </div>
         </div>
@@ -119,11 +133,12 @@ export function TermsPageContent() {
 
       <div className="flex flex-col gap-3">
         {SECTIONS.map((section, index) => (
-          <div key={section.id} id={`term-${section.id}`} className="scroll-mt-24">
-            <ExpandableSection
-              title={section.title}
-              defaultOpen={index === 0}
-            >
+          <div
+            key={section.id}
+            id={`term-${section.id}`}
+            className="scroll-mt-24"
+          >
+            <ExpandableSection title={section.title} defaultOpen={index === 0}>
               {section.body}
             </ExpandableSection>
           </div>

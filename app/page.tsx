@@ -9,6 +9,7 @@ import {
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { GlassEffect } from "@/components/shared/glass-effect";
+import { Logo } from "@/components/logo";
 import { cn } from "@/lib/utils";
 
 export default function Home() {
@@ -36,14 +37,7 @@ export default function Home() {
       <div className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
         {/* ── Navbar ── */}
         <header className="glass mb-10 flex flex-row items-center justify-between gap-3 rounded-2xl px-4 py-3 sm:mb-12 sm:px-5">
-          <div className="flex items-center gap-2.5">
-            <div className="flex size-8 shrink-0 items-center justify-center rounded-xl border border-border bg-primary/10 font-heading text-base font-bold text-primary shadow-sm sm:size-9 sm:text-lg">
-              F
-            </div>
-            <p className="font-heading text-base font-semibold tracking-tight text-foreground">
-              Finora
-            </p>
-          </div>
+          <Logo />
           <nav className="flex items-center gap-2">
             <ThemeToggle />
             <Link
@@ -282,12 +276,7 @@ export default function Home() {
           <div className="flex flex-col items-center justify-between gap-6 sm:flex-row">
             {/* Brand */}
             <div className="flex flex-col items-center gap-2 sm:flex-row sm:items-center sm:gap-3">
-              <div className="flex items-center gap-3">
-                <div className="flex size-8 items-center justify-center rounded-lg bg-primary/10 font-heading text-sm font-bold text-primary">
-                  F
-                </div>
-                <p className="text-sm font-semibold text-foreground">Finora</p>
-              </div>
+              <Logo />
               <p className="text-xs text-muted-foreground">
                 © {new Date().getFullYear()} All rights reserved.
               </p>

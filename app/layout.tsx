@@ -5,6 +5,7 @@ import { SessionProvider } from "@/components/providers/session-provider";
 import { ThemeProvider } from "@/components/providers/theme-provider";
 import "./globals.css";
 
+
 const dmSans = DM_Sans({
   variable: "--font-dm-sans",
   subsets: ["latin"],
@@ -23,6 +24,9 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
   title: "Finora",
   description: "Personal finance clarity — AI-assisted tracking",
+  icons: {
+    icon: "/favicon.png",
+  },
 };
 
 export default function RootLayout({
