@@ -145,7 +145,7 @@ export function RegisterForm() {
           Create account
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Start tracking your finances in minutes.
+          Start tracking your finances in <span className="text-primary">minutes</span>.
         </p>
       </div>
 

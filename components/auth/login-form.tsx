@@ -89,7 +89,7 @@ export function LoginForm() {
           Sign in
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          Welcome back to Finora. Manage your money with clarity.
+          Welcome back to <span className="text-primary">Finora</span>. Manage your money with clarity.
         </p>
       </div>
 

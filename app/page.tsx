@@ -36,19 +36,19 @@ export default function Home() {
       {/* ── Page content ── */}
       <div className="relative z-10 mx-auto w-full max-w-6xl flex-1 px-4 py-10 sm:px-6 sm:py-14 lg:px-8">
         {/* ── Navbar ── */}
-        <header className="glass mb-10 flex flex-row items-center justify-between gap-3 rounded-2xl px-4 py-3 sm:mb-12 sm:px-5">
-          <Logo />
-          <nav className="flex items-center gap-2">
-            <ThemeToggle />
+        <header className="glass mb-10 flex min-h-11 flex-row items-center justify-between gap-2 rounded-2xl px-3 py-2.5 sm:mb-12 sm:min-h-0 sm:gap-3 sm:px-5 sm:py-3">
+          <Logo hideWordmarkBelow="xs" />
+          <nav className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+            <ThemeToggle compact />
             <Link
               href="/login"
-              className="inline-flex h-8 cursor-pointer items-center justify-center rounded-lg border border-border bg-transparent px-3 text-sm font-medium text-foreground transition-all duration-150 hover:bg-muted active:bg-muted/80 active:scale-[0.97] sm:h-9 sm:px-4"
+              className="inline-flex h-8 shrink-0 cursor-pointer items-center justify-center whitespace-nowrap rounded-lg border border-border bg-transparent px-2.5 text-xs font-medium text-foreground transition-all duration-150 hover:bg-muted active:bg-muted/80 active:scale-[0.97] sm:h-9 sm:px-4 sm:text-sm"
             >
               Sign in
             </Link>
             <Link
               href="/register"
-              className="inline-flex h-8 cursor-pointer items-center justify-center rounded-lg bg-primary px-3 text-sm font-semibold text-primary-foreground shadow-sm transition-all duration-150 hover:bg-primary-hover active:bg-primary-active active:scale-[0.97] sm:h-9 sm:px-4"
+              className="inline-flex h-8 shrink-0 cursor-pointer items-center justify-center whitespace-nowrap rounded-lg bg-primary px-2.5 text-xs font-semibold text-primary-foreground shadow-sm transition-all duration-150 hover:bg-primary-hover active:bg-primary-active active:scale-[0.97] sm:h-9 sm:px-4 sm:text-sm"
             >
               Get started
             </Link>
@@ -64,17 +64,9 @@ export default function Home() {
           </div>
 
           <h1 className="font-heading text-[2.25rem] font-bold leading-[1.1] tracking-tight text-foreground sm:text-5xl lg:text-6xl">
-            See your money in{" "}
-            <span className="relative inline-block">
-              <span className="relative z-10 bg-linear-to-r from-foreground to-primary bg-clip-text text-transparent">
-                focus
-              </span>
-              <span
-                className="absolute -inset-1 z-0 rounded-lg bg-primary/15 blur-sm"
-                aria-hidden
-              />
-            </span>{" "}
-            not noise.
+            See your{" "}
+            <span className="text-primary">money</span> in{" "}
+            <span className="text-primary">focus</span> not noise.
           </h1>
 
           <p className="mx-auto max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">

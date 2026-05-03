@@ -13,16 +13,23 @@ function useIsClient() {
   );
 }
 
-export function ThemeToggle() {
+interface ThemeToggleProps {
+  /** Tighter control for marketing / mobile nav bars */
+  compact?: boolean;
+}
+
+export function ThemeToggle({ compact = false }: ThemeToggleProps) {
   const { setTheme, resolvedTheme } = useTheme();
   const mounted = useIsClient();
+
+  const size = compact ? "icon-sm" : "icon-lg";
 
   if (!mounted) {
     return (
       <Button
         type="button"
         variant="outline"
-        size="icon-lg"
+        size={size}
         className="shrink-0 cursor-pointer transition-all duration-200"
         aria-label="Toggle theme"
         disabled
@@ -36,7 +43,7 @@ export function ThemeToggle() {
     <Button
       type="button"
       variant="outline"
-      size="icon-lg"
+      size={size}
       className="shrink-0 cursor-pointer transition-all duration-200"
       aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
       onClick={() => setTheme(isDark ? "light" : "dark")}

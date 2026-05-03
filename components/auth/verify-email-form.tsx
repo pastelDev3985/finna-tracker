@@ -67,8 +67,10 @@ export function VerifyEmailForm() {
         return;
       }
 
-      // Force JWT refresh so isEmailVerified becomes true in the session
-      await update();
+      // Refresh JWT: merge client patch and/or load emailVerified from DB (see jwt callback).
+      await update({
+        user: { isEmailVerified: true },
+      });
       toast.success("Email verified! Setting up your account…");
       router.push("/onboarding");
       router.refresh();

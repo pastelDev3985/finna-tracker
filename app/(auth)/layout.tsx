@@ -17,7 +17,7 @@ export default function AuthLayout({
       <header className="mb-8 flex flex-col items-center gap-2 text-center">
         <Link
           href="/"
-          className="font-heading text-2xl font-bold tracking-tight text-foreground transition-all duration-200 hover:text-primary"
+          className="font-heading text-2xl font-bold tracking-tight text-foreground text-primary transition-all duration-200 hover:text-primary"
         >
           Finora
         </Link>
@@ -30,7 +30,7 @@ export default function AuthLayout({
 
       <footer className="relative z-10 mt-8 border-t border-border pt-5 sm:mt-12 sm:pt-6">
         <p className="text-center text-xs text-muted-foreground">
-          © {new Date().getFullYear()} Finora. All rights reserved.
+          © {new Date().getFullYear()} <span className="text-primary">Finora</span>. All rights reserved.
         </p>
       </footer>
     </div>
