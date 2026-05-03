@@ -6,6 +6,7 @@ import {
   BookOpen,
   ChevronLeft,
   ChevronRight,
+  CircleDollarSign,
   FileText,
   LayoutDashboard,
   LogOut,
@@ -52,6 +53,7 @@ const NAV_ITEMS: NavItem[] = [
   { label: "Budgets", href: "/budgets", icon: Wallet },
   { label: "Goals", href: "/goals", icon: Target },
   { label: "Reports", href: "/reports", icon: BarChart2 },
+  { label: "Rates", href: "/currency-tools", icon: CircleDollarSign },
   { label: "Insights", href: "/insights", icon: Sparkles },
   { label: "Settings", href: "/settings", icon: Settings },
 ];

@@ -51,6 +51,18 @@ model User {
   @@index([email])
 }
 
+// ─── Exchange rates (GHS-based snapshots; provider data cached in DB) ───────
+
+model ExchangeRateSnapshot {
+  id           String   @id @default(cuid())
+  baseCurrency String   @default("GHS") @map("base_currency")
+  ratesJson    Json     @map("rates_json")
+  fetchedAt    DateTime @map("fetched_at")
+
+  @@index([fetchedAt(sort: Desc)])
+  @@map("exchange_rate_snapshots")
+}
+
 // ─── Password reset ───────────────────────────────────────────────────────────
 
 model PasswordResetToken {

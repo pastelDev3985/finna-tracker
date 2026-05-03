@@ -10,6 +10,7 @@ const APP_ROUTES = [
   "/goals",
   "/reports",
   "/insights",
+  "/currency-tools",
   "/settings",
   "/guide",
   "/terms",

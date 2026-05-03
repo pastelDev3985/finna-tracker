@@ -71,7 +71,7 @@ export default function Home() {
 
           <p className="mx-auto max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg">
             You know that feeling when your money just disappears? One minute
-            you get balance, next minute you dey wonder what happened. Finora
+            you have money, next minute you wonder where it went? Finora
             helps you see everything clearly so you can stay in control and make
             better money moves every day.
           </p>
@@ -276,7 +276,7 @@ export default function Home() {
 
             {/* CTA */}
             <p className="text-center text-sm text-muted-foreground">
-              Create your free account and make your money work for you.
+              Create your free account and develop good money habits.
             </p>
 
             {/* Nav */}
