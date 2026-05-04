@@ -19,7 +19,7 @@ import {
 } from "@/lib/exchange-rate-core"
 
 export async function getLatestRatesPayload(): Promise<LatestRatesPayload | null> {
-  const row = await prisma.exchangeRateSnapshot.findFirst({
+  const row = await (prisma as any).exchangeRateSnapshot.findFirst({
     orderBy: { fetchedAt: "desc" },
   })
   if (!row) return null
@@ -88,7 +88,7 @@ export async function fetchRatesFromProvider(): Promise<ProviderSuccess> {
 export async function saveRatesSnapshot(
   rates: RatesMap,
 ): Promise<{ id: string; fetchedAt: Date }> {
-  const row = await prisma.exchangeRateSnapshot.create({
+  const row = await (prisma as any).exchangeRateSnapshot.create({
     data: {
       baseCurrency: EXCHANGE_RATE_STORED_BASE,
       ratesJson: rates as InputJsonValue,
