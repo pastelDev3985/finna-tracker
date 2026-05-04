@@ -1,10 +1,5 @@
 import { NextResponse } from "next/server"
-import {
-  shouldSkipProviderFetch,
-  fetchRatesFromProvider,
-  saveRatesSnapshot,
-} from "@/lib/exchange-rates"
-import { prisma } from "@/lib/db"
+import { runExchangeRatesRefresh } from "@/lib/exchange-rate-refresh"
 
 function authorizeCron(request: Request): boolean {
   // `next dev`: no Bearer required so a simple browser/curl hit can seed rates locally.
@@ -30,27 +25,19 @@ export async function GET(request: Request) {
   }
 
   try {
-    const latest = await prisma.exchangeRateSnapshot.findFirst({
-      orderBy: { fetchedAt: "desc" },
-      select: { fetchedAt: true },
-    })
-
-    if (shouldSkipProviderFetch(latest?.fetchedAt ?? null)) {
+    const result = await runExchangeRatesRefresh()
+    if (result.kind === "skipped") {
       return NextResponse.json({
         skipped: true,
         reason: "fresh_enough",
-        lastFetchedAt: latest!.fetchedAt.toISOString(),
+        lastFetchedAt: result.lastFetchedAt,
       })
     }
-
-    const { rates } = await fetchRatesFromProvider()
-    const { id, fetchedAt } = await saveRatesSnapshot(rates)
-
     return NextResponse.json({
       ok: true,
-      id,
-      fetchedAt: fetchedAt.toISOString(),
-      currencies: Object.keys(rates).length,
+      id: result.id,
+      fetchedAt: result.fetchedAt,
+      currencies: result.currencies,
     })
   } catch (e) {
     const message = e instanceof Error ? e.message : "Update failed"

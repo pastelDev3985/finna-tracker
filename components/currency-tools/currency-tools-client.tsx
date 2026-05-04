@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import {
   POPULAR_CONVERSION_TARGETS,
   convertAmount,
+  sanitizeAmountInput,
   type LatestRatesPayload,
 } from "@/lib/exchange-rate-core";
 import { SUPPORTED_CURRENCIES } from "@/lib/currency";
@@ -217,7 +218,7 @@ export function CurrencyToolsClient({
   const rates = payload?.rates ?? {};
 
   const baseAmountNum = useMemo(() => {
-    const n = parseFloat(baseAmount.replace(/,/g, ""));
+    const n = parseFloat(baseAmount);
     if (Number.isNaN(n) || !Number.isFinite(n)) return null;
     return n;
   }, [baseAmount]);
@@ -273,7 +274,7 @@ export function CurrencyToolsClient({
     setLoadError(null);
     setSyncing(true);
     try {
-      const res = await fetch("/api/cron/update-rates");
+      const res = await fetch("/api/rates/sync", { method: "POST" });
       const j = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) {
         setLoadError(
@@ -299,16 +300,21 @@ export function CurrencyToolsClient({
       <div className="glass rounded-2xl border border-border/80 p-6 text-center">
         <p className="text-sm text-muted-foreground">{loadError}</p>
         <p className="mt-2 text-xs text-muted-foreground">
-          You can also open{" "}
+          After you sign in, <strong className="font-medium">Sync rates now</strong> calls{" "}
+          <code className="rounded bg-muted px-1 py-0.5 text-[10px]">
+            POST /api/rates/sync
+          </code>
+          . Scheduled jobs use{" "}
           <code className="rounded bg-muted px-1 py-0.5 text-[10px]">
             /api/cron/update-rates
           </code>{" "}
-          in the browser. In production, cron sends{" "}
+          with{" "}
           <code className="rounded bg-muted px-1 py-0.5 text-[10px]">
             Authorization: Bearer
           </code>{" "}
-          when <code className="rounded bg-muted px-1 py-0.5 text-[10px]">CRON_SECRET</code>{" "}
-          is set.
+          when{" "}
+          <code className="rounded bg-muted px-1 py-0.5 text-[10px]">CRON_SECRET</code>{" "}
+          is set on Vercel.
         </p>
         <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-center">
           <Button
@@ -388,7 +394,9 @@ export function CurrencyToolsClient({
           id="global-base-amount"
           inputMode="decimal"
           value={baseAmount}
-          onChange={(e) => setBaseAmount(e.target.value)}
+          onChange={(e) =>
+            setBaseAmount(sanitizeAmountInput(e.target.value))
+          }
           className="min-h-11 font-mono text-base font-medium tabular-nums sm:text-sm"
           placeholder={`e.g. 100`}
           autoComplete="off"

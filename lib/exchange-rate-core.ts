@@ -52,6 +52,24 @@ function normCode(code: string): string {
   return code.trim().toUpperCase()
 }
 
+/**
+ * For controlled money inputs: keep only digits and at most one '.'.
+ * Strips commas, signs, letters, and extra decimals.
+ */
+export function sanitizeAmountInput(raw: string): string {
+  let sawDot = false
+  let out = ""
+  for (const ch of raw) {
+    if (ch >= "0" && ch <= "9") {
+      out += ch
+    } else if (ch === "." && !sawDot) {
+      sawDot = true
+      out += ch
+    }
+  }
+  return out
+}
+
 /** Parse JSON snapshot into a numeric rates map; drops invalid entries. */
 export function parseRatesJson(raw: unknown): RatesMap {
   if (!raw || typeof raw !== "object" || Array.isArray(raw)) return {}

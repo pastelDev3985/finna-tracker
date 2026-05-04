@@ -15,7 +15,7 @@ export async function GET() {
     return NextResponse.json({
       noSnapshot: true as const,
       message:
-        "No exchange rates yet. Use Sync rates on this page, open /api/cron/update-rates once, or wait for cron.",
+        "No exchange rates yet. Use Sync rates on this page (signed in), or wait for the production cron job.",
     })
   }
 
