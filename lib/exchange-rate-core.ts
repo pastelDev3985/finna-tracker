@@ -3,8 +3,11 @@
 /** Stored snapshot base — all `rates[X]` are “units of X per 1 GHS”. */
 export const EXCHANGE_RATE_STORED_BASE = "GHS" as const
 
-/** Minimum interval between upstream API calls (cron / manual refresh). */
+/** Minimum interval between upstream API calls (Vercel cron). */
 export const EXCHANGE_RATE_REFRESH_MS = 2 * 60 * 60 * 1000
+
+/** Shared DB snapshot: signed-in “Sync from provider” is limited to once per this window for everyone. */
+export const EXCHANGE_RATE_MANUAL_SYNC_COOLDOWN_MS = 24 * 60 * 60 * 1000
 
 /** Curated list for “common conversions” UI (paginated). Order is stable. */
 export const POPULAR_CONVERSION_TARGETS = [

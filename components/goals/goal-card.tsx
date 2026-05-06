@@ -1,6 +1,6 @@
 "use client"
 
-import { Pencil, Trash2 } from "lucide-react"
+import { Pencil, PlusCircle, Trash2 } from "lucide-react"
 import { useState, useTransition } from "react"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/dialog"
 import { cn } from "@/lib/utils"
 import { deleteGoalAction } from "@/lib/actions/goals"
+import { GoalContributionDialog } from "@/components/goals/goal-contribution-dialog"
 
 const RING_SIZE = 72
 const STROKE = 5
@@ -85,6 +86,7 @@ export interface GoalCardData {
 
 interface GoalCardProps {
   goal: GoalCardData
+  currencySymbol: string
   onEdit?: (goal: GoalCardData) => void
 }
 
@@ -94,10 +96,11 @@ const STATUS_BADGE = {
   PAUSED:    { label: "Paused",    className: "bg-muted text-muted-foreground border-border" },
 }
 
-export function GoalCard({ goal, onEdit }: GoalCardProps) {
+export function GoalCard({ goal, currencySymbol, onEdit }: GoalCardProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
+  const [showContributeDialog, setShowContributeDialog] = useState(false)
 
   function confirmDelete() {
     startTransition(async () => {
@@ -178,7 +181,27 @@ export function GoalCard({ goal, onEdit }: GoalCardProps) {
           )}
         </div>
       </div>
+
+      <Button
+        type="button"
+        variant="outline"
+        size="sm"
+        className="h-10 w-full cursor-pointer gap-2 font-semibold"
+        onClick={() => setShowContributeDialog(true)}
+      >
+        <PlusCircle className="size-4" aria-hidden />
+        Add contribution
+      </Button>
     </div>
+
+    <GoalContributionDialog
+      goalId={goal.id}
+      goalName={goal.name}
+      currencySymbol={currencySymbol}
+      open={showContributeDialog}
+      onOpenChange={setShowContributeDialog}
+      onAdded={() => router.refresh()}
+    />
 
     <Dialog open={showDeleteDialog} onOpenChange={setShowDeleteDialog}>
       <DialogContent>

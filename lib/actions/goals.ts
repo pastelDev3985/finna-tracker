@@ -41,5 +41,6 @@ export async function addContributionAction(goalId: string, data: unknown) {
   const result = await addContribution(session.user.id, goalId, data)
   if (result.error) return { error: result.error }
   revalidatePath("/goals")
+  revalidatePath("/dashboard")
   return {}
 }

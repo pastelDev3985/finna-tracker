@@ -76,7 +76,7 @@ export function GoalsClient({ goals, currencySymbol }: GoalsClientProps) {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {goals.map((g) => (
-            <GoalCard key={g.id} goal={g} onEdit={openEdit} />
+            <GoalCard key={g.id} goal={g} currencySymbol={currencySymbol} onEdit={openEdit} />
           ))}
         </div>
       )}

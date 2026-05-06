@@ -7,9 +7,11 @@ import {
   useState,
 } from "react";
 import { ChevronLeft, ChevronRight, Search } from "lucide-react";
+import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
+  EXCHANGE_RATE_MANUAL_SYNC_COOLDOWN_MS,
   POPULAR_CONVERSION_TARGETS,
   convertAmount,
   sanitizeAmountInput,
@@ -217,6 +219,23 @@ export function CurrencyToolsClient({
   const user = userCurrency.toUpperCase();
   const rates = payload?.rates ?? {};
 
+  const syncEligibility = useMemo(() => {
+    if (!payload?.fetchedAt) {
+      return { canManualSync: true as const, nextManualSyncAt: null as Date | null };
+    }
+    const lastMs = new Date(payload.fetchedAt).getTime();
+    const elapsed = Date.now() - lastMs;
+    if (elapsed >= EXCHANGE_RATE_MANUAL_SYNC_COOLDOWN_MS) {
+      return { canManualSync: true as const, nextManualSyncAt: null as Date | null };
+    }
+    return {
+      canManualSync: false as const,
+      nextManualSyncAt: new Date(
+        lastMs + EXCHANGE_RATE_MANUAL_SYNC_COOLDOWN_MS,
+      ),
+    };
+  }, [payload?.fetchedAt]);
+
   const baseAmountNum = useMemo(() => {
     const n = parseFloat(baseAmount);
     if (Number.isNaN(n) || !Number.isFinite(n)) return null;
@@ -275,7 +294,12 @@ export function CurrencyToolsClient({
     setSyncing(true);
     try {
       const res = await fetch("/api/rates/sync", { method: "POST" });
-      const j = (await res.json().catch(() => ({}))) as { error?: string };
+      const j = (await res.json().catch(() => ({}))) as {
+        error?: string;
+        skipped?: boolean;
+        reason?: string;
+        nextSyncAvailableAt?: string;
+      };
       if (!res.ok) {
         setLoadError(
           typeof j.error === "string"
@@ -284,13 +308,31 @@ export function CurrencyToolsClient({
         );
         return;
       }
+      if (j.skipped === true && j.reason === "manual_cooldown") {
+        const when =
+          typeof j.nextSyncAvailableAt === "string"
+            ? new Date(j.nextSyncAvailableAt).toLocaleString(undefined, {
+                dateStyle: "medium",
+                timeStyle: "short",
+              })
+            : syncEligibility.nextManualSyncAt?.toLocaleString(undefined, {
+                dateStyle: "medium",
+                timeStyle: "short",
+              }) ?? "later";
+        toast.info("Manual sync on cooldown", {
+          description: `Rates are shared for all users. The next sync from the provider is available after ${when}.`,
+        });
+        await refresh();
+        return;
+      }
+      toast.success("Exchange rates updated from provider.");
       await refresh();
     } catch {
       setLoadError("Network error");
     } finally {
       setSyncing(false);
     }
-  }, [refresh]);
+  }, [refresh, syncEligibility.nextManualSyncAt]);
 
   const userMissingInRates =
     payload && rates[user] === undefined;
@@ -300,26 +342,13 @@ export function CurrencyToolsClient({
       <div className="glass rounded-2xl border border-border/80 p-6 text-center">
         <p className="text-sm text-muted-foreground">{loadError}</p>
         <p className="mt-2 text-xs text-muted-foreground">
-          After you sign in, <strong className="font-medium">Sync rates now</strong> calls{" "}
-          <code className="rounded bg-muted px-1 py-0.5 text-[10px]">
-            POST /api/rates/sync
-          </code>
-          . Scheduled jobs use{" "}
-          <code className="rounded bg-muted px-1 py-0.5 text-[10px]">
-            /api/cron/update-rates
-          </code>{" "}
-          with{" "}
-          <code className="rounded bg-muted px-1 py-0.5 text-[10px]">
-            Authorization: Bearer
-          </code>{" "}
-          when{" "}
-          <code className="rounded bg-muted px-1 py-0.5 text-[10px]">CRON_SECRET</code>{" "}
-          is set on Vercel.
+          <strong className="font-medium text-foreground">Sync from provider</strong> is
+          limited to once per 24 hours for everyone (one shared snapshot in the database).
         </p>
         <div className="mt-4 flex flex-col gap-2 sm:flex-row sm:justify-center">
           <Button
             type="button"
-            disabled={syncing}
+            disabled={syncing || !syncEligibility.canManualSync}
             onClick={syncRatesFromProvider}
           >
             {syncing ? "Syncing…" : "Sync rates now"}
@@ -427,6 +456,31 @@ export function CurrencyToolsClient({
             {fetchedLabel}
           </span>
         </p>
+        <p className="text-[10px] leading-relaxed text-muted-foreground sm:text-xs">
+          You can pull fresh rates from our provider at
+          most once every 24 hours (from the time above)
+        </p>
+        <Button
+          type="button"
+          variant="secondary"
+          className="mt-1 h-10 w-full cursor-pointer font-semibold sm:w-auto"
+          disabled={syncing || !syncEligibility.canManualSync}
+          onClick={syncRatesFromProvider}
+        >
+          {syncing ? "Syncing…" : "Sync from provider"}
+        </Button>
+        {!syncEligibility.canManualSync && syncEligibility.nextManualSyncAt ? (
+          <p className="text-[10px] text-muted-foreground sm:text-xs">
+            Next manual sync after{" "}
+            <span className="font-medium tabular-nums text-foreground/90">
+              {syncEligibility.nextManualSyncAt.toLocaleString(undefined, {
+                dateStyle: "medium",
+                timeStyle: "short",
+              })}
+            </span>
+            .
+          </p>
+        ) : null}
       </div>
 
       {userMissingInRates && (

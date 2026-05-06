@@ -1,8 +1,9 @@
 import { NextResponse } from "next/server"
 import { auth } from "@/lib/auth"
+import { EXCHANGE_RATE_MANUAL_SYNC_COOLDOWN_MS } from "@/lib/exchange-rate-core"
 import { runExchangeRatesRefresh } from "@/lib/exchange-rate-refresh"
 
-/** Signed-in manual refresh (browser can call this; cron uses Bearer secret). */
+/** Signed-in manual refresh — global cooldown from latest DB `fetchedAt` (all users share one snapshot). */
 export async function POST() {
   const session = await auth()
   if (!session?.user?.id) {
@@ -10,12 +11,19 @@ export async function POST() {
   }
 
   try {
-    const result = await runExchangeRatesRefresh()
+    const result = await runExchangeRatesRefresh({
+      minIntervalMs: EXCHANGE_RATE_MANUAL_SYNC_COOLDOWN_MS,
+    })
     if (result.kind === "skipped") {
+      const lastMs = new Date(result.lastFetchedAt).getTime()
+      const nextSyncAvailableAt = new Date(
+        lastMs + EXCHANGE_RATE_MANUAL_SYNC_COOLDOWN_MS,
+      ).toISOString()
       return NextResponse.json({
         skipped: true,
-        reason: "fresh_enough",
+        reason: "manual_cooldown",
         lastFetchedAt: result.lastFetchedAt,
+        nextSyncAvailableAt,
       })
     }
     return NextResponse.json({

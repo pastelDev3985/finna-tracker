@@ -1,6 +1,7 @@
 export {
   EXCHANGE_RATE_STORED_BASE,
   EXCHANGE_RATE_REFRESH_MS,
+  EXCHANGE_RATE_MANUAL_SYNC_COOLDOWN_MS,
   POPULAR_CONVERSION_TARGETS,
   type RatesMap,
   type LatestRatesPayload,
@@ -98,7 +99,10 @@ export async function saveRatesSnapshot(
   return { id: row.id, fetchedAt: row.fetchedAt }
 }
 
-export function shouldSkipProviderFetch(lastFetchedAt: Date | null): boolean {
+export function shouldSkipProviderFetch(
+  lastFetchedAt: Date | null,
+  minIntervalMs: number = EXCHANGE_RATE_REFRESH_MS,
+): boolean {
   if (!lastFetchedAt) return false
-  return Date.now() - lastFetchedAt.getTime() < EXCHANGE_RATE_REFRESH_MS
+  return Date.now() - lastFetchedAt.getTime() < minIntervalMs
 }
