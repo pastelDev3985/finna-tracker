@@ -1,6 +1,6 @@
 "use client"
 
-import { Trash2 } from "lucide-react"
+import { Pencil, Trash2 } from "lucide-react"
 import { useState, useTransition } from "react"
 import { toast } from "sonner"
 import { useRouter } from "next/navigation"
@@ -75,6 +75,8 @@ export interface GoalCardData {
   name: string
   savedAmount: string
   targetAmount: string
+  /** Raw target for edit forms (decimal string). */
+  targetAmountRaw: string
   percentage: number
   status: "ACTIVE" | "COMPLETED" | "PAUSED"
   deadline: string | null
@@ -83,6 +85,7 @@ export interface GoalCardData {
 
 interface GoalCardProps {
   goal: GoalCardData
+  onEdit?: (goal: GoalCardData) => void
 }
 
 const STATUS_BADGE = {
@@ -91,7 +94,7 @@ const STATUS_BADGE = {
   PAUSED:    { label: "Paused",    className: "bg-muted text-muted-foreground border-border" },
 }
 
-export function GoalCard({ goal }: GoalCardProps) {
+export function GoalCard({ goal, onEdit }: GoalCardProps) {
   const router = useRouter()
   const [isPending, startTransition] = useTransition()
   const [showDeleteDialog, setShowDeleteDialog] = useState(false)
@@ -121,15 +124,28 @@ export function GoalCard({ goal }: GoalCardProps) {
         <Badge className={cn("text-[10px] font-medium border", badge.className)}>
           {badge.label}
         </Badge>
-        <button
-          type="button"
-          onClick={() => setShowDeleteDialog(true)}
-          disabled={isPending}
-          className="flex size-7 cursor-pointer items-center justify-center rounded-lg text-muted-foreground/50 transition-all duration-200 hover:bg-destructive/10 hover:text-destructive md:invisible md:group-hover:visible"
-          aria-label={`Delete ${goal.name}`}
-        >
-          <Trash2 className="size-3.5" aria-hidden />
-        </button>
+        <div className="flex items-center gap-0.5 md:invisible md:group-hover:visible">
+          {onEdit ? (
+            <button
+              type="button"
+              onClick={() => onEdit(goal)}
+              disabled={isPending}
+              className="flex size-7 cursor-pointer items-center justify-center rounded-lg text-muted-foreground/50 transition-all duration-200 hover:bg-muted hover:text-foreground"
+              aria-label={`Edit ${goal.name}`}
+            >
+              <Pencil className="size-3.5" aria-hidden />
+            </button>
+          ) : null}
+          <button
+            type="button"
+            onClick={() => setShowDeleteDialog(true)}
+            disabled={isPending}
+            className="flex size-7 cursor-pointer items-center justify-center rounded-lg text-muted-foreground/50 transition-all duration-200 hover:bg-destructive/10 hover:text-destructive"
+            aria-label={`Delete ${goal.name}`}
+          >
+            <Trash2 className="size-3.5" aria-hidden />
+          </button>
+        </div>
       </div>
 
       {/* Ring + info */}

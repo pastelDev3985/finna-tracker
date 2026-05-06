@@ -9,6 +9,7 @@ import {
 import Link from "next/link";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { GlassEffect } from "@/components/shared/glass-effect";
+import { CosmicBackground } from "@/components/landing/cosmic-background";
 import { Logo } from "@/components/logo";
 import { cn } from "@/lib/utils";
 
@@ -25,12 +26,13 @@ export default function Home() {
         className="pointer-events-none absolute inset-0 overflow-hidden"
         aria-hidden
       >
+        <CosmicBackground className="z-0" />
         {/* Yellow primary glow — top-left */}
-        <div className="absolute -top-48 -left-48 h-[640px] w-[640px] rounded-full bg-primary/20 blur-[120px]" />
+        <div className="absolute -top-48 -left-48 z-[1] h-[640px] w-[640px] rounded-full bg-primary/20 blur-[120px]" />
         {/* Neutral depth orb — right side */}
-        <div className="absolute top-1/4 -right-32 h-[480px] w-[480px] rounded-full bg-(--fin-dark-9)/30 blur-[100px]" />
+        <div className="absolute top-1/4 -right-32 z-[1] h-[480px] w-[480px] rounded-full bg-(--fin-dark-9)/30 blur-[100px]" />
         {/* Subtle yellow mid-page */}
-        <div className="absolute bottom-1/3 left-1/4 h-[360px] w-[360px] rounded-full bg-primary/8 blur-[90px]" />
+        <div className="absolute bottom-1/3 left-1/4 z-[1] h-[360px] w-[360px] rounded-full bg-primary/8 blur-[90px]" />
       </div>
 
       {/* ── Page content ── */}

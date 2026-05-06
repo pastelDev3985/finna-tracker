@@ -1,7 +1,7 @@
 "use client"
 
 import { ChevronLeft, ChevronRight, Plus, Wallet } from "lucide-react"
-import { useState, useTransition } from "react"
+import { useMemo, useState, useTransition } from "react"
 import { useRouter } from "next/navigation"
 import { Button } from "@/components/ui/button"
 import {
@@ -55,6 +55,18 @@ export function BudgetsClient({
       router.push(`/budgets?month=${m}&year=${y}`)
     })
   }
+
+  /** Ensure the budget being edited appears in the list (Base UI Select labels need a matching item). */
+  const categoriesForForm = useMemo(() => {
+    if (!editBudget) return expenseCategories
+    if (expenseCategories.some((c) => c.id === editBudget.categoryId)) {
+      return expenseCategories
+    }
+    return [
+      ...expenseCategories,
+      { id: editBudget.categoryId, name: editBudget.categoryName },
+    ]
+  }, [editBudget, expenseCategories])
 
   return (
     <div className="flex flex-col gap-4 p-4 sm:gap-6 sm:p-6 lg:p-8">
@@ -140,13 +152,19 @@ export function BudgetsClient({
             </DialogDescription>
           </DialogHeader>
           <BudgetForm
-            categories={expenseCategories}
+            key={`budget-${editBudget?.id ?? "new"}-${month}-${year}`}
+            categories={categoriesForForm}
             currencySymbol={currencySymbol}
             month={month}
             year={year}
             defaultValues={
               editBudget
-                ? { categoryId: editBudget.categoryId, limitAmount: editBudget.limitAmountRaw }
+                ? {
+                    budgetId: editBudget.id,
+                    categoryId: editBudget.categoryId,
+                    categoryName: editBudget.categoryName,
+                    limitAmount: editBudget.limitAmountRaw,
+                  }
                 : undefined
             }
             onSuccess={() => {

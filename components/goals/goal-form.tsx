@@ -58,13 +58,24 @@ export function GoalForm({
     }
 
     startTransition(async () => {
-      const payload = {
-        name: parsed.data.name,
-        targetAmount: parsed.data.targetAmount,
-        deadline: parsed.data.deadline
-          ? new Date(parsed.data.deadline).toISOString()
-          : undefined,
-      }
+      const payload =
+        mode === "edit" && defaultValues?.id
+          ? {
+              name: parsed.data.name,
+              targetAmount: parsed.data.targetAmount,
+              deadline:
+                parsed.data.deadline &&
+                String(parsed.data.deadline).trim() !== ""
+                  ? new Date(parsed.data.deadline).toISOString()
+                  : null,
+            }
+          : {
+              name: parsed.data.name,
+              targetAmount: parsed.data.targetAmount,
+              deadline: parsed.data.deadline
+                ? new Date(parsed.data.deadline).toISOString()
+                : undefined,
+            }
 
       const result =
         mode === "edit" && defaultValues?.id

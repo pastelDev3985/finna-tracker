@@ -20,8 +20,18 @@ const CreateGoalSchema = z.object({
   icon: z.string().optional(),
 })
 
-const UpdateGoalSchema = CreateGoalSchema.partial().extend({
+const UpdateGoalSchema = z.object({
+  name: z.string().min(1, { error: "Name is required" }).trim().optional(),
+  targetAmount: z
+    .string()
+    .refine((v) => !isNaN(parseFloat(v)) && parseFloat(v) > 0, {
+      error: "Target amount must be a positive number",
+    })
+    .optional(),
+  /** `null` clears the deadline; omit to leave unchanged (partial updates). */
+  deadline: z.union([z.coerce.date(), z.null()]).optional(),
   status: z.enum(["ACTIVE", "COMPLETED", "PAUSED"]).optional(),
+  icon: z.string().optional(),
 })
 
 const AddContributionSchema = z.object({

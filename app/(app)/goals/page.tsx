@@ -25,6 +25,7 @@ export default async function GoalsPage() {
       name: g.name,
       savedAmount: formatCurrency(g.savedAmount, currency),
       targetAmount: formatCurrency(g.targetAmount, currency),
+      targetAmountRaw: g.targetAmount.toNumber().toFixed(2),
       percentage,
       status: g.status as "ACTIVE" | "COMPLETED" | "PAUSED",
       deadline: g.deadline ? new Date(g.deadline).toISOString().slice(0, 10) : null,

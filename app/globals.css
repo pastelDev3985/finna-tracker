@@ -470,6 +470,51 @@
   background: var(--text-muted);
 }
 
+/* ── Landing cosmic particles (see CosmicBackground) ── */
+/* Continuous drift: mostly downward with per-particle horizontal bias (linear = no “stuck” easing). */
+@keyframes finora-cosmic-drift {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: var(--cosmic-o-from, 0.35);
+  }
+  100% {
+    transform: translate3d(
+      var(--cosmic-x, 0px),
+      var(--cosmic-y, 100vh),
+      0
+    );
+    opacity: var(--cosmic-o-to, 0.9);
+  }
+}
+
+/* Curved / busier paths (two midpoints) for a less uniform “random walk” feel. */
+@keyframes finora-cosmic-drift-wavy {
+  0% {
+    transform: translate3d(0, 0, 0);
+    opacity: var(--cosmic-o-from, 0.35);
+  }
+  35% {
+    transform: translate3d(
+      var(--cosmic-x-1, 0px),
+      calc(0.32 * var(--cosmic-y, 100vh)),
+      0
+    );
+    opacity: var(--cosmic-o-mid, 0.65);
+  }
+  72% {
+    transform: translate3d(
+      var(--cosmic-x-2, 0px),
+      calc(0.68 * var(--cosmic-y, 100vh)),
+      0
+    );
+    opacity: var(--cosmic-o-mid2, 0.55);
+  }
+  100% {
+    transform: translate3d(var(--cosmic-x, 0px), var(--cosmic-y, 100vh), 0);
+    opacity: var(--cosmic-o-to, 0.9);
+  }
+}
+
 @layer base {
   * {
     cursor: default;
@@ -499,6 +544,11 @@
       animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
       scroll-behavior: auto !important;
+    }
+
+    .finora-cosmic-particle {
+      animation: none !important;
+      opacity: 0.32 !important;
     }
   }
 
