@@ -6,6 +6,10 @@ interface PageHeaderProps {
   description?: string;
   action?: ReactNode;
   className?: string;
+  /** Accent the page title (e.g. gradient clip). */
+  titleClassName?: string;
+  /** Optional override for the description line. */
+  descriptionClassName?: string;
 }
 
 export function PageHeader({
@@ -13,6 +17,8 @@ export function PageHeader({
   description,
   action,
   className,
+  titleClassName,
+  descriptionClassName,
 }: PageHeaderProps) {
   return (
     <div
@@ -22,11 +28,21 @@ export function PageHeader({
       )}
     >
       <div className="min-w-0 flex-1">
-        <h1 className="font-heading text-xl font-bold tracking-tight text-foreground sm:text-2xl">
+        <h1
+          className={cn(
+            "font-heading text-xl font-bold tracking-tight text-foreground sm:text-2xl",
+            titleClassName,
+          )}
+        >
           {title}
         </h1>
         {description && (
-          <p className="mt-0.5 line-clamp-2 text-xs text-muted-foreground sm:mt-1 sm:text-sm">
+          <p
+            className={cn(
+              "mt-0.5 line-clamp-2 text-xs text-muted-foreground sm:mt-1 sm:text-sm",
+              descriptionClassName,
+            )}
+          >
             {description}
           </p>
         )}
