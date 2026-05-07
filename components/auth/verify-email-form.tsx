@@ -11,6 +11,9 @@ import { cn } from "@/lib/utils";
 
 const RESEND_COOLDOWN = 60;
 
+/** Matches `resendVerificationOtp` / `sendVerificationOtp` in `@/lib/services/email-verification`. */
+const ALREADY_VERIFIED_MESSAGE = "Email is already verified";
+
 function maskEmail(email: string): string {
   const [local, domain] = email.split("@");
   if (!local || !domain) return email;
@@ -91,6 +94,17 @@ export function VerifyEmailForm() {
       };
 
       if (!res.ok) {
+        if (data.error === ALREADY_VERIFIED_MESSAGE) {
+          toast.success("Your email is already verified. Refreshing your session…");
+          try {
+            await update();
+          } catch {
+            /* session refresh best-effort */
+          }
+          router.refresh();
+          router.push("/dashboard");
+          return;
+        }
         toast.error(data.error ?? "Failed to resend code. Please try again.");
         return;
       }

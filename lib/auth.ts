@@ -49,30 +49,24 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user, trigger, session }) {
+    async jwt({ token, user }) {
       if (user) {
         token.id = user.id as string
         token.currency = (user as { currency: string }).currency
-        token.isEmailVerified = (user as { isEmailVerified: boolean }).isEmailVerified
       }
-      // After OTP verification, `update()` runs without a fresh `user` object — reload
-      // flags from DB (or apply explicit patch from `update(data)`).
-      if (trigger === "update") {
-        const patch = session as { user?: { isEmailVerified?: boolean } } | undefined
-        if (
-          patch?.user &&
-          typeof patch.user.isEmailVerified === "boolean"
-        ) {
-          token.isEmailVerified = patch.user.isEmailVerified
-        } else if (token.id) {
-          const dbUser = await prisma.user.findUnique({
-            where: { id: token.id as string },
-            select: { emailVerified: true, currency: true },
-          })
-          if (dbUser) {
-            token.isEmailVerified = dbUser.emailVerified
-            token.currency = dbUser.currency
-          }
+      // Auth.js invokes this on every session read with only the decoded token (no `user`).
+      // Keep `isEmailVerified` / `currency` aligned with Prisma so a stale JWT cannot trap
+      // verified users on /verify-email (resend then correctly returns "already verified").
+      const userId = (token.id ?? token.sub) as string | undefined
+      if (userId) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: userId },
+          select: { emailVerified: true, currency: true },
+        })
+        if (dbUser) {
+          token.isEmailVerified = dbUser.emailVerified
+          token.currency = dbUser.currency
+          token.id = userId
         }
       }
       return token
