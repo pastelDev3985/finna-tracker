@@ -2,6 +2,7 @@ import { Plus } from "lucide-react";
 import Link from "next/link";
 import { auth } from "@/lib/auth";
 import { formatCurrency } from "@/lib/currency";
+import { Decimal } from "@/lib/generated/prisma/internal/prismaNamespace";
 import {
   getDashboardSummary,
   getBudgetHealthStrip,
@@ -45,7 +46,10 @@ export default async function DashboardPage() {
   const budgetItems = (budgetsResult.data ?? []).map((b) => ({
     id: b.id,
     categoryName: b.category.name,
-    spentAmount: formatCurrency(b.spentAmount, currency),
+    leftAmount: formatCurrency(
+      Decimal.max(0, b.limitAmount.sub(b.spentAmount)),
+      currency,
+    ),
     limitAmount: formatCurrency(b.limitAmount, currency),
     percentUsed: b.percentUsed,
     isOverBudget: b.isOverBudget,

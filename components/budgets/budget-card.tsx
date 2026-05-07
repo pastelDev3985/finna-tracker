@@ -1,13 +1,16 @@
 import { Progress } from "@/components/ui/progress"
 import { Badge } from "@/components/ui/badge"
 import { cn } from "@/lib/utils"
-import { budgetProgressIndicatorClass } from "@/lib/budget-progress"
+import {
+  budgetProgressIndicatorClass,
+  budgetProgressRemainingValue,
+} from "@/lib/budget-progress"
 
 export interface BudgetCardData {
   id: string
   categoryId: string
   categoryName: string
-  spentAmount: string
+  leftAmount: string
   limitAmount: string
   limitAmountRaw: string
   percentUsed: number
@@ -43,19 +46,26 @@ export function BudgetCard({ budget, onEdit }: BudgetCardProps) {
       </div>
 
       <Progress
-        value={Math.min(budget.percentUsed, 100)}
+        value={budgetProgressRemainingValue(
+          budget.percentUsed,
+          budget.isOverBudget,
+        )}
         className={cn("mb-3 w-full", progressColor)}
       />
 
       <div className="flex items-center justify-between gap-2 text-sm">
         <div>
           <span className="font-semibold tabular-nums text-foreground">
-            {budget.spentAmount}
+            {budget.leftAmount}
           </span>
-          <span className="text-muted-foreground"> spent</span>
+          <span className="text-muted-foreground"> left</span>
         </div>
         <div className="text-muted-foreground tabular-nums">
-          of {budget.limitAmount} ({Math.round(budget.percentUsed)}%)
+          of {budget.limitAmount} (
+          {budget.isOverBudget
+            ? 0
+            : Math.max(0, Math.round(100 - budget.percentUsed))}
+          % left)
         </div>
       </div>
     </button>

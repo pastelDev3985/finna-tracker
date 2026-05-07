@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth"
 import { formatCurrency, getCurrencySymbol } from "@/lib/currency"
+import { Decimal } from "@/lib/generated/prisma/internal/prismaNamespace"
 import { listCategories } from "@/lib/services/categories"
 import { listBudgets } from "@/lib/services/budgets"
 import { BudgetsClient } from "@/components/budgets/budgets-client"
@@ -28,7 +29,10 @@ export default async function BudgetsPage({ searchParams }: Props) {
     id: b.id,
     categoryId: b.categoryId,
     categoryName: b.category.name,
-    spentAmount: formatCurrency(b.spentAmount, currency),
+    leftAmount: formatCurrency(
+      Decimal.max(0, b.limitAmount.sub(b.spentAmount)),
+      currency,
+    ),
     limitAmount: formatCurrency(b.limitAmount, currency),
     limitAmountRaw: b.limitAmount.toNumber().toFixed(2),
     percentUsed: b.percentUsed,

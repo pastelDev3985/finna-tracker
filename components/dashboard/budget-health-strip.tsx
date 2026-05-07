@@ -2,12 +2,15 @@ import { ArrowRight, Wallet } from "lucide-react"
 import Link from "next/link"
 import { Progress } from "@/components/ui/progress"
 import { cn } from "@/lib/utils"
-import { budgetProgressIndicatorClass } from "@/lib/budget-progress"
+import {
+  budgetProgressIndicatorClass,
+  budgetProgressRemainingValue,
+} from "@/lib/budget-progress"
 
 interface BudgetStripItem {
   id: string
   categoryName: string
-  spentAmount: string
+  leftAmount: string
   limitAmount: string
   percentUsed: number
   isOverBudget: boolean
@@ -55,7 +58,7 @@ export function BudgetHealthStrip({ budgets }: BudgetHealthStripProps) {
               {b.categoryName}
             </p>
             <Progress
-              value={Math.min(b.percentUsed, 100)}
+              value={budgetProgressRemainingValue(b.percentUsed, b.isOverBudget)}
               className={cn(
                 "w-full",
                 budgetProgressIndicatorClass(b.percentUsed, b.isOverBudget),
@@ -63,7 +66,7 @@ export function BudgetHealthStrip({ budgets }: BudgetHealthStripProps) {
             />
             <div className="mt-2 flex items-center justify-between gap-1">
               <span className="text-[11px] tabular-nums text-muted-foreground truncate">
-                {b.spentAmount}
+                {b.leftAmount} left
               </span>
               <span className="text-[11px] text-muted-foreground">/</span>
               <span className="text-[11px] tabular-nums text-muted-foreground truncate">
